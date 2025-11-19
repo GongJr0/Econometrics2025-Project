@@ -1,0 +1,171 @@
+import numpy as np
+import numpy.typing as npt
+import sympy as sp  # type: ignore
+import pandas as pd
+from typing import Union
+from dataclasses import dataclass
+
+from error_functions import r2, r2_adj, rmse, mape
+
+
+# ================= Data Classes =================
+@dataclass
+class ErrorMetrics:
+    r2: float
+    r2_adj: float
+    rmse: float
+    mape: float
+
+
+@dataclass
+class StatsTest:
+    reject: bool
+    pval: float
+    test_stat: float
+    stat_name: str
+
+
+@dataclass
+class FitResults:
+    fitted_values: npt.NDArray[np.float64]
+    resid: npt.NDArray[np.float64]
+
+    fit_error: ErrorMetrics
+
+    resid_heteroska: StatsTest
+    resid_stationarity: StatsTest
+
+
+class OLS:
+    """Ordinary Least Squares (OLS) Regression Model"""
+
+    def __init__(
+        self, X: Union[pd.DataFrame, np.ndarray], y: Union[pd.Series, np.ndarray]
+    ):
+        assert isinstance(
+            X, (pd.DataFrame, np.ndarray)
+        ), "X must be a DataFrame or ndarray"
+        assert isinstance(y, (pd.Series, np.ndarray)), "y must be a Series or ndarray"
+
+        assert (
+            X.shape[0] == y.shape[0]
+        ), f"Row count mismatch between fetare and target set. {X.shape[0]=}, {y.shape[0]=}"
+
+        assert X.dtype == float or X.dtype == int, "All X columns must be numeric."
+        assert y.dtype == float or y.dtype == int, "y values must be numeric."
+
+        self.X = self.get_named_X(X)
+        self.y = y
+
+        self._n_cols: int | None = None
+        self._n_obs: int | None = None
+
+    def fit(self) -> None:
+        X = self.X.values
+        if isinstance(self.y, pd.Series):
+            y = self.y.values
+        else:
+            y = self.y
+
+        XT = X.T
+        XT_X = XT @ X
+
+        betas = np.linalg.inv(XT_X) @ XT @ y
+
+        y_hat = X @ betas
+        resid = y - y_hat
+
+        err = ErrorMetrics(
+            r2=r2(y, y_hat),
+            r2_adj=r2_adj(y, y_hat, X.shape[1]),
+            rmse=rmse(y, y_hat),
+            mape=mape(y, y_hat),
+        )
+
+        heteroska = StatsTest(
+            reject=False, pval=np.inf, test_stat=np.inf, stat_name="T-Statistic"
+        )
+
+        stationarity = StatsTest(
+            reject=False, pval=np.inf, test_stat=np.inf, stat_name="T-Statistic"
+        )
+
+        return FitResults(
+            fitted_values=y_hat,
+            resid=resid,
+            fit_error=err,
+            resid_heteroska=heteroska,
+            resid_stationarity=stationarity,
+        )
+
+    # ================= Symbolic Representation =================
+    @staticmethod
+    def get_named_X(X: Union[pd.DataFrame, np.ndarray]) -> pd.DataFrame:
+        """If X is a DataFrame, return it as is; otherwise, convert ndarray to DataFrame with named columns X_{1:n}."""
+        if isinstance(X, pd.DataFrame):
+            return X
+
+        n_cols = X.shape[1]
+        cols = [f"X_{i}" for i in range(1, n_cols + 1)]
+
+        return pd.DataFrame(data=X, columns=cols)
+
+    def get_symbols(self) -> tuple[list[sp.Symbol], list[sp.Symbol]]:
+        """Returns X_i and beta_i symbols. Exlcudes beta_0 (intercept)"""
+        vars = self.X.columns
+        n_cols = self.n_cols
+        cols = self.X.columns
+
+        var_sym = []
+        beta_sym = []
+
+        y = sp.Symbol("y")
+        beta_0 = sp.Symbol("beta_0")
+        for i in range(1, n_cols + 1):
+            var_sym.append(sp.Symbol(cols[i - 1]))
+            beta_sym.append(sp.Symbol(f"beta_{i}"))
+
+        return var_sym, beta_sym
+
+    def get_equation(self) -> sp.Eq:
+        """Returns the OLS regressor in equation form. (Only for visualization purposes.
+        This property is not used in solution or prediction methods)"""
+
+        var_sym, beta_sym = self.get_symbols()
+        beta_0 = sp.Symbol("beta_0")
+        y = sp.Symbol("y")
+
+        expr = beta_0 + sum([x * y for x, y in zip(beta_sym, var_sym)])
+
+        return sp.Eq(y, expr, evaluate=False)
+
+    def get_matrix(self, n_rows=5):
+        X = self.X.head(n_rows).copy().values
+        y = sp.Matrix(self.y[:n_rows].values)
+
+        _, beta_sym = self.get_symbols()
+        beta_0 = sp.Symbol("beta_0")
+
+        # Add 1s to X rows for intercept
+        X = np.array([[1, *row] for row in X])
+
+        X_mat = sp.Matrix(X)
+        beta_vec = sp.Matrix([beta_0, *beta_sym])
+
+        expr = X_mat * beta_vec
+        return sp.Eq(y, expr, evaluate=False)
+
+    # ================= Properties =================
+    @property
+    def n_cols(self) -> int:
+        if not self._n_cols:
+            self._n_cols = self.X.shape[1]
+
+        return self._n_cols
+
+    @property
+    def n_obs(self) -> int:
+        if not self._n_obs:
+            self._n_obs = self.X.shape[0]
+
+        return self._n_obs
