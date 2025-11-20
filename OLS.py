@@ -3,44 +3,15 @@ import numpy.typing as npt
 import sympy as sp  # type: ignore
 import pandas as pd
 from typing import Union
-from dataclasses import dataclass
 
 from error_functions import r2, r2_adj, rmse, mape
-
-
-# ================= Data Classes =================
-@dataclass
-class ErrorMetrics:
-    r2: float
-    r2_adj: float
-    rmse: float
-    mape: float
-
-
-@dataclass
-class StatsTest:
-    reject: bool
-    pval: float
-    test_stat: float
-    stat_name: str
-
-
-@dataclass
-class FitResults:
-    fitted_values: npt.NDArray[np.float64]
-    resid: npt.NDArray[np.float64]
-
-    fit_error: ErrorMetrics
-
-    resid_heteroska: StatsTest
-    resid_stationarity: StatsTest
-
+from fit_data import ErrorMetrics, StatsTest, FitResults
 
 class OLS:
     """Ordinary Least Squares (OLS) Regression Model"""
 
     def __init__(
-        self, X: Union[pd.DataFrame, np.ndarray], y: Union[pd.Series, np.ndarray]
+        self, X: Union[pd.DataFrame, np.float64], y: Union[pd.Series, np.ndarray]
     ):
         assert isinstance(
             X, (pd.DataFrame, np.ndarray)
@@ -60,8 +31,9 @@ class OLS:
         self._n_cols: int | None = None
         self._n_obs: int | None = None
 
-    def fit(self) -> None:
+    def fit(self) -> FitResults:
         X = self.X.values
+        X = np.array([[1, *row] for row in X], dtype=np.float64)
         if isinstance(self.y, pd.Series):
             y = self.y.values
         else:
@@ -71,15 +43,17 @@ class OLS:
         XT_X = XT @ X
 
         betas = np.linalg.inv(XT_X) @ XT @ y
+        self.betas = betas
+        
 
         y_hat = X @ betas
         resid = y - y_hat
-
+        
         err = ErrorMetrics(
-            r2=r2(y, y_hat),
-            r2_adj=r2_adj(y, y_hat, X.shape[1]),
-            rmse=rmse(y, y_hat),
-            mape=mape(y, y_hat),
+            r2=round(r2(y, y_hat), 4),
+            r2_adj=round(r2_adj(y, y_hat, X.shape[1]), 4),
+            rmse=round(rmse(y, y_hat), 4),
+            mape=round(mape(y, y_hat), 4),
         )
 
         heteroska = StatsTest(
@@ -93,10 +67,21 @@ class OLS:
         return FitResults(
             fitted_values=y_hat,
             resid=resid,
-            fit_error=err,
+            error=err,
             resid_heteroska=heteroska,
             resid_stationarity=stationarity,
         )
+    
+    def predict(self, X: Union[pd.DataFrame, pd.Series, np.ndarray]) -> npt.NDArray[np.float64]:
+        if isinstance(X, (pd.DataFrame, pd.Series)):
+            X = X.values
+
+        if X.ndim == 1:
+            X = np.array([1, *X], dtype=np.float64)
+        else:
+            np.array([[1, *row] for row in X], dtype=np.float64)
+
+        return X@self.betas
 
     # ================= Symbolic Representation =================
     @staticmethod
