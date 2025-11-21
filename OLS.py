@@ -2,10 +2,11 @@ import numpy as np
 import numpy.typing as npt
 import sympy as sp  # type: ignore
 import pandas as pd
-from typing import Union
+from typing import Union, Literal
 
 from error_functions import r2, r2_adj, rmse, mape
 from fit_data import ErrorMetrics, StatsTest, FitResults
+from stat_tests import ADF, BP
 
 class OLS:
     """Ordinary Least Squares (OLS) Regression Model"""
@@ -31,8 +32,9 @@ class OLS:
         self._n_cols: int | None = None
         self._n_obs: int | None = None
 
-    def fit(self) -> FitResults:
+    def fit(self, diagnosis_alpha: float = 0.05, diagnosis_trend: Literal["c", "ct", "ctt", "n"] = "c") -> FitResults:
         X = self.X.values
+        X_raw = X.copy()
         X = np.array([[1, *row] for row in X], dtype=np.float64)
         if isinstance(self.y, pd.Series):
             y = self.y.values
@@ -56,19 +58,14 @@ class OLS:
             mape=round(mape(y, y_hat), 4),
         )
 
-        heteroska = StatsTest(
-            reject=False, pval=np.inf, test_stat=np.inf, stat_name="T-Statistic"
-        )
-
-        stationarity = StatsTest(
-            reject=False, pval=np.inf, test_stat=np.inf, stat_name="T-Statistic"
-        )
+        heteroske = BP(X_raw, y, diagnosis_alpha)
+        stationarity = ADF(resid, diagnosis_trend, diagnosis_alpha)
 
         return FitResults(
             fitted_values=y_hat,
             resid=resid,
             error=err,
-            resid_heteroska=heteroska,
+            resid_heteroske=heteroske,
             resid_stationarity=stationarity,
         )
     

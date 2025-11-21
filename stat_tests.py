@@ -1,11 +1,21 @@
 import numpy as np
-import numpy.typing as npt
+from numpy import float64
+from numpy.typing import NDArray
 from scipy.stats import t
 from typing import Literal
 from fit_data import StatsTest
+from tau_coefs import mackinnon_p
+from error_functions import r2
+from math import gamma
+from mpmath import gammainc
+
 
 class AR1:
-    def __call__(self, X, trend: Literal["c", "ct", "n"] = "c") -> np.float64:
+    def __new__(cls, X, trend: Literal["c", "ct", "ctt", "n"] = "c") -> float64:
+        return cls._dispatch(X, trend)
+
+    @classmethod
+    def _dispatch(cls, X, trend: Literal["c", "ct", "ctt", "n"]) -> NDArray[float64]:
         """Calculate the AR(1) coefficient for the given data using an iterative solver.
 
         Args:
@@ -16,73 +26,155 @@ class AR1:
             float: AR(1) coefficient.
         """
         assert len(X)>=2, "Input array must have at least two elements."
-        assert trend in ("c", "ct", "n"), "Invalid trend type."
+        assert trend in ("c", "ct", "ctt", "n"), "Invalid trend type."
 
         match trend:
             case "c":
-                return self.c(X)
+                return cls.c(X)
             case "ct":
-                return self.ct(X)
+                return cls.ct(X)
+            case "ctt":
+                return cls.ctt(X)
             case "n":
-                return self.n(X)
+                return cls.n(X)
             case _:
                 raise ValueError("Invalid trend type.")
 
     @staticmethod
-    def n(X) -> np.float64:
+    def n(X) -> NDArray[float64]:
         y = X[1:]
         x = X[:-1].reshape(-1, 1)
 
         xt = x.T
-        beta: npt.NDArray[np.float64] = np.linalg.inv(xt @ x) @ xt @ y
-        return beta.tolist()[0]
+        beta: NDArray[float64] = np.linalg.inv(xt @ x) @ xt @ y
+        return beta
 
     @staticmethod
-    def c(X) -> np.float64:
+    def c(X) -> NDArray[float64]:
         y = X[1:]
         x = np.column_stack([np.ones(len(y)), X[:-1]])
         xt = x.T
-        beta: npt.NDArray[np.float64] = np.linalg.inv(xt @ x) @ xt @ y
-        return beta.tolist()[1]
+        beta: NDArray[float64] = np.linalg.inv(xt @ x) @ xt @ y
+        return beta
 
     @staticmethod
-    def ct(X) -> np.float64:
+    def ct(X) -> NDArray[float64]:
         y = X[1:]
         t = np.arange(1, len(X))
         x = np.column_stack([np.ones(len(y)), t, X[:-1]])
         xt = x.T
-        beta: npt.NDArray[np.float64] = np.linalg.inv(xt @ x) @ xt @ y
-        return beta.tolist()[2]
+        beta: NDArray[float64] = np.linalg.inv(xt @ x) @ xt @ y
+        return beta
+    
+    @staticmethod
+    def ctt(X) -> NDArray[float64]:
+        y = X[1:]
+        t = np.arange(1, len(X))
+        t2 = t**2
+        x = np.column_stack([np.ones(len(y)), t, t2, X[:-1]])
+        xt = x.T
+        beta: NDArray[float64] = np.linalg.inv(xt @ x) @ xt @ y
+        return beta
 
 
-def ADF(X, trend: Literal["c", "ct", "n"] = "c", alpha: float = 0.05) -> StatsTest:
-    """Perform Augmented Dickey-Fuller test to check for stationarity.
+def ADF(
+    X: NDArray[float64],
+    trend: Literal["c","ct","ctt","n"]="c",
+    alpha: float=0.05,
+    lags: int=0,
+) -> StatsTest:
 
-    Args:
-        X (np.ndarray): 1D array of residuals.
-        trend (Literal["c", "ct", "n"]): Type of trend to include.
-            "c" for constant, "ct" for constant and trend, "n" for no trend.
-        alpha (PVal): Significance level for the test.
+    X = np.asarray(X, dtype=float64)
+    assert len(X) >= 3 + lags
+    assert trend in ("c","ct","ctt","n")
+    assert lags >= 0
 
-    Returns:
-        float: p-value of the test.
-    """
-    assert len(X) >= 3, "Input array must have at least three elements."
-    assert trend in ("c", "ct", "n"), "Invalid trend type."
+    
 
-    sigma_x = np.std(X, ddof=1)
     n = len(X)
+    
+    if lags == 0:
+        lags = round(12*(n/100)**(1/4))  # heuristic from statsmodels' ADF implementation
 
-    se_X = sigma_x * np.sqrt(n)
-    beta = AR1()(X, trend=trend)
-    adf_stat = beta/se_X
-    # Approximate p-value using t-distribution
-    p_value = t.cdf(adf_stat, df=n-1)
+    dX = np.diff(X)
+    start = lags
+
+    y = dX[start:]
+    x_level = X[start:-1]
+
+    cols = []
+    if trend in ("c","ct","ctt"):
+        cols.append(np.ones_like(y))
+    if trend in ("ct","ctt"):
+        t = np.arange(start+1, n, dtype=float64)
+        cols.append(t)
+    if trend == "ctt":
+        t = np.arange(start+1, n, dtype=float64)
+        cols.append(t**2)
+
+    cols.append(x_level)
+
+    for i in range(1, lags+1):
+        cols.append(dX[start-i:-(i)])
+
+    Xreg = np.column_stack(cols)
+
+    beta_hat, *_ = np.linalg.lstsq(Xreg, y, rcond=None)
+    resid = y - Xreg @ beta_hat
+
+    k = Xreg.shape[1]
+    dof = len(y) - k
+    s2 = (resid @ resid) / dof
+
+    XtX_inv = np.linalg.inv(Xreg.T @ Xreg)
+    se = np.sqrt(np.diag(s2 * XtX_inv))
+
+    gamma_idx = len(cols) - (lags + 1)
+    adf_stat = beta_hat[gamma_idx] / se[gamma_idx]
+
+    p_value = mackinnon_p(float(adf_stat), trend)
 
     return StatsTest(
-        reject=p_value.reject,
+        reject=p_value<alpha,
         pval=float(p_value),
         test_stat=adf_stat,
         stat_name="ADF Test (T-Statistic)"
     )
+
+
+def BP(X: NDArray[float64], 
+       y: NDArray[float64],
+       alpha:float64 = 0.05) -> StatsTest:
+
+    ddof = X.shape[1]
+
+    X = np.column_stack([np.ones(X.shape[0]), X])
+
+    XT = X.T
+    XT_X = XT@X
+
+    beta = np.linalg.inv(XT_X) @ XT @ y
+
+    fitted = X@beta
+    e2 = (y - fitted)**2
+
+    sigma_hat2 = sum(e2)/len(e2)
+    g = e2/sigma_hat2
+
+    aux_beta = np.linalg.inv(XT_X) @ XT @ g
+    aux_fit = X@aux_beta
+    aux_r2 = r2(g, aux_fit)
+
+    chi_stat = len(g)*aux_r2
+    pval = gammainc(ddof/2, 0, chi_stat/2)/gamma(ddof/2)  # Chi^2(X, ddof) CDF
+
+    return StatsTest(
+        reject=pval<alpha,
+        pval=float(pval),
+        test_stat=float(chi_stat),
+        stat_name="Breusch-Pagan Test (Chi^2 Statistic)"
+    )
+    
+
+
 

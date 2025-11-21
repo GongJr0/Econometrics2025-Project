@@ -32,7 +32,7 @@ class FitResults:
 
     error: ErrorMetrics
 
-    resid_heteroska: StatsTest
+    resid_heteroske: StatsTest
     resid_stationarity: StatsTest
 
     def __repr__(self) -> str:
