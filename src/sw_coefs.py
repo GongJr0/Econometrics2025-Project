@@ -168,6 +168,10 @@ def _alnorm(x, upper):
     return temp if upper else (1-temp)
 
 def swilk(x, a, init, n1=-1):
+    # This function is a native python translation of the cpython code written in SciPy.
+    # It is faithful to the original FORTRAN code written in "AS R94" (Royston, 1995)
+    # FORTRAN code can be found in https://jblevins.org/mirror/amiller/as181.f90
+    
     Z90 = 0.12816e1
     Z95 = 0.16449e1
     Z99 = 0.23263e1

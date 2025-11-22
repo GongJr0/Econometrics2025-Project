@@ -4,9 +4,9 @@ import sympy as sp  # type: ignore
 import pandas as pd
 from typing import Union, Literal
 
-from error_functions import r2, r2_adj, rmse, mape
-from fit_data import ErrorMetrics, StatsTest, FitResults
-from stat_tests import ADF, BP, SW
+from .error_functions import r2, r2_adj, rmse, mape
+from .fit_data import ErrorMetrics, FitResults
+from .stat_tests import ADF, BP, SW
 
 class OLS:
     """Ordinary Least Squares (OLS) Regression Model"""

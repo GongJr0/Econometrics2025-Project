@@ -3,10 +3,10 @@ from numpy import float64
 from numpy.typing import NDArray
 from scipy.stats import t
 from typing import Literal
-from fit_data import StatsTest
-from tau_coefs import mackinnon_p
-from sw_coefs import swilk
-from error_functions import r2
+from .fit_data import StatsTest
+from .tau_coefs import mackinnon_p
+from .sw_coefs import swilk
+from .error_functions import r2
 from math import gamma
 from mpmath import gammainc
 import warnings
