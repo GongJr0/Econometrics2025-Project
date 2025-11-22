@@ -5,9 +5,11 @@ from scipy.stats import t
 from typing import Literal
 from fit_data import StatsTest
 from tau_coefs import mackinnon_p
+from sw_coefs import swilk
 from error_functions import r2
 from math import gamma
 from mpmath import gammainc
+import warnings
 
 
 class AR1:
@@ -84,7 +86,7 @@ def ADF(
     lags: int=0,
 ) -> StatsTest:
 
-    X = np.asarray(X, dtype=float64)
+    X = np.asarray(X, dtype=float64).squeeze()
     assert len(X) >= 3 + lags
     assert trend in ("c","ct","ctt","n")
     assert lags >= 0
@@ -92,9 +94,17 @@ def ADF(
     
 
     n = len(X)
-    
+    n_trend = {
+        "n": 0,
+        "c": 1,
+        "ct": 2,
+        "ctt": 3
+    }[trend]
+
     if lags == 0:
-        lags = round(12*(n/100)**(1/4))  # heuristic from statsmodels' ADF implementation
+        l = round(12*(n/100)**(1/4))  # heuristic from statsmodels' ADF implementation
+        lags = min(l, n//2-n_trend-1)
+        lags = max(lags, 0)
 
     dX = np.diff(X)
     start = lags
@@ -176,5 +186,30 @@ def BP(X: NDArray[float64],
     )
     
 
+def SW(X, alpha = 0.05) -> StatsTest:
+    X = np.ravel(X).astype(float64)
+    n = len(X)
 
+    if n< 3:
+        raise ValueError("Shapiro-Wilk test requires N>3")
+    
+    a = np.zeros(n//2, dtype=float64)
 
+    y = np.sort(X)
+    y -= X[n//2]  # approx median
+
+    w, pw, ifault = swilk(y, a, 0)
+    if ifault not in [0,2]:
+        warnings.warn("Input data has range zero. "
+                        "Results may be inaccurate")
+
+    if n > 5000:
+        warnings.warn("For N > 5000, computed p-value "
+                      f"may not be accurate. Current N is {n}.")
+    
+    return StatsTest(
+        reject=pw<alpha,
+        pval=pw,
+        test_stat=w,
+        stat_name="Shapiro-Wilk Test (Approximated Z-Statistic)"
+    )

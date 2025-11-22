@@ -6,7 +6,7 @@ from typing import Union, Literal
 
 from error_functions import r2, r2_adj, rmse, mape
 from fit_data import ErrorMetrics, StatsTest, FitResults
-from stat_tests import ADF, BP
+from stat_tests import ADF, BP, SW
 
 class OLS:
     """Ordinary Least Squares (OLS) Regression Model"""
@@ -60,6 +60,7 @@ class OLS:
 
         heteroske = BP(X_raw, y, diagnosis_alpha)
         stationarity = ADF(resid, diagnosis_trend, diagnosis_alpha)
+        normality = SW(resid, diagnosis_alpha)
 
         return FitResults(
             fitted_values=y_hat,
@@ -67,6 +68,7 @@ class OLS:
             error=err,
             resid_heteroske=heteroske,
             resid_stationarity=stationarity,
+            resid_normality=normality
         )
     
     def predict(self, X: Union[pd.DataFrame, pd.Series, np.ndarray]) -> npt.NDArray[np.float64]:
