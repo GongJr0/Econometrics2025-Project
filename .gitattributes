@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Ignore jupyter files in linguist
+*.ipynb linguist-detectable=false
