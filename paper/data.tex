@@ -1,0 +1,26 @@
+\section{Data}\label{sec:data}
+The proposed ARX model relies on two exogenous variables alongside the autoregressive target.
+All three variables are sourced from the Federal Reserve Bank of St. Louis database “FRED”. 
+The implementation uses quarterly data from 1990Q1 to 2025Q1 and uses the FRED series:
+
+\begin{itemize}
+    \item Real GDP ($y$): \enquote{\href{https://fred.stlouisfed.org/series/GDPC1}{GDPC1}}
+    \item CPI ($CPI$): \enquote{\href{https://fred.stlouisfed.org/series/CPIAUCSL}{CPIAUCSL}}
+    \item Unemployment Rate ($u$): \enquote{\href{https://fred.stlouisfed.org/series/UNRATE}{UNRATE}}
+\end{itemize}
+
+\noindent NOTE: All series are seasonally adjusted by FRED.
+
+\subsection{Series Characteristics}\label{subsec:series_characteristics}
+\subsubsection{Real GDP}\label{subsubsec: rgdp}
+FRED’s Real GDP series is measured in chained 2017 dollars (Bn). 
+The series is updated quarterly, which matches the frequency of the model natively.
+
+\subsubsection{CPI}\label{subsubsec: cpi}
+The CPI series of choice for the model records the US-wide city average CPI for all urban consumers. 
+The series is expressed as a chain index with base period 1982-1984=100. 
+Entries are recorded monthly, and quarter-end observations are used to align with the Real GDP series.
+
+\subsubsection{Unemployment Rate}\label{subsubsec: unemp}
+Unemployment rate in FRED is recorded as percentages with a monthly frequency. 
+Similar to CPI, quarter-end observations are used to match the frequencies among the series.

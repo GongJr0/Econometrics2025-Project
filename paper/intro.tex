@@ -1,11 +1,29 @@
 \section{Introduction}\label{sec:intro}
+\subsection{Overview}\label{subsec:overview}
+Real GDP is a prominent measure of output due to its simplicity, interpretability, and effectiveness in communicating the overall activity of an economy. 
+Alongside academic settings, Real GDP has retained its relevance in politics as one of the go-to measures in public communications regarding economic growth and prosperity. 
+As per its wide-spread adoption, the measure has accumulated a plethora of literature referencing it from a multitude of perspectives.
 
-\subsection{Overview}\label{subsec:intro}
-This paper aims to derive a \textbf{Best Linear Unbiased Estimator (BLUE)} of the US' Real GDP using lagged macroeconomic indicators as explanatory variables.
+\vspace{\baselineskip}
 
-
+This paper aims to show that empirical observations of Real GDP in the US economy can be modelled optimally as BLUE through an $ARX(p, q)$ model where the exogenous contributors are theoretical descriptors of output.
 
 \subsection{Hypothesis}\label{subsec:hypothesis}
+In the history of economic equilibria, multiple models have proposed mathematically defined
+relationships between Real GDP and many indicators. From the Keynesian approach, two of said
+indicators are:
 
+\begin{itemize}
+    \item Price levels (CPI) through the \textbf{Aggregate Demand Curve}
+    \item Unemployment rates through \textbf{Okun's Law}
+\end{itemize}
+
+The formal hypothesis of this paper is that an $ARX(p, q)$ representation of Real GDP, incorporating CPI and unemployment:
+
+\[
+ARX_y(p, \ q) = C + \sum_{i=1}^p \beta_i y_{t-i} + \bigg{\lbrack}\sum_{j=1}^q \phi_j CPI_{t-j} + \gamma_j u_{t-j}\bigg{\rbrack} + \varepsilon_t
+\]
+\noindent yields OLS parameter estimates that satisfy the \textbf{Gauss--Markov} conditions for time-series estimators.
 
 \subsection{Literature Review}\label{subsec:litreview}
+\dots
