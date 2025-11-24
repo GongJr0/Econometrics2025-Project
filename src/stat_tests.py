@@ -7,8 +7,9 @@ from .fit_data import StatsTest
 from .tau_coefs import mackinnon_p
 from .sw_coefs import swilk
 from .error_functions import r2
+from .StandardScaler import StandardScaler
 from math import gamma
-from mpmath import gammainc
+from mpmath import gammainc, betainc
 import warnings
 
 
@@ -221,3 +222,89 @@ def SW(X, alpha = 0.05) -> StatsTest:
         test_stat=w,
         stat_name="Shapiro-Wilk Test (Approximated Z-Statistic)"
     )
+
+def ecdf(x):
+    """Compute the empirical cumulative distribution function (ECDF) for a 1D array."""
+    x = np.asarray(x, dtype=float64).ravel()
+    n = len(x)
+    x_s = np.sort(x)
+    y = np.array([(i+1)/n for i in range(n)], dtype=float64)
+    return x_s, y
+    
+def ecdf_F(ecdf_x, x_i):
+    """Evaluate the ECDF at a specific point x_i."""
+    idx = np.searchsorted(ecdf_x[0], x_i, side='right') - 1
+    if idx < 0:
+        return 0.0
+    else:
+        return ecdf_x[1][idx]
+    
+def Standardized_KS(X, Y, alpha=0.05, pval_terms=100) -> StatsTest:
+    
+    """Compute the Kolmogorov-Smirnov test statistic between mean-variance standardized samples X and Y."""
+    
+    s = StandardScaler()
+    X = s.fit_transform(X.reshape(-1,1)).ravel().astype(float64)
+    Y = s.fit_transform(Y.reshape(-1,1)).ravel().astype(float64)
+
+    ecdf_X = ecdf(X)
+    ecdf_Y = ecdf(Y)
+    
+    def obj(x):
+        return abs(ecdf_F(ecdf_X, x) - ecdf_F(ecdf_Y, x))
+    
+    def F_CDF(x, d1, d2):
+        z = (d1*x)/(d1*x + d2)
+        a = d1/2.0
+        b = d2/2.0
+        
+        return float64(betainc(a, b, 0, z, regularized=True))
+    
+    def CRIT(alpha, n, m):
+        """Compute the critical value for the KS test at significance level alpha."""
+        return float64(np.sqrt(-0.5 * np.log(alpha / 2.0))) * float64(np.sqrt((n + m)/(n * m)))
+    def ks_pval(D, n, m=None, terms=pval_terms):    
+        if m is None:
+            # one-sample scaling
+            lam = np.sqrt(n) * D
+        else:
+            # two-sample scaling
+            lam = np.sqrt(n * m / (n + m)) * D
+
+        # series expansion
+        s = 0.0
+        for k in range(1, terms+1):
+            s += (-1)**(k-1) * np.exp(-2 * (k**2) * (lam**2))
+
+        return max(0.0, min(1.0, 2 * s))
+    
+    D_idx = np.argmax(np.array([obj(xi) for xi in np.concatenate((X,Y))], dtype=float64))
+    n = len(X)
+    m = len(Y)
+    
+    D = obj(np.concatenate((X,Y))[D_idx])
+    D_crit = CRIT(alpha, n, m)
+    pval = ks_pval(D, n, m, terms=pval_terms)
+    return StatsTest(
+        reject=D > D_crit,
+        pval=pval,
+        test_stat=float64(D),
+        stat_name="Standardized Kolmogorov-Smirnov Test (D Statistic)"
+    )
+    
+    
+def VectorKS2Samp(X, alpha=0.05, pval_terms=100) -> NDArray[float64]:
+    """Compute the Kolmogorov-Smirnov test statistic for each dimension of the input 2D array X."""
+    X = np.asarray(X, dtype=float64)
+    n_features = X.shape[1]
+    ks_stats = np.zeros((n_features, n_features), dtype=float64)
+    ks_reject_map = np.zeros((n_features, n_features), dtype=bool)
+    ks_tests = np.empty((n_features, n_features), dtype=object)
+    
+    for i in range(n_features):
+        for j in range(n_features):
+            ks_test = Standardized_KS(X[:, i], X[:, j], alpha=alpha, pval_terms=pval_terms)
+            ks_stats[i, j] = ks_test.test_stat
+            ks_reject_map[i, j] = int(ks_test.reject)
+            ks_tests[i, j] = ks_test
+    return ks_stats, ks_reject_map, ks_tests
