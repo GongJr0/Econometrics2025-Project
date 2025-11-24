@@ -129,7 +129,15 @@ def ADF(
 
     Xreg = np.column_stack(cols)
 
-    beta_hat, *_ = np.linalg.lstsq(Xreg, y, rcond=None)
+    try:
+        beta_hat, *_ = np.linalg.lstsq(Xreg, y, rcond=-1)
+    except np.linalg.LinAlgError as e:
+        return StatsTest(
+            reject=False,
+            pval=np.inf,
+            test_stat=np.nan,
+            stat_name="ADF Test (T-Statistic) [Non-Convergent input]"
+        )
     resid = y - Xreg @ beta_hat
 
     k = Xreg.shape[1]
