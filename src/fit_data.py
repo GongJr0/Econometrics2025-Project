@@ -37,6 +37,7 @@ class StatsTest:
 class FitResults:
     fitted_values: npt.NDArray[np.float64]
     resid: npt.NDArray[np.float64]
+    XT_e: np.float64
 
     error: ErrorMetrics
 

@@ -11,4 +11,12 @@ The proposed methodology of this paper can be split into four main components:
 Each component is detailed in the following subsections.
 
 \subsection{Data Preparation}\label{subsec:data_prep}
-As detailed in Section \ref{sec:data} the model uses three time series sourced from FRED.
+The data preparation for this project focuses on transforming the raw data for interpretability without effecting the underlying distributions.
+Rescaling the input matrix ($X$) allows better comparison of coefficients and ensures that $\sum X^T\varepsilon = 0$ must hold within very tight tolerances\footnote{Differences in magnitude between $X$ columns can lead to numerical ambiguity in orthogonality checks. It is generally preferrable to eliminate any differences in the order of magniutes in $X$.}.
+A common approach to achieve this stability is standardization, which transforms each feature to have a mean of 0 and a standard deviation of 1.
+Standardization is performed column-wise on the input using the formula:
+\[
+Z = \frac{X_{i, j} - \bar{X_i}}{S_i}
+\]
+
+where $X_{i, j}$ is the $j$-th observation of the $i$-th column, $\bar{X_i}$ is the mean of the $i$-th column, and $S_i$ is the [unbiased] standard deviation of the $i$-th column.

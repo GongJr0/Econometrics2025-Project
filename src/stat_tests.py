@@ -293,8 +293,9 @@ def Standardized_KS(X, Y, alpha=0.05, pval_terms=100) -> StatsTest:
     )
     
     
-def VectorKS2Samp(X, alpha=0.05, pval_terms=100) -> NDArray[float64]:
+def VectorKS2Samp(X, alpha=0.05, pval_terms=100) -> tuple[NDArray[float64], NDArray[bool], NDArray[StatsTest]]:
     """Compute the Kolmogorov-Smirnov test statistic for each dimension of the input 2D array X."""
+    
     X = np.asarray(X, dtype=float64)
     n_features = X.shape[1]
     ks_stats = np.zeros((n_features, n_features), dtype=float64)
@@ -308,3 +309,59 @@ def VectorKS2Samp(X, alpha=0.05, pval_terms=100) -> NDArray[float64]:
             ks_reject_map[i, j] = int(ks_test.reject)
             ks_tests[i, j] = ks_test
     return ks_stats, ks_reject_map, ks_tests
+
+def KS2Sample(X, alpha=0.05, pval_terms=100, display_plot=False) -> list[StatsTest]:
+    """Compute the Kolmogorov-Smirnov test statistic between two samples X and Y."""
+    
+    ks_stats, ks_reject, tests = VectorKS2Samp(X, alpha=0.05)
+    
+    if not display_plot:
+        return tests
+    
+    # scoped imports
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    import pandas as pd
+    
+    if isinstance(X, pd.DataFrame):
+        cols = X.columns.tolist()
+    else:
+        cols = [f"X{i+1}" for i in range(X.shape[1])]
+    
+    
+    ks_reject = pd.DataFrame(ks_reject, index=cols, columns=cols)
+    ks_stats = pd.DataFrame(ks_stats, index=cols, columns=cols)
+
+    ks_pvals = [[tests[i,j].pval for j in range(len(cols))] for i in range(len(cols))]
+    ks_pvals = pd.DataFrame(ks_pvals, index=cols, columns=cols)
+    fig, ax = plt.subplots(1, 2, figsize=(12, 5))
+
+    # KS Reject Matrix (green → red)
+    sns.heatmap(
+        ks_reject, annot=True, cmap="RdYlGn_r", 
+        ax=ax[0], cbar=True, linewidths=0.5, linecolor="white"
+    )
+    ax[0].set_title("KS Test Reject Matrix (α = 0.05)", fontsize=12)
+    ax[0].set_xlabel("Features")
+    ax[0].set_ylabel("Features")
+    ax[0].tick_params(axis="x", rotation=45)
+    ax[0].tick_params(axis="y", rotation=0)
+
+    # KS Statistic Matrix (viridis)
+    sns.heatmap(
+        ks_stats, annot=True, cmap="viridis", 
+        ax=ax[1], cbar=True, linewidths=0.5, linecolor="white"
+    )
+    ax[1].set_title("KS Test Statistic Matrix", fontsize=12)
+    ax[1].set_xlabel("Features")
+    ax[1].set_ylabel("Features")
+    ax[1].tick_params(axis="x", rotation=45)
+    ax[1].tick_params(axis="y", rotation=0)
+
+
+    # Add a main title and adjust layout
+    plt.suptitle("KS Test Results Between Feature Distributions", fontsize=14, fontweight="bold")
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
+    plt.show()
+
+    return ks_stats, ks_reject, ks_pvals

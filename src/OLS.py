@@ -51,6 +51,8 @@ class OLS:
         y_hat = X @ betas
         resid = y - y_hat
         
+        XT_e = np.sum(XT @ resid)
+        
         err = ErrorMetrics(
             r2=round(r2(y, y_hat), 4),
             r2_adj=round(r2_adj(y, y_hat, X.shape[1]), 4),
@@ -65,6 +67,7 @@ class OLS:
         return FitResults(
             fitted_values=y_hat,
             resid=resid,
+            XT_e=XT_e,
             error=err,
             resid_heteroske=heteroske,
             resid_stationarity=stationarity,
