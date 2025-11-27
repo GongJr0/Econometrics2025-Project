@@ -6,7 +6,7 @@ As per its wide-spread adoption, the measure has accumulated a plethora of liter
 
 \vspace{\baselineskip}
 
-This paper aims to show that empirical observations of Real GDP in the US economy can be modelled optimally as BLUE through an $ARX(p, q)$ model where the exogenous contributors are theoretical descriptors of output.
+This paper aims to show that empirical observations of Real GDP in the U.S. economy can be modelled optimally with a \textbf{Gauss\rule[0.5ex]{0.5em}{0.7pt}Markov} compliant $ARX(p, q)$ specification where the exogenous contributors are theoretical descriptors of output.
 
 \subsection{Hypothesis}\label{subsec:hypothesis}
 In the history of economic equilibria, multiple models have proposed mathematically defined
@@ -20,10 +20,13 @@ indicators are:
 
 The formal hypothesis of this paper is that an $ARX(p, q)$ representation of Real GDP, incorporating CPI and unemployment:
 
-\[
-ARX_y(p, \ q) = C + \sum_{i=1}^p \beta_i y_{t-i} + \bigg{\lbrack}\sum_{j=1}^q \phi_j CPI_{t-j} + \gamma_j u_{t-j}\bigg{\rbrack} + \varepsilon_t
-\]
-\noindent yields OLS parameter estimates that satisfy the \textbf{Gauss--Markov} conditions for time-series estimators.
+
+\begin{equation}
+    \label{eq:model_eq}
+    ARX_y(p, \ q) = C + \sum_{i=1}^p \beta_i y_{t-i} + \sum_{j=1}^q \big{\lbrack}\phi_j CPI_{t-j} + \gamma_j u_{t-j}\big{\rbrack} + \varepsilon_t
+\end{equation}
+
+\noindent yields OLS parameter estimates that satisfy the \textbf{Gauss\rule[0.5ex]{0.5em}{0.7pt}}Markov conditions for time-series estimators.
 
 \subsection{Literature Review}\label{subsec:litreview}
 \dots
