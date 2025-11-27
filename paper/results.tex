@@ -1,0 +1,95 @@
+\section{Results}\label{sec:results}
+\subsection{Design Matrix}\label{subsubsec:design_matrix}
+First step of the design matrix creation is the identification of optimal $\{p, \ q\}$ parameters for the model.
+There are two distinct methods to select the autoregressive and exogenous lag order of the model:
+
+% TODO: Move to methodology once uncommitted changes are in the repository.
+\begin{itemize}
+    \item Autoregressive Order: \textbf{Autocorrelation Function (ACF)} and \textbf{Partial Autocorrelation Function (PACF)} plots of the dependent variable are examined to identify significant lags. The ACF plot helps to identify the overall correlation structure, while the PACF plot isolates the direct effect of each lag.
+    \item Exogenous Order: \textbf{Lagged Correlation Matrices} and \textbf{Cross-Correlation Function (CCF)} plots between the dependent variable and each exogenous variable are analyzed to determine significant lags. The CCF plot reveals the correlation between the dependent variable and lagged values of the exogenous variables.
+\end{itemize}
+
+\subsubsection{Autoregressive Order}\label{subsubsec:ar_order}
+Application of ACF yielded a very common pattern of monotonically decreasing correlations, not outlining any specific lag order as superior.
+Looking for more conclusive insights, PACF was applied.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{fig/acf_pacf}
+    \caption{ACF and PACF plots of the dependent (target) variable.}
+    \label{fig:acf_pacf}
+\end{figure}
+
+Figure~\ref{fig:acf_pacf} clearly shows the aforementioned decay in ACF\@. 
+Conversely, PACF shows lag-1 is the only entry with actual partial contribution into the descriptive structure of $y$.\footnote{The first spike in both ACF and PACF refers to lag-0 (the variable itself) which is equal to 1 by definition.}
+Interestingly, the small spikes around lag-20 of the PACF plot (corresponding to 20 quarters or 5 years) indicate that the COVID-19 shock still has a minor effect on the 2025 Real GDP\@.
+
+\vspace{\baselineskip}
+
+In any case, the visualization of the autocorrelation structure presents strong evidence towards the $p=1$ selection, which is used for the model generation in this paper.
+
+\subsubsection{Exogenous Order}\label{subsubsec:exog_order}
+The exogenous order selection process started with the visualization of the simple correlation vector $y$ and the lags of exogenous variables.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        $\mathbf{i_{lag}}$ & $\mathbf{corr(y, \ CPI_{t-i})}$ & $\mathbf{corr(y, \ u_{t-i})}$ \\
+        \hline
+        0 & 0.989 & -0.221 \\
+        1 & 0.988 & -0.255 \\
+        2 & 0.988 & -0.221 \\
+        3 & 0.988 & -0.190 \\
+        4 & 0.988 & -0.236 \\
+        5 & 0.988 & -0.205 \\
+        \hline
+    \end{tabular}
+    \caption{Pearson correlation coefficients between the dependent variable and lags of exogenous variables.}
+\end{table}
+
+Inspecting the table of coefficients, we that $CPI$ consistently stays at a coefficient of 0.988\@. This indicates that the autoregressive process of $CPI$ is likely very strong, and related to the autoregressive process explaining $y$.
+On the other hand, $u$ shows a more reasonable set of coefficients. Although coefficients of $u$ are also relatively stable, they reside in the reasonable range of $[-0.255, \ -0.190]$.
+However a lack of decay or noticeable regime changes in the matrices leaves this simple test inconclusive.
+
+\vspace{\baselineskip}
+To remedy the existence of multicollinearly dependent AR processes, a whitening procedure will be applied to variables before proceeding to the application of CCF\@.
+In this case, an $AR(1)$ model will be fitted to each exogenous variable. As the variables are re-scaled to $\bar{X_i} = 0$, no intercept term will be included in the whitening models.
+After obtaining $\beta_{CPI}$ and $\beta_u$, the following structure will be applied:
+
+\begin{equation}
+    \label{eq:whitening}
+    \begin{aligned}
+        \hat{X_i} &= X_i \beta_i \\
+        \hat{y_i} &= y \beta_i \\
+        \rho_{y,i} &= \operatorname{corr}(\hat{y_i}, X_i - \hat{X_i})
+    \end{aligned}
+\end{equation}
+\vspace{\baselineskip}
+
+The transformation removes the autoregressive structure from $X_i$ by converting it to errors.
+To preserve scale equality, $y$ is transformed into $\hat{y_i}$ using the $\beta_i$ discovered.
+The resulting correlation coefficients do not absorb processes already explained by the $AR$ models.
+Applying said transformation, the CCF plots tell a much clear story.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fig/ccf}
+    \caption{CCF plots of the whitened exogenous variables and the dependent variable.}
+    \label{fig:ccf}
+\end{figure}
+
+
+\subsection{Model Fit}\label{subsubsec:model_fit}
+\dots
+
+\subsection{Residual Analysis}\label{subsubsec:residual_analysis}
+\dots
+
+\subsection{Gauss--Markov Conditions}\label{subsubsec:gm_conditions}
+\dots
+
+\subsection{Residual Distribution}\label{subsubsec:residual_distribution}
+\dots
+
