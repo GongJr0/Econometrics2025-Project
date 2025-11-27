@@ -1,17 +1,66 @@
 \section{Methodology}\label{sec:methodology}
 
-The proposed methodology of this paper can be split into four main components:
+The proposed methodology of this paper can be split into three main components:
 \begin{itemize}
-    \item Data Preparation
-    \item Model Specification
+    \item Data Preparation and Examination
     \item Model Estimation 
     \item BLUE Evaluation
 \end{itemize}
 
 Each component is detailed in the following subsections.
 
-\subsection{Data Preparation}\label{subsec:data_prep}
-The data preparation for this project focuses on transforming the raw data for interpretability without effecting the underlying distributions.
+\subsection{Data Preparation and Examination}\label{subsec:data_prep_exam}
+Data preparation does not involve any steps that are specific to a given column of the dataset. Therefore, $X_{i,j}$ notation will be used to denote any given column/observation and $\beta_i$ will be used to denote any given coefficient.
+In addition to formatting the $X$ matrix to match the model structure, the preparation steps emphasize transforming the raw data for interpretability while preserving its underlying distributions.
+
+\subsubsection{Dataset Structure Validation}\label{subsubsec:inp_val}
+More often than not, the performance of a non-robust, linear estimator is governed by the quality of the input variables.
+Ideally, we look for a dataset that's \textbf{free of multicollinearity, extreme outliers, and missing values} while being \textbf{correlated to the target}.
+This general construction achieves a model where all variables have uniquely identifiable contributions to the output, often leading to lower variances and better predictive power.
+
+\vspace{\baselineskip}
+
+Autoregressive models present a challenge in this regard since variables selected to be correlated to the target ($y$) are also correlated to the lagged representation of it within $X$.
+Acknowledging this issue, the endogenous portion of the model will only be checked to ensure there are no singularities by perfect correlation inside $X$. 
+The presence/absence of multicollinearity will be displayed through a correlation heatmap.
+
+\vspace{\baselineskip}
+
+Furthermore, data continuity will be prioritized over outlier removal since the model itself is time-dependent.
+Outliers, if any, will be addressed if they are found to be damaging to the model's performance after the initial estimation.
+
+\vspace{\baselineskip}
+
+Finally, any missing values will be handled through linear interpolation of the observations prior and after the occurrence.
+
+
+\subsubsection{Design Matrix Formation}\label{subsubsec:inp_mat}
+$X$ is formed by converting the model equation specified in Equation~\ref{eq:model_eq} into matrix form.
+The inner product operation specified as $ARX(p, \ q)$ can be written as a matrix multiplication of observations and coefficients:
+
+\begin{equation}
+    \label{eq:des_mat}
+    \begin{bmatrix}
+        1 & X_{1,1} & \cdots &  X_{1,m} \\
+        \vdots  & \vdots & \ddots &  \vdots \\
+        1 & X_{n,1} & \cdots & X_{n,m}
+    \end{bmatrix}
+    \times
+    \begin{bmatrix}
+        C \\
+        \beta_1 \\
+        \vdots \\
+        \beta_{m}
+    \end{bmatrix}
+\end{equation}
+
+where $n$ is the number of observations and $m$ is the number of features (including the intercept) dictated by the $\{p, \ q\}$ orders of the model.
+
+\vspace{\baselineskip}
+As shown in the above equation, a closed form matrix representation of the model requires $p$ and $q$ to be determined.
+In this paper, the selection of these hyperparameters will follow the simple and idealistic approach of selecting the lowest possible orders that lead to an efficient estimator.
+
+\subsubsection{Rescaling}\label{subsubsec:inp_rescale}
 Rescaling the input matrix ($X$) allows better comparison of coefficients and ensures that $\sum X^T\varepsilon = 0$ must hold within very tight tolerances\footnote{Differences in magnitude between $X$ columns can lead to numerical ambiguity in orthogonality checks. It is generally preferrable to eliminate any differences in the order of magniutes in $X$.}.
 A common approach to achieve this stability is standardization, which transforms each feature to have a mean of 0 and a standard deviation of 1.
 Standardization is performed column-wise on the input using the formula:
@@ -19,4 +68,15 @@ Standardization is performed column-wise on the input using the formula:
 Z = \frac{X_{i, j} - \bar{X_i}}{S_i}
 \]
 
-where $X_{i, j}$ is the $j$-th observation of the $i$-th column, $\bar{X_i}$ is the mean of the $i$-th column, and $S_i$ is the [unbiased] standard deviation of the $i$-th column.
+\noindent where $\bar{X_i}$ is the mean of the $i$-th column, and $S_i$ is the [unbiased] standard deviation of the $i$-th column.
+
+\vspace{\baselineskip}
+This transformation has no effect on the error profile of the fitted model as the distribution shapes and inter-variable interactions are perfectly preserved.\footnote{The statement holds for any unpenalized estimator of the form $\hat\beta = \arg\min_\beta L(y, X\beta)$, since rescaling $X$ can be absorbed into a reparameterization of $\beta$.}
+However, the transformation brings all variables to the same scale and units.
+As a result, the \textbf{Kolmogorov\textbf{\rule[0.5ex]{0.5em}{0.7pt}}Smirnov (KS) test} which is sensitive to such differences now becomes available.
+
+\subsection{Model Estimation}\label{subsec:model_estimation}
+\dots
+
+\subsection{BLUE Evaluation}\label{subsec:blue_evaluation}
+\dots

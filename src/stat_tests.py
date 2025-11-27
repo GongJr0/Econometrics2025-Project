@@ -338,8 +338,9 @@ def KS2Sample(X, alpha=0.05, pval_terms=100, display_plot=False) -> list[StatsTe
 
     # KS Reject Matrix (green → red)
     sns.heatmap(
-        ks_reject, annot=True, cmap="RdYlGn_r", 
-        ax=ax[0], cbar=True, linewidths=0.5, linecolor="white"
+        ks_reject, cmap="RdYlGn_r", 
+        ax=ax[0], cbar=True, linewidths=0.5, linecolor="white",
+        annot=np.where(ks_reject==1, r"Reject $\mathbf{H_0}$", "Fail to Reject"), fmt="", annot_kws={"weight": "bold"}
     )
     ax[0].set_title("KS Test Reject Matrix (α = 0.05)", fontsize=12)
     ax[0].set_xlabel("Features")
@@ -349,7 +350,7 @@ def KS2Sample(X, alpha=0.05, pval_terms=100, display_plot=False) -> list[StatsTe
 
     # KS Statistic Matrix (viridis)
     sns.heatmap(
-        ks_stats, annot=True, cmap="viridis", 
+        ks_stats, annot=True, cmap="RdYlGn_r", 
         ax=ax[1], cbar=True, linewidths=0.5, linecolor="white"
     )
     ax[1].set_title("KS Test Statistic Matrix", fontsize=12)
