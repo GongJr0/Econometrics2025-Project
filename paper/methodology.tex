@@ -60,8 +60,35 @@ where $n$ is the number of observations and $m$ is the number of features (inclu
 As shown in the above equation, a closed form matrix representation of the model requires $p$ and $q$ to be determined.
 In this paper, the selection of these hyperparameters will follow the simple and idealistic approach of selecting the lowest possible orders that lead to an efficient estimator.
 
+\subsubsection{Model Order Selection}\label{subsubsec:inp_order}
+First step of the design matrix creation is the identification of optimal $\{p, \ q\}$ parameters for the model.
+There are two distinct methods to select the autoregressive and exogenous lag order of the model:
+
+\begin{itemize}
+    \item \textbf{Autoregressive Order} \textemdash~ \enquote{Autocorrelation Function} (ACF) and \enquote{Partial Autocorrelation Function} (PACF) plots of the dependent variable are examined to identify significant lags. The ACF plot helps to identify the overall correlation structure, while the PACF plot isolates the direct effect of each lag.
+    \item \textbf{Exogenous Order} \textemdash~ Lagged correlation matrices and \enquote{Cross-Correlation Function} (CCF) plots between the dependent variable and each exogenous variable are analyzed to determine significant lags. The CCF plot reveals the correlation between the dependent variable and lagged values of the exogenous variables.
+\end{itemize}
+
+While ACF and PACF can directly be applied to the dependent variable, CCF results can be heavily distorted by non-stationarity and the presence of AR structures in the variables being compared.
+Therefore, the \textbf{Box\rule[0.5ex]{0.5em}{0.7pt}Jenkins Prewhitening} procedure will be applied to expose a clearer signal of the underlying cross-correlations.
+The procedure transforms the exogenous variables into residuals of their $AR$ representation, then uses the $\beta$ coefficient to re-scale the dependent variable. 
+For our purposes, the process will be applied to normalized data, making the inclusion of an intercept redundant.
+Formally, the $AR(1)$ variant of the process can be shown as:
+
+\begin{equation}
+    \label{eq:whitening}
+    \begin{aligned}
+        \hat{X_i} &= (L^1X_i) \beta_i \\
+        \hat{y_i} &= y \beta_i \\
+        \rho_{y,i} &= \operatorname{corr}(\hat{y_i}, X_i - \hat{X_i})
+    \end{aligned}
+\end{equation}
+\vspace{\baselineskip}
+
+\noindent where $L^1$ is the lag-1 operator.
+
 \subsubsection{Rescaling}\label{subsubsec:inp_rescale}
-Rescaling the input matrix ($X$) allows better comparison of coefficients and ensures that $\sum X^T\varepsilon = 0$ must hold within very tight tolerances\footnote{Differences in magnitude between $X$ columns can lead to numerical ambiguity in orthogonality checks. It is generally preferrable to eliminate any differences in the order of magniutes in $X$.}.
+Rescaling the input matrix ($X$) allows better comparison of coefficients and ensures that $\sum X^T\varepsilon = 0$ must hold within very tight tolerances\footnote{Differences in magnitude between $X$ columns can lead to numerical ambiguity in orthogonality checks. It is generally preferable to eliminate any differences in the order of magnitudes in $X$.}.
 A common approach to achieve this stability is standardization, which transforms each feature to have a mean of 0 and a standard deviation of 1.
 Standardization is performed column-wise on the input using the formula:
 \[
@@ -71,7 +98,7 @@ Z = \frac{X_{i, j} - \bar{X_i}}{S_i}
 \noindent where $\bar{X_i}$ is the mean of the $i$-th column, and $S_i$ is the [unbiased] standard deviation of the $i$-th column.
 
 \vspace{\baselineskip}
-This transformation has no effect on the error profile of the fitted model as the distribution shapes and inter-variable interactions are perfectly preserved.\footnote{The statement holds for any unpenalized estimator of the form $\hat\beta = \arg\min_\beta L(y, X\beta)$, since rescaling $X$ can be absorbed into a reparameterization of $\beta$.}
+This transformation has no effect on the error profile of the fitted model as the distribution shapes and inter-variable interactions are perfectly preserved.\footnote{The statement holds for any non-penalized estimator of the form $\hat\beta = \arg\min_\beta L(y, X\beta)$, since rescaling $X$ can be absorbed into a reparameterization of $\beta$.}
 However, the transformation brings all variables to the same scale and units.
 As a result, the \textbf{Kolmogorov\textbf{\rule[0.5ex]{0.5em}{0.7pt}}Smirnov (KS) test} which is sensitive to such differences now becomes available.
 

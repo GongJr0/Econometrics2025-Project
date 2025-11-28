@@ -1,5 +1,6 @@
 \documentclass{article}
 
+\usepackage{setspace}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -8,6 +9,13 @@
 \usepackage{csquotes}
 \usepackage{indentfirst}
 \usepackage{float}
+
+\hypersetup{
+    breaklinks, % allow line breaks in links
+    colorlinks, % allow colors for links
+    allcolors=black, % disable obnoxious colors for \ref, \cite, etc. (optional)
+    urlcolor=blue, % choose color for \url (default)
+}
 
 \title{\includegraphics[width=\textwidth]{fig/logo}\\[2cm]\textbf{Real GDP Estimator with Keynesian Regressors}}
 \author{
@@ -21,6 +29,7 @@
 \maketitle
 \newpage
 \tableofcontents
+\onehalfspacing
 \newpage
 \include{intro}
 \newpage
