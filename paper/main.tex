@@ -1,6 +1,7 @@
 \documentclass{article}
 
 \usepackage{setspace}
+\usepackage{microtype}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -9,6 +10,9 @@
 \usepackage{csquotes}
 \usepackage{indentfirst}
 \usepackage{float}
+
+\usepackage[style=apa,backend=biber]{biblatex}
+\addbibresource{ref.bib}
 
 \hypersetup{
     breaklinks, % allow line breaks in links
@@ -39,6 +43,9 @@
 \newpage
 \include{results}
 \newpage
+\section{Bibliography}\label{sec:bibliography}
+\nocite{*}
+\printbibliography
 
 \end{document}
 

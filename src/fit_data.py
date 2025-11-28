@@ -37,8 +37,16 @@ class StatsTest:
 class FitResults:
     fitted_values: npt.NDArray[np.float64]
     resid: npt.NDArray[np.float64]
-    XT_e: np.float64
+    
+    # Complete beta vector
+    beta: npt.NDArray[np.float64]
 
+    # Coefficients of the variables used in fitting
+    coefs: npt.NDArray[np.float64]
+
+    intercept: np.float64
+
+    XT_e: np.float64
     error: ErrorMetrics
 
     resid_heteroske: StatsTest

@@ -7,7 +7,7 @@ Application of ACF yielded a very common pattern of monotonically decreasing cor
 Looking for more conclusive insights, PACF was applied.
 
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{fig/acf_pacf}
     \caption{ACF and PACF plots of the dependent (target) variable.}
@@ -25,7 +25,7 @@ In any case, the visualization of the autocorrelation structure presents strong 
 \subsubsection{Exogenous Order}\label{subsubsec:exog_order}
 The exogenous order selection process started with the visualization of the simple correlation vector $y$ and the lags of exogenous variables.
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
@@ -40,6 +40,7 @@ The exogenous order selection process started with the visualization of the simp
         \hline
     \end{tabular}
     \caption{Pearson correlation coefficients between the dependent variable and lags of exogenous variables.}
+    \label{tab:exog_corr_matrix}
 \end{table}
 
 Inspecting the table of coefficients, we that $CPI$ consistently stays at a coefficient of 0.988\@. This indicates that the autoregressive process of $CPI$ is likely very strong, and related to the autoregressive process explaining $y$.
@@ -47,7 +48,7 @@ On the other hand, $u$ shows a more reasonable set of coefficients. Although coe
 However a lack of decay or noticeable regime changes in the matrices leaves this simple test inconclusive.
 This inconclusiveness was expected, and the CCF plots of whitened variables were examined for clearer insights.
 
-\begin{figure}[H]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{fig/ccf}
     \caption{CCF plots of the whitened exogenous variables and the dependent variable.}
