@@ -6,7 +6,6 @@ First step of the design matrix creation is the identification of optimal $\{p, 
 Application of ACF yielded a very common pattern of monotonically decreasing correlations, not outlining any specific lag order as superior.
 Looking for more conclusive insights, PACF was applied.
 
-
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{fig/acf_pacf}
@@ -45,7 +44,7 @@ The exogenous order selection process started with the visualization of the simp
 
 Inspecting the table of coefficients, we that $CPI$ consistently stays at a coefficient of 0.988\@. This indicates that the autoregressive process of $CPI$ is likely very strong, and related to the autoregressive process explaining $y$.
 On the other hand, $u$ shows a more reasonable set of coefficients. Although coefficients of $u$ are also relatively stable, they reside in the reasonable range of $[-0.255, \ -0.190]$.
-However a lack of decay or noticeable regime changes in the matrices leaves this simple test inconclusive.
+However, a lack of decay or noticeable regime changes in the matrices leaves this simple test inconclusive.
 This inconclusiveness was expected, and the CCF plots of whitened variables were examined for clearer insights.
 
 \begin{figure}[ht]
@@ -77,4 +76,3 @@ Since introducing 45 or 47 more coefficients per variable would essentially guar
 
 \subsection{Residual Distribution}\label{subsubsec:residual_distribution}
 \dots
-
