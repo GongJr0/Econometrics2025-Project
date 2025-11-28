@@ -7,10 +7,10 @@ Application of ACF yielded a very common pattern of monotonically decreasing cor
 Looking for more conclusive insights, PACF was applied.
 
 \begin{figure}[ht]
+\label{fig:acf_pacf}
     \centering
     \includegraphics[width=\textwidth]{fig/acf_pacf}
     \caption{ACF and PACF plots of the dependent (target) variable.}
-    \label{fig:acf_pacf}
 \end{figure}
 
 Figure~\ref{fig:acf_pacf} clearly shows the aforementioned decay in ACF\@. 
@@ -25,21 +25,21 @@ In any case, the visualization of the autocorrelation structure presents strong 
 The exogenous order selection process started with the visualization of the simple correlation vector $y$ and the lags of exogenous variables.
 
 \begin{table}[ht]
+\label{tab:exog_corr}
     \centering
-    \begin{tabular}{|c|c|c|}
-        \hline
+    \begin{tabular}{ccc}
+        \toprule
         $\mathbf{i_{lag}}$ & $\mathbf{corr(y, \ CPI_{t-i})}$ & $\mathbf{corr(y, \ u_{t-i})}$ \\
-        \hline
+        \midrule
         0 & 0.989 & -0.221 \\
         1 & 0.988 & -0.255 \\
         2 & 0.988 & -0.221 \\
         3 & 0.988 & -0.190 \\
         4 & 0.988 & -0.236 \\
         5 & 0.988 & -0.205 \\
-        \hline
+        \bottomrule
     \end{tabular}
     \caption{Pearson correlation coefficients between the dependent variable and lags of exogenous variables.}
-    \label{tab:exog_corr_matrix}
 \end{table}
 
 Inspecting the table of coefficients, we that $CPI$ consistently stays at a coefficient of 0.988\@. This indicates that the autoregressive process of $CPI$ is likely very strong, and related to the autoregressive process explaining $y$.
@@ -48,10 +48,10 @@ However, a lack of decay or noticeable regime changes in the matrices leaves thi
 This inconclusiveness was expected, and the CCF plots of whitened variables were examined for clearer insights.
 
 \begin{figure}[ht]
+\label{fig:ccf}
     \centering
     \includegraphics[width=\textwidth]{fig/ccf}
     \caption{CCF plots of the whitened exogenous variables and the dependent variable.}
-    \label{fig:ccf}
 \end{figure}
 
 Although not as clear as the PACF results, Figure~\ref{fig:ccf} carries much stronger insights into the cross-correlation structure compared to raw correlation coefficients.
@@ -62,16 +62,27 @@ Therefore, the cross-correlation analysis yields $q=0$ to be the optimal selecti
 
 \vspace{\baselineskip}
 Using $q=0$ introduces the problem of \textbf{data leakage}, as current quarter values of exogenous variables would not be available at the time of estimation.
-This results in a design choice of either using the closest available selection in time (i.e. lag-1) or in significance (selection of lag-45 or lag-47 for $CPI$).
+This results in a design choice of either using the closest available selection in time (i.e.\ lag-1) or in significance (selection of lag-45 or lag-47 for $CPI$).
 Since introducing 45 or 47 more coefficients per variable would essentially guarantee overfitting, the final decision was in favor of using $q=1$.\footnote{Further regularization techniques, or using sparse lagged estimators are indeed possible but are deemed outside the scope of this paper.}
 
+\subsubsection{ARX Equation}\label{subsubsec:arx_equation}
+With the order specification finalized, we were left with an $ARX(1,\ 1)$ model.
+The objective equation is as follows:
+\begin{equation}
+    \label{eq:arx}
+    y_{t} = \beta_0 + \beta_{1} y_{t-1} + \beta_{2} CPI_{t-1} + \beta_{3} u_{t-1} + \varepsilon_{t}
+\end{equation}
+
+\noindent At this stage, all model variables were known, and rescaling was performed to standardize the data.
+
 \subsection{Model Fit}\label{subsubsec:model_fit}
-\dots
+The fit was performed using Ordinary Least Squares (OLS) on the matrix expansion of Equation~\ref{eq:arx}.
+
 
 \subsection{Residual Analysis}\label{subsubsec:residual_analysis}
 \dots
 
-\subsection{Gauss--Markov Conditions}\label{subsubsec:gm_conditions}
+\subsection{Gauss\rule[0.5ex]{0.5em}{0.7pt}Markov Conditions}\label{subsubsec:gm_conditions}
 \dots
 
 \subsection{Residual Distribution}\label{subsubsec:residual_distribution}

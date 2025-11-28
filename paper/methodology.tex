@@ -65,7 +65,7 @@ First step of the design matrix creation is the identification of optimal $\{p, 
 There are two distinct methods to select the autoregressive and exogenous lag order of the model:
 
 \begin{itemize}
-    \item \textbf{Autoregressive Order} \textemdash~ \enquote{Autocorrelation Function} (ACF) and \enquote{Partial Autocorrelation Function} (PACF) plots of the dependent variable are examined to identify significant lags. The ACF plot helps to identify the overall correlation structure, while the PACF plot isolates the direct effect of each lag.
+    \item \textbf{Autoregressive Order} \textemdash~\enquote{Autocorrelation Function} (ACF) and \enquote{Partial Autocorrelation Function} (PACF) plots of the dependent variable are examined to identify significant lags. The ACF plot helps to identify the overall correlation structure, while the PACF plot isolates the direct effect of each lag.
     \item \textbf{Exogenous Order} \textemdash~ Lagged correlation matrices and \enquote{Cross-Correlation Function} (CCF) plots between the dependent variable and each exogenous variable are analyzed to determine significant lags. The CCF plot reveals the correlation between the dependent variable and lagged values of the exogenous variables.
 \end{itemize}
 
@@ -105,6 +105,15 @@ This transformation has no effect on the error profile of the fitted model as th
 However, the transformation brings all variables to the same scale and units.
 As a result, the \textbf{Kolmogorov\textbf{\rule[0.5ex]{0.5em}{0.7pt}}Smirnov (KS) test} which is sensitive to such differences now becomes available.
 
+\subsubsection{Normalized Input Distributions}\label{subsubsec:inp_distr}
+As discussed, the rescaling step allows the application of the KS test; which checks the equality of distributions between the inputs. 
+Two variables with equality in location, scale, and shape are directly comparable.
+The Z-transform ensures equality in scale and location. 
+Therefore, the variable pairs where a 2-sample KS test finds no grounds to reject $H_0$ satisfy all three conditions of equality.
+
+\vspace{\baselineskip}
+For variables that satisfy the conditions, a shared z-value indicates the observations were equally likely to be drawn.
+This fact allows the direct comparison of coefficients as $X_{i, j} \beta_i$ and $X_{k, j} \beta_k$ are only differentiated by their respective $\beta$.
 \subsection{Model Estimation}\label{subsec:model_estimation}
 \dots
 
