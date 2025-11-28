@@ -54,7 +54,7 @@ The inner product operation specified as $ARX(p, \ q)$ can be written as a matri
     \end{bmatrix}
 \end{equation}
 
-where $n$ is the number of observations and $m$ is the number of features (including the intercept) dictated by the $\{p, \ q\}$ orders of the model.
+Where $n$ is the number of observations and $m$ is the number of features (including the intercept) dictated by the $\{p, \ q\}$ orders of the model.
 
 \vspace{\baselineskip}
 As shown in the above equation, a closed form matrix representation of the model requires $p$ and $q$ to be determined.
@@ -69,9 +69,9 @@ There are two distinct methods to select the autoregressive and exogenous lag or
     \item \textbf{Exogenous Order} \textemdash~ Lagged correlation matrices and \enquote{Cross-Correlation Function} (CCF) plots between the dependent variable and each exogenous variable are analyzed to determine significant lags. The CCF plot reveals the correlation between the dependent variable and lagged values of the exogenous variables.
 \end{itemize}
 
-While ACF and PACF can directly be applied to the dependent variable, CCF results can be heavily distorted by non-stationarity and the presence of AR structures in the variables being compared.
+While ACF and PACF can directly be applied to the dependent variable, CCF results can be heavily distorted by nonstationary and the presence of AR structures in the variables being compared.
 Therefore, the \textbf{Box\rule[0.5ex]{0.5em}{0.7pt}Jenkins Prewhitening} procedure will be applied to expose a clearer signal of the underlying cross-correlations.
-The procedure transforms the exogenous variables into residuals of their $AR$ representation, then uses the $\beta$ coefficient to re-scale the dependent variable. 
+The procedure transforms the exogenous variables into residuals of their $AR$ representation, then uses the $\beta$ coefficient to re-scale the dependent variable. (\cite{hackhard_9_2025})
 For our purposes, the process will be applied to normalized data, making the inclusion of an intercept redundant.
 Formally, the $AR(1)$ variant of the process can be shown as:
 
@@ -85,20 +85,23 @@ Formally, the $AR(1)$ variant of the process can be shown as:
 \end{equation}
 \vspace{\baselineskip}
 
-\noindent where $L^1$ is the lag-1 operator.
+\noindent Where $L^1$ is the lag-1 operator.
 
 \subsubsection{Rescaling}\label{subsubsec:inp_rescale}
 Rescaling the input matrix ($X$) allows better comparison of coefficients and ensures that $\sum X^T\varepsilon = 0$ must hold within very tight tolerances\footnote{Differences in magnitude between $X$ columns can lead to numerical ambiguity in orthogonality checks. It is generally preferable to eliminate any differences in the order of magnitudes in $X$.}.
 A common approach to achieve this stability is standardization, which transforms each feature to have a mean of 0 and a standard deviation of 1.
 Standardization is performed column-wise on the input using the formula:
-\[
-Z = \frac{X_{i, j} - \bar{X_i}}{S_i}
-\]
+\begin{equation}
+    \label{eq:z_formula}
+    Z = \frac{X_{i, j} - \bar{X_i}}{S_i}    
+\end{equation}
 
-\noindent where $\bar{X_i}$ is the mean of the $i$-th column, and $S_i$ is the [unbiased] standard deviation of the $i$-th column.
+
+
+\noindent Where $\bar{X_i}$ is the mean of the $i$-th column, and $S_i$ is the [unbiased] standard deviation of the $i$-th column.
 
 \vspace{\baselineskip}
-This transformation has no effect on the error profile of the fitted model as the distribution shapes and inter-variable interactions are perfectly preserved.\footnote{The statement holds for any non-penalized estimator of the form $\hat\beta = \arg\min_\beta L(y, X\beta)$, since rescaling $X$ can be absorbed into a reparameterization of $\beta$.}
+This transformation has no effect on the error profile of the fitted model as the distribution shapes and inter-variable interactions are perfectly preserved.\footnote{The statement holds for any non-penalized estimator of the form $\hat\beta = \arg\min_\beta L(y, X\beta)$, since rescaling $X$ can be absorbed into $\beta$.}
 However, the transformation brings all variables to the same scale and units.
 As a result, the \textbf{Kolmogorov\textbf{\rule[0.5ex]{0.5em}{0.7pt}}Smirnov (KS) test} which is sensitive to such differences now becomes available.
 
