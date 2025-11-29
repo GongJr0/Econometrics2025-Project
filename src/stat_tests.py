@@ -1,15 +1,14 @@
 import numpy as np
 from numpy import float64
 from numpy.typing import NDArray
-from scipy.stats import t
 from typing import Literal
 from .fit_data import StatsTest
 from .tau_coefs import mackinnon_p
 from .sw_coefs import swilk
 from .error_functions import r2
 from .StandardScaler import StandardScaler
-from math import gamma
-from mpmath import gammainc, betainc
+from math import gamma, erf
+from mpmath import gammainc
 import warnings
 
 
@@ -507,4 +506,53 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
     
     return ks_stats, ks_pvals, ks_reject, ks_tests
     
+def VIF(X: NDArray[float64]) -> NDArray[float64]:
+    """Compute the Variance Inflation Factor (VIF) for each column in the input 2D array X."""
+    X = np.asarray(X, dtype=float64)
+    n_features = X.shape[1]
+    vif_values = np.zeros(n_features, dtype=float64)
 
+    for i in range(n_features):
+        y = X[:, i]
+        est = np.delete(X, i, axis=1)
+        X_vif = np.column_stack([np.ones(est.shape[0]), est])
+        XT_X = X_vif.T @ X_vif
+        beta = np.linalg.inv(XT_X) @ X_vif.T @ y
+        fitted = X_vif @ beta
+
+        r2_val = r2(y, fitted)
+        vif_values[i] = 1.0 / (1.0 - r2_val)
+    
+    return vif_values
+
+def DW(eps: NDArray[float64], X:NDArray[float64], idx_ar: int = 0, alpha: float = 0.05) -> StatsTest:
+    n = len(eps)
+    k = X.shape[1]
+    resid_var = (eps.T @ eps) / (n - k)
+    M = np.linalg.inv(X.T @ X)
+    var_b = resid_var * M
+    se_b = np.sqrt(np.diag(var_b))
+
+    print("SE: ", se_b)
+
+    d_num = (np.sum((eps[1:] - eps[:-1])**2))
+    d_denom = np.sum(eps**2)
+
+    d = d_num / d_denom
+
+    print("D: ", d)
+
+    h = (1 - d/2) * np.sqrt(n/(1 - n*se_b[idx_ar]**2))
+
+    print("H: ", h)
+
+    def norm_cdf(x):
+        return (1/2) * (1 + erf(x/np.sqrt(2))) * 2  # two-tailed
+    
+    pval = norm_cdf(-abs(h))
+    return StatsTest(
+        reject=pval<alpha,
+        pval=float(pval),
+        test_stat=float(h),
+        stat_name="Durbin-Watson H Test (Z-Statistic)"
+    )

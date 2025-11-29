@@ -13,14 +13,122 @@ The implementation uses quarterly data from 1990Q1 to 2025Q1 and the following F
 
 \subsection{Series Characteristics}\label{subsec:series_characteristics}
 \subsubsection{Real GDP}\label{subsubsec: rgdp}
-FRED’s Real GDP series is measured in chained 2017 dollars (Bn). 
+FRED's Real GDP series is measured in chained 2017 dollars (Bn). 
 The series is updated quarterly, which matches the frequency of the model natively.
+
+\vspace{\baselineskip}
+\begin{figure}[ht]
+    \centering
+\begin{minipage}[t]{0.45\textwidth}
+    \flushright
+    \begin{tabular}{lc}
+        \toprule
+        Statistic & Value \\
+        \midrule
+        $\bar{X}$ & 16,213.22 \\
+        $S_X$ & 3,837.33 \\
+        $\operatorname{Skew}(X)$ & 0.063 \\
+        $\operatorname{Kurt}(X)$ & -0.945 \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:rgdp_stats}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+    \flushleft
+    \begin{tabular}{lc}
+        \toprule
+        Quantile & Value \\
+        \midrule
+        0.00 & 9,951.91 \\
+        0.25 & 13,191.67 \\
+        0.50 & 16,485.35 \\
+        0.75 & 19,062.71 \\
+        1.00 & 23,586.54 \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:rgdp_quants}
+\end{minipage}
+\caption{Descriptive statistics and quantiles of Real GDP.}
+\end{figure}
 
 \subsubsection{CPI}\label{subsubsec: cpi}
 The CPI series of choice for the model records the US-wide city average CPI for all urban consumers. 
 The series is expressed as a chain index with base period 1982-1984=100. 
 Entries are recorded monthly, and quarter-end observations are used to align with the Real GDP series.
 
+\vspace{\baselineskip}
+\begin{figure}[H]
+    \centering
+\begin{minipage}[t]{0.45\textwidth}
+    \flushright
+    \begin{tabular}{lc}
+        \toprule
+        Statistic & Value \\
+        \midrule
+        $\bar{X}$ & 207.32 \\
+        $S_X$ & 49.10 \\
+        $\operatorname{Skew}(X)$ & 0.343 \\
+        $\operatorname{Kurt}(X)$ & -0.708 \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:cpi_stats}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+    \flushleft
+    \begin{tabular}{lc}
+        \toprule
+        Quantile & Value \\
+        \midrule
+        0.00 & 127.50 \\
+        0.25 & 163.90 \\
+        0.50 & 207.60 \\
+        0.75 & 238.99 \\
+        1.00 & 319.09 \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:cpi_quants}
+\end{minipage}
+\caption{Descriptive statistics and quantiles of CPI.}
+\end{figure}
+
 \subsubsection{Unemployment Rate}\label{subsubsec: unemp}
 Unemployment rate in FRED is recorded as percentages with a monthly frequency. 
 Similar to CPI, quarter-end observations are used to match the frequencies among the series.
+
+\vspace{\baselineskip}
+\begin{figure}[ht]
+    \centering
+\begin{minipage}[t]{0.45\textwidth}
+    \flushright
+    \begin{tabular}{lc}
+        \toprule
+        Statistic & Value \\
+        \midrule
+        $\bar{X}$ & 5.71 \\
+        $S_X$ & 1.75 \\
+        $\operatorname{Skew}(X)$ & 1.249 \\
+        $\operatorname{Kurt}(X)$ & 2.068 \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:u_stats}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+    \flushleft
+    \begin{tabular}{lc}
+        \toprule
+        Quantile & Value \\
+        \midrule
+        0.00 & 3.40 \\
+        0.25 & 4.40 \\
+        0.50 & 5.40 \\
+        0.75 & 6.60 \\
+        1.00 & 14.80 \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:u_quants}
+\end{minipage}
+\caption{Descriptive statistics and quantiles of Unemployment Rate.}
+\end{figure}

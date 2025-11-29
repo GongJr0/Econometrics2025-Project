@@ -87,8 +87,23 @@ Formally, the $AR(1)$ variant of the process can be shown as:
 
 \noindent Where $L^1$ is the lag-1 operator.
 
+\vspace{\baselineskip}
+
+Following this selection procedure, the candidate $\{p, \ q\}$ are used to form a design matrix for the final confirmation of the \textbf{Variance Inflation Factor} (VIF) between exogenous variables.
+VIF is computed as:
+\begin{equation}
+    \label{eq:vif}
+    VIF_{X_i} = \frac{1}{1 - R^2_{X_i}}
+\end{equation}
+
+\noindent Where $R^2_{X_i}$ is the coefficient of determination of the regression of $X_i$ on all other columns of $X$.
+In our case, a lag of the target variable is known to be present in $X$.
+As exogenous variables are selected to explain the variance in $y$, it is expected that they will attain a high $R^2$ as regressors of $y_{t-i}$.
+Referring back to Equation~\ref{eq:vif}, we observe that this phenomenon will introduce artificially inflated VIF calculations as $R^2$ acts as a deflator of the denominator.
+Therefore, VIF calculations will only be used to calculate the inflation factor between exogenous variable (via a reduced design matrix $X^{(exog)}$), confirming the two variables are not explaining the same portion of variance in $y$.\footnote{See Section~\ref{subsec:remark_vif} for further discussion on the VIF application in this context.}
+
 \subsubsection{Rescaling}\label{subsubsec:inp_rescale}
-Rescaling the input matrix ($X$) allows better comparison of coefficients and ensures that $\sum X^T\varepsilon = 0$ must hold within very tight tolerances\footnote{Differences in magnitude between $X$ columns can lead to numerical ambiguity in orthogonality checks. It is generally preferable to eliminate any differences in the order of magnitudes in $X$.}.
+Rescaling the input matrix ($X$) allows better comparison of coefficients and ensures that $\sum X^\top\varepsilon = 0$ must hold within very tight tolerances\footnote{Differences in magnitude between $X$ columns can lead to numerical ambiguity in orthogonality checks. It is generally preferable to eliminate any differences in the order of magnitudes in $X$.}.
 A common approach to achieve this stability is standardization, which transforms each feature to have a mean of 0 and a standard deviation of 1.
 Standardization is performed column-wise on the input using the formula:
 \begin{equation}
@@ -105,7 +120,7 @@ This transformation has no effect on the error profile of the fitted model as th
 However, the transformation brings all variables to the same scale and units.
 As a result, the \textbf{Kolmogorov\textbf{\rule[0.5ex]{0.5em}{0.7pt}}Smirnov (KS) test} which is sensitive to such differences now becomes available.
 
-\subsubsection{Normalized Input Distributions}\label{subsubsec:inp_distr}
+\subsubsection{Analysis of Normalized Input Distributions}\label{subsubsec:inp_distr}
 With each regressor standardized to zero mean and unit variance, a one unit change corresponds to a $1\sigma$ shift in the original scales.
 However, this unit equality does not make the "likelihood" (or "extremeness") of different variables comparable.
 The "Z-scores" are comparable in likelihood only if the variables subject to comparison are identically distributed.
@@ -138,7 +153,42 @@ The empirical p-value is estimated as the proportion defined by:
 \noindent Where $B$ is the number of bootstrap samples. 
 To preserve the in-block serial dependence of observations, we employ a \textbf{Block Bootstrap} approach instead of the standard bootstrap resampling.\footnote{See Section~\ref{subsec:remark_ks} for further discussion on the time-series application of the KS test.}
 \subsection{Model Estimation}\label{subsec:model_estimation}
-\dots
+The model estimation is conducted using the standard \textbf{Ordinary Least Squares} (OLS) approach.
+Using the derived design matrix $X$ we minimize:
+\begin{equation}
+    \label{eq:ols_obj}
+    \begin{aligned}
+        J(\beta) & = ||y - X\beta||^2_2 \\
+        & = (y - X\beta)^T(y - X\beta)
+    \end{aligned}
+\end{equation}
+
+\noindent Which transforms into the first-order condition:
+\begin{equation}
+    \label{eq:ols_foc}
+    \begin{aligned}
+        X^\top\hat{\beta} & = X^\top y \\
+        \hat{\beta} & = (X^\top X)^{-1} X^\top y
+    \end{aligned}
+\end{equation}
+
+\noindent Where $\hat{\beta}$ is the vector of estimated coefficients.
+This gives us a closed-form, single-step solution to the estimation problem.
 
 \subsection{BLUE Evaluation}\label{subsec:blue_evaluation}
-\dots
+After estimating the model coefficients, we evaluate the Gauss--Markov conditions to confirm whether the resulting fit is BLUE.
+Previous stages of the methodology involve checks for the pre-fit Gauss--Markov conditions:
+\begin{itemize}
+    \item \textbf{Linearity of Parameters:} by definition the model employed is a linear combination of regressors and coefficients.
+    Therefore, this condition is satisfied at the stage of model selection.
+    \item \textbf{Full Rank:} $rank(X)=k$ must hold for $X^\top X$ to be invertible. 
+    Therefore, this condition must hold for the model to be estimable via OLS.
+\end{itemize}
+
+\noindent The remaining Gauss--Markov conditions concern $\varepsilon$ and are verified post-estimation:
+
+\begin{itemize}
+    \item \textbf{Strict Exogeneity:} Verified by checking that $\sum_{i=1}^n X_i\varepsilon_i = 0$ (or $X^\top \varepsilon = 0$)  holds within tight tolerances.
+    \item \textbf{Spherical Errors:} This condition holds if $\operatorname{Var}(\varepsilon) = \sigma^2 I_n$.
+    A confirmation of homoscedasticity via the \textbf{Breusch\textbf{\rule[0.5ex]{0.5em}{0.7pt}Pagan Test}} and absence of first order autocorrelation via the \textbf{Durbin\textbf{\rule[0.5ex]{0.5em}{0.7pt}Watson Test}} will be performed to validate this condition.
+\end{itemize}

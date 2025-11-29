@@ -1,6 +1,28 @@
 \section{Remarks}\label{sec:remarks}
 
-\subsection{Remark 1: Time-Series Application of KS Test}\label{subsec:remark_ks}
+\subsection{Remark 1: VIF Application on a Reduced Design Matrix}\label{subsec:remark_vif}
+Although VIF just a measure and has no constraints on its application, the conventional use is to check for multicollinearity among the complete $X$ matrix.
+In models with AR components, this application of VIF leads to two issues (assuming the dependent variable is actually autocorrelated):
+
+\begin{itemize}
+    \item The AR components inside $X$ will create processes equivalent to the designed AR estimator of $y$. 
+    To demonstrate, let's assume a relationship $y_t \sim y_{t-1}$ exists in an $AR(2)$ model. 
+    As shifting the variable in time does not change the assumed relationship, we also have $y_{t-1} \sim y_{t-2}$.
+    As a consequence, the design matrix (which is composed of $y_{t-1}$ and $y_{t-2}$) will exactly replicate an $AR(1)$ estimator of $y$.
+    With lags selected to maximize $R^2_y$, we end up also maximizing the $R^2$ in the VIF calculation.
+
+    \item The point above extends to exogenous variables as well.
+    Again, assuming $y_t \sim x_{t-1}$ exists, we also have $y_{t-1} \sim x_{t-2}$.
+    Although $y_{t-1} \sim x_{t-2}$ never directly occurs, the design matrix in this case produces $y_{t-1} \sim x_{t-1}$.
+    This is not an exact replication of the designed relationship, but by autocorrelation of $y$, it is a very safe assumption that $y_{t-1} \sim x_{t-1}$ will produce an $R^2$ comparable to the original estimator.
+    As a result, we will again be maximizing the $R^2$ in the VIF calculation if we're constructing the model to explain the dependent variable as best as it can.
+
+\end{itemize}
+
+The points discussed show the well-known fact that VIF is not designed for these scenarios.
+Therefore, many studies, alongside this paper, elect to use VIF on a reduced $X$ matrix stripped of AR components. (\cite{niu_impact_2022} \& \cite{karlstrom_data-driven_2023})
+
+\subsection{Remark 2: Time-Series Application of KS Test}\label{subsec:remark_ks}
 
 The i.i.d.\@ assumption of the classic KS test was addressed by Præstgaard with a bootstrapping approach.
 Yet, the examples, lemmas, and theorems presented in the paper were derived from row-exchangeable samples.

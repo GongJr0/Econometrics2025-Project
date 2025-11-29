@@ -7,10 +7,10 @@ Application of ACF yielded a very common pattern of monotonically decreasing cor
 Looking for more conclusive insights, PACF was applied.
 
 \begin{figure}[ht]
-\label{fig:acf_pacf}
     \centering
     \includegraphics[width=\textwidth]{fig/acf_pacf}
     \caption{ACF and PACF plots of the dependent (target) variable.}
+    \label{fig:acf_pacf}
 \end{figure}
 
 Figure~\ref{fig:acf_pacf} clearly shows the aforementioned decay in ACF\@. 
@@ -74,7 +74,8 @@ The objective equation is as follows:
 \end{equation}
 
 \noindent At this stage, all model variables were known, and rescaling was performed to standardize the data.
-
+With a concrete design matrix, a final check of VIF between the two exogenous variables was performed to confirm the model parameters did not yield multicollinear exogenous components.
+$VIF_{CPI, u}$ was found to be 1.023, indicating near-perfect orthogonality between exogenous regressors.
 \subsection{Model Fit}\label{subsubsec:model_fit}
 The fit was performed using Ordinary Least Squares (OLS) on the matrix expansion of Equation~\ref{eq:arx}.
 
