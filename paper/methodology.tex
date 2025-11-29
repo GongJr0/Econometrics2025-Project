@@ -106,14 +106,37 @@ However, the transformation brings all variables to the same scale and units.
 As a result, the \textbf{Kolmogorov\textbf{\rule[0.5ex]{0.5em}{0.7pt}}Smirnov (KS) test} which is sensitive to such differences now becomes available.
 
 \subsubsection{Normalized Input Distributions}\label{subsubsec:inp_distr}
-As discussed, the rescaling step allows the application of the KS test; which checks the equality of distributions between the inputs. 
-Two variables with equality in location, scale, and shape are directly comparable.
-The Z-transform ensures equality in scale and location. 
-Therefore, the variable pairs where a 2-sample KS test finds no grounds to reject $H_0$ satisfy all three conditions of equality.
+With each regressor standardized to zero mean and unit variance, a one unit change corresponds to a $1\sigma$ shift in the original scales.
+However, this unit equality does not make the "likelihood" (or "extremeness") of different variables comparable.
+The "Z-scores" are comparable in likelihood only if the variables subject to comparison are identically distributed.
+This part of the methodology works towards identifying such equalities in $X$.
 
 \vspace{\baselineskip}
-For variables that satisfy the conditions, a shared z-value indicates the observations were equally likely to be drawn.
-This fact allows the direct comparison of coefficients as $X_{i, j} \beta_i$ and $X_{k, j} \beta_k$ are only differentiated by their respective $\beta$.
+
+Concretely, the aforementioned KS test can be used to check for equality of distributions.
+However, the KS' assumption of \textbf{i.i.d.\@ samples} is virtually impossible to satisfy in time-series data.
+To address this, a modification of the \textbf{Bootstrap KS Test} (\cite{praestgaard_permutation_1995}) can be applied.
+
+\vspace{\baselineskip}
+
+The specific test statistic is computed by calculating
+ 
+\[D_{i,j} = \sup_x |F_{X_i}(x) - F_{X_j}(x)|\] 
+
+\noindent Where $F_{X_i}$ and $F_{X_j}$ are the Empirical CDFs of the respective regressors. 
+Afterward, a comparison of the bootstrapped distribution of $D_{i,j}^*$ to the observed $D_{i,j}$ is performed.
+
+\vspace{\baselineskip}
+
+The empirical p-value is estimated as the proportion defined by:
+
+\begin{equation}
+    \label{eq:ks_pval}
+    p_{i,j} = \frac{1}{B+1} \bigg(\sum_{b=1}^{B} (\mathbbm{1}_{\{D_{i,j}^{*(b)} \geq D_{i,j}\}}) + 1\bigg)
+\end{equation}
+
+\noindent Where $B$ is the number of bootstrap samples. 
+To preserve the in-block serial dependence of observations, we employ a \textbf{Block Bootstrap} approach instead of the standard bootstrap resampling.\footnote{See Section~\ref{subsec:remark_ks} for further discussion on the time-series application of the KS test.}
 \subsection{Model Estimation}\label{subsec:model_estimation}
 \dots
 

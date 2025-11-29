@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{bbm}
 \usepackage{hyperref}
 \usepackage[a4paper, total={6in, 8in}]{geometry}
 \usepackage{csquotes}
@@ -51,9 +52,11 @@
 \newpage
 \include{results}
 \newpage
+\include{remarks}
+\newpage
 \section{Bibliography}\label{sec:bibliography}
 \nocite{*}
-\printbibliography[heading=subbibliography, title={References in the Source Code}, keyword=src]
 \printbibliography[heading=subbibliography, title={References in the Paper}, keyword=paper]
+\printbibliography[heading=subbibliography, title={References in the Source Code}, keyword=src]
 \end{document}
 

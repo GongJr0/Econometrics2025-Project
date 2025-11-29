@@ -346,6 +346,8 @@ def KS2Sample(X, alpha=0.05, pval_terms=100, display_plot=False):
         annot=np.where(ks_reject_df.values == 1, r"Reject $\mathbf{H_0}$", "Fail to Reject"),
         fmt="",
         annot_kws={"weight": "bold"},
+        vmin=0,
+        vmax=1,
     )
     ax[0].set_title(f"KS Test Reject Matrix (α = {alpha})", fontsize=12)
     ax[0].set_xlabel("Features")
@@ -404,11 +406,12 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
     s = StandardScaler()
     X = s.fit_transform(np.asarray(X, dtype=float64))
     n_features = X.shape[1]
+    T = X.shape[0]
     
     ks_stats = np.zeros((n_features, n_features), dtype=float64)
     ks_reject = np.zeros((n_features, n_features), dtype=bool)
     ks_tests = np.empty((n_features, n_features), dtype=object)
-    
+    no_boot_crit = D_CRIT(alpha, T, T)
     for i in range(n_features):
         for j in range(n_features):
             Xi = X[:, i]
@@ -419,6 +422,7 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
             
             crit = D_CRIT(alpha, len(Xi), len(Xj))
             D_boot = np.zeros(n_bootstrap, dtype=float64)
+            obs_stat = Standardized_KS(Xi, Xj, alpha=alpha, pval_terms=100).test_stat
             for b in range(n_bootstrap):
                 idx = block_bootstrap(pool, block_len=block_len)
                 Xi_b = idx[:len(Xi)]
@@ -430,14 +434,13 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
                 ks_test_b = Standardized_KS(Xi_b, Xj_b, alpha=alpha, pval_terms=100)
                 D_boot[b] = ks_test_b.test_stat
                 
-            D_pval_est = np.mean(D_boot >= crit)
-            D_est = np.mean(D_boot) # Cardinal Sin 
-            ks_stats[i, j] = D_est
+            D_pval_est = (np.sum(D_boot >= obs_stat) + 1) / (n_bootstrap + 1)
+            ks_stats[i, j] = obs_stat
             ks_reject[i, j] = D_pval_est < alpha
             ks_tests[i, j] = StatsTest(
                 reject=bool(D_pval_est < alpha),
                 pval=float(D_pval_est),
-                test_stat=float(D_est),
+                test_stat=float(obs_stat),
                 stat_name=("Block Bootstrap KS Test (D Statistic)" 
                           "[ONLY USE THE BOOTSTRAP P-VAL ESTIMATE. D IS JUST THE MEAN OF BOOTSTRAP D'S]")
             ) 
@@ -471,6 +474,8 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
             annot=np.where(ks_reject_df.values == 1, r"Reject $\mathbf{H_0}$", "Fail to Reject"),
             fmt="",
             annot_kws={"weight": "bold"},
+            vmin=0,
+            vmax=1,
         )
         ax[0].set_title(f"KS Test Reject Matrix (α = {alpha})", fontsize=12)
         ax[0].set_xlabel("Features")
@@ -482,13 +487,14 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
         sns.heatmap(
             ks_stats_df,
             annot=True,
+            fmt=".4f",
             cmap="RdYlGn_r",
             ax=ax[1],
             cbar=True,
             linewidths=0.5,
             linecolor="white",
         )
-        ax[1].set_title("KS Test Statistic Matrix", fontsize=12)
+        ax[1].set_title(rf"KS Test Statistic Matrix $C_X = {no_boot_crit:.4f}$", fontsize=12)
         ax[1].set_xlabel("Features")
         ax[1].set_ylabel("Features")
         ax[1].tick_params(axis="x", rotation=45)
@@ -499,6 +505,6 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
         plt.tight_layout(rect=[0, 0, 1, 0.95])
         plt.show()      
     
-    return ks_stats, ks_reject_map, ks_tests
+    return ks_stats, ks_pvals, ks_reject, ks_tests
     
 

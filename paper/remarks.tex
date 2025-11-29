@@ -1,0 +1,18 @@
+\section{Remarks}\label{sec:remarks}
+
+\subsection{Remark 1: Time-Series Application of KS Test}\label{subsec:remark_ks}
+
+The i.i.d.\@ assumption of the classic KS test was addressed by Præstgaard with a bootstrapping approach.
+Yet, the examples, lemmas, and theorems presented in the paper were derived from row-exchangeable samples.
+
+\vspace{\baselineskip}
+
+With row-exchangeability, Præstgaard was able to apply standard bootstrap resampling while preserving the continuity of the empirical distribution.
+However, time-series data inherently requires the row-structure to be preserved; hence rendering the standard bootstrap inappropriate.
+To preserve the time-dependent dynamics, our methodology elected to use a \textbf{Block Bootstrap} approach. 
+This specific adaptation is not documented nor theoretically justified in Præstgaard's work; consequently, while we regard it as a reasonable and practically reliable extension for the purposes of this study, it remains an empirical choice that invites further theoretical investigation.
+
+\vspace{\baselineskip}
+
+A block bootstrap 1-sample KS test was derived in a recent preprint paper (\cite{chandy_nonparametric_2025}) and applications of bootstrap techniques in KS style tests were demonstrated in multiple studies. (\cite{psaradakis_bootstrap_2003} \& \cite{wylupek_nonparametric_2023})
+These works place bootstrap KS tests on a more solid theoretical footing, even though our specific use case is undocumented.

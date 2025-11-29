@@ -1,0 +1,1133 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{apa/apasortcite//global/global/global}
+    \entry{chandy_nonparametric_2025}{misc}{}{}
+      \name{author}{4}{}{%
+        {{un=0,uniquepart=base,hash=0451e4d5b82dc42ef0994d31940a0bde}{%
+           family={Chandy},
+           familyi={C\bibinitperiod},
+           given={Mathew},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a99787221f91c9a1ae219f810eaea7e0}{%
+           family={Schifano},
+           familyi={S\bibinitperiod},
+           given={Elizabeth},
+           giveni={E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=934a0c3e849405255facd8113ba785b3}{%
+           family={Yan},
+           familyi={Y\bibinitperiod},
+           given={Jun},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b51e58508d19e3943ff9a5a29c23e5f5}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Xianyang},
+           giveni={X\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {arXiv}%
+      }
+      \strng{namehash}{6252c049ae5f6cd0e8a75e601c94088c}
+      \strng{fullhash}{86007a5a6a1167a111dbdd857f35b047}
+      \strng{fullhashraw}{86007a5a6a1167a111dbdd857f35b047}
+      \strng{bibnamehash}{86007a5a6a1167a111dbdd857f35b047}
+      \strng{authorbibnamehash}{86007a5a6a1167a111dbdd857f35b047}
+      \strng{authornamehash}{6252c049ae5f6cd0e8a75e601c94088c}
+      \strng{authorfullhash}{86007a5a6a1167a111dbdd857f35b047}
+      \strng{authorfullhashraw}{86007a5a6a1167a111dbdd857f35b047}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The Kolmogorov--Smirnov (KS) test is a widely used statistical test that assesses the conformity of a sample to a specified distribution. Its efficacy, however, diminishes with serially dependent data and when parameters within the hypothesized distribution are unknown. For independent data, parametric and nonparametric bootstrap procedures are available to adjust for estimated parameters. For serially dependent stationary data, parametric bootstrap has been developed with a working serial dependence structure. A counterpart for the nonparametric bootstrap approach, which needs a bias correction, has not been studied. Addressing this gap, our study introduces a bias correction method employing a nonparametric block bootstrap, which approximates the distribution of the KS statistic in assessing the goodness-of-fit of the marginal distribution of a stationary series, accounting for unspecified serial dependence and unspecified parameters. We assess its effectiveness through simulations, scrutinizing both its size and power. The practicality of our method is further illustrated with an examination of stock returns from the S{\textbackslash}\&P 500 index, showcasing its utility in real-world applications.}
+      \field{month}{11}
+      \field{note}{arXiv:2511.05733 [stat]}
+      \field{title}{Nonparametric {Block} {Bootstrap} {Kolmogorov}-{Smirnov} {Goodness}-of-{Fit} {Test}}
+      \field{urlday}{29}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{doi}
+      \verb 10.48550/arXiv.2511.05733
+      \endverb
+      \verb{file}
+      \verb Preprint PDF:C\:\\Users\\guney\\Zotero\\storage\\6DCABZ8M\\Chandy et al. - 2025 - Nonparametric Block Bootstrap Kolmogorov-Smirnov Goodness-of-Fit Test.pdf:application/pdf;Snapshot:C\:\\Users\\guney\\Zotero\\storage\\534YZB9B\\2511.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb http://arxiv.org/abs/2511.05733
+      \endverb
+      \verb{url}
+      \verb http://arxiv.org/abs/2511.05733
+      \endverb
+      \keyw{paper,Statistics - Methodology}
+    \endentry
+    \entry{david_distribution_1979}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=a8322cea03998fc619f1b5ef0d1ff4aa}{%
+           family={David},
+           familyi={D\bibinitperiod},
+           given={Dickey},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6365a38682e01d3c4acb344a5fead799}{%
+           family={Wayne},
+           familyi={W\bibinitperiod},
+           given={Fuller},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {EN}%
+      }
+      \strng{namehash}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{fullhash}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{fullhashraw}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{bibnamehash}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{authorbibnamehash}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{authornamehash}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{authorfullhash}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{authorfullhashraw}{bd304b0c4bfc54622ecd953ad03907ed}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{David A. Dickey, Wayne A. Fuller, Distribution of the Estimators for Autoregressive Time Series With a Unit Root, Journal of the American Statistical Association, Vol. 74, No. 366 (Jun., 1979), pp. 427-431}
+      \field{journaltitle}{Journal of the American Statistical Association}
+      \field{month}{6}
+      \field{number}{366}
+      \field{title}{Distribution of the {Estimators} for {Autoregressive} {Time} {Series} {With} a {Unit} {Root}}
+      \field{urlday}{21}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{74}
+      \field{year}{1979}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \field{pages}{427\bibrangedash 431}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.2307/2286348
+      \endverb
+      \verb{file}
+      \verb Snapshot:C\:\\Users\\guney\\Zotero\\storage\\NNPRAUS6\\2286348.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/2286348
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/2286348
+      \endverb
+      \keyw{src}
+    \endentry
+    \entry{hackhard_9_2025}{misc}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=6559df3bd2285f45a51947da69889a2f}{%
+           family={Hackhard},
+           familyi={H\bibinitperiod},
+           given={Bob},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f99a3ffd8e591df29b6fb0d012588c3c}{%
+           family={Romer},
+           familyi={R\bibinitperiod},
+           given={Megan},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {EN}%
+      }
+      \strng{namehash}{b265ec76931630124f18cc15368b1d41}
+      \strng{fullhash}{b265ec76931630124f18cc15368b1d41}
+      \strng{fullhashraw}{b265ec76931630124f18cc15368b1d41}
+      \strng{bibnamehash}{b265ec76931630124f18cc15368b1d41}
+      \strng{authorbibnamehash}{b265ec76931630124f18cc15368b1d41}
+      \strng{authornamehash}{b265ec76931630124f18cc15368b1d41}
+      \strng{authorfullhash}{b265ec76931630124f18cc15368b1d41}
+      \strng{authorfullhashraw}{b265ec76931630124f18cc15368b1d41}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{9 Prewhitening; Intervention Analysis – STAT 510 {|} Applied Time Series Analysis}
+      \field{month}{7}
+      \field{title}{9 {Prewhitening}; {Intervention} {Analysis} – {STAT} 510 {|} {Applied} {Time} {Series} {Analysis}}
+      \field{type}{Lecture {Notes}}
+      \field{urlday}{28}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb 9  Prewhitening\; Intervention Analysis – STAT 510 | Applied Time Series Analysis:C\:\\Users\\guney\\Zotero\\storage\\9TGY5I8H\\Lesson09.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://online.stat.psu.edu/stat510/Lesson09
+      \endverb
+      \verb{url}
+      \verb https://online.stat.psu.edu/stat510/Lesson09
+      \endverb
+      \keyw{paper}
+    \endentry
+    \entry{mackinnon_numerical_1996}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=9ddb0098f0471a20d22b777477fd2824}{%
+           family={MacKinnon},
+           familyi={M\bibinitperiod},
+           given={James},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {EN}%
+      }
+      \strng{namehash}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{fullhash}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{fullhashraw}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{bibnamehash}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{authorbibnamehash}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{authornamehash}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{authorfullhash}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{authorfullhashraw}{9ddb0098f0471a20d22b777477fd2824}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{James G. MacKinnon, Numerical Distribution Functions for Unit Root and Cointegration Tests, Journal of Applied Econometrics, Vol. 11, No. 6 (Nov. - Dec., 1996), pp. 601-618}
+      \field{journaltitle}{Journal of Applied Econometrics}
+      \field{number}{6}
+      \field{title}{Numerical {Distribution} {Functions} for {Unit} {Root} and {Cointegration} {Tests}}
+      \field{urlday}{21}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{11}
+      \field{year}{1996}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \field{pages}{601\bibrangedash 618}
+      \range{pages}{18}
+      \verb{file}
+      \verb Snapshot:C\:\\Users\\guney\\Zotero\\storage\\GBIPX7NX\\2285154.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/2285154
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/2285154
+      \endverb
+      \keyw{src}
+    \endentry
+    \entry{praestgaard_permutation_1995}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=db4eae3bc7a0b5cd15a8438a5a1e45fd}{%
+           family={Præstgaard},
+           familyi={P\bibinitperiod},
+           given={Jens},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {EN}%
+      }
+      \strng{namehash}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{fullhash}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{fullhashraw}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{bibnamehash}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{authorbibnamehash}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{authornamehash}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{authorfullhash}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{authorfullhashraw}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Permutation and Bootstrap Kolmogorov-Smirnov Tests for the Equality of Two Distributions, Scandinavian Journal of Statistics, Vol. 22, No. 3 (Sep., 1995), pp. 305-322}
+      \field{journaltitle}{Scandinavian Journal of Statistics}
+      \field{month}{9}
+      \field{number}{3}
+      \field{title}{Permutation and {Bootstrap} {Kolmogorov}-{Smirnov} {Tests} for the {Equality} of {Two} {Distributions}}
+      \field{urlday}{28}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{22}
+      \field{year}{1995}
+      \field{urldateera}{ce}
+      \field{pages}{305\bibrangedash 322}
+      \range{pages}{18}
+      \verb{file}
+      \verb Snapshot:C\:\\Users\\guney\\Zotero\\storage\\8LKYEQX7\\4616362.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/4616362
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/4616362
+      \endverb
+      \keyw{paper,src}
+    \endentry
+    \entry{psaradakis_bootstrap_2003}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=b6fabdcf11a17e4ec9c4792f1f9f759a}{%
+           family={Psaradakis},
+           familyi={P\bibinitperiod},
+           given={Zacharias},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{fullhash}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{fullhashraw}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{bibnamehash}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{authorbibnamehash}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{authornamehash}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{authorfullhash}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{authorfullhashraw}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{This article considers a nonparametric test for symmetry of the marginal law of a stationary stochastic process based on a Kolmogorov–Smirnov type statistic. Since the asymptotic null distribution of this statistic depends on the unknown law of the data, P-values and critical values for the test are estimated by means of a symmetric sieve bootstrap procedure based on residual resampling from an autoregressive approximation to the given process. The small-sample performance of the sieve bootstrap test is assessed by means of Monte Carlo experiments, which show that the test performs satisfactorily in terms of null rejection rates and power, although it does tend to be somewhat conservative for time series of relatively short length.}
+      \field{issn}{0361-0918}
+      \field{journaltitle}{Communications in Statistics - Simulation and Computation}
+      \field{month}{1}
+      \field{note}{Publisher: Taylor \& Francis \_eprint: https://doi.org/10.1081/SAC-120013116}
+      \field{number}{1}
+      \field{title}{A {Bootstrap} {Test} for {Symmetry} of {Dependent} {Data} {Based} on a {Kolmogorov}–{Smirnov} {Type} {Statistic}}
+      \field{urlday}{29}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{32}
+      \field{year}{2003}
+      \field{urldateera}{ce}
+      \field{pages}{113\bibrangedash 126}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1081/SAC-120013116
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1081/SAC-120013116
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1081/SAC-120013116
+      \endverb
+      \keyw{Autoregressive approximation,Empirical distribution function,paper,Schuster–Narvarte estimator,Sieve bootstrap,Stationary process}
+    \endentry
+    \entry{royston_extension_1982}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=7b09be093a25f789487bb579dfebbef8}{%
+           family={Royston},
+           familyi={R\bibinitperiod},
+           given={J.\bibnamedelimi P.},
+           giveni={J\bibinitperiod\bibinitdelim P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {En}%
+      }
+      \strng{namehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{fullhash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{fullhashraw}{7b09be093a25f789487bb579dfebbef8}
+      \strng{bibnamehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authorbibnamehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authornamehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authorfullhash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authorfullhashraw}{7b09be093a25f789487bb579dfebbef8}
+      \field{extraname}{1}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{J. P. Royston, An Extension of Shapiro and Wilk's W Test for Normality to Large Samples, Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 31, No. 2 (1982), pp. 115-124}
+      \field{journaltitle}{Journal of the Royal Statistical Society}
+      \field{number}{2}
+      \field{title}{An {Extension} of {Shapiro} and {Wilk}'s {W} {Test} for {Normality} to {Large} {Samples}}
+      \field{urlday}{21}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{31}
+      \field{year}{1982}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \field{pages}{115\bibrangedash 124}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.2307/2347973
+      \endverb
+      \verb{file}
+      \verb Snapshot:C\:\\Users\\guney\\Zotero\\storage\\TYU6P5Z7\\2347973.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/2347973
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/2347973
+      \endverb
+      \keyw{src}
+    \endentry
+    \entry{royston_remark_1995}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=7b09be093a25f789487bb579dfebbef8}{%
+           family={Royston},
+           familyi={R\bibinitperiod},
+           given={J.\bibnamedelimi P.},
+           giveni={J\bibinitperiod\bibinitdelim P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {EN}%
+      }
+      \strng{namehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{fullhash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{fullhashraw}{7b09be093a25f789487bb579dfebbef8}
+      \strng{bibnamehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authorbibnamehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authornamehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authorfullhash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authorfullhashraw}{7b09be093a25f789487bb579dfebbef8}
+      \field{extraname}{2}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of the Royal Statistical Society}
+      \field{number}{4}
+      \field{title}{Remark {AS} {R94}: {A} {Remark} on {Algorithm} {AS} 181: {The} {W}-test for {Normality}}
+      \field{urlday}{21}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{44}
+      \field{year}{1995}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \field{pages}{547\bibrangedash 551}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.2307/2986146
+      \endverb
+      \verb{file}
+      \verb Remark AS R94\: A Remark on Algorithm AS 181\: The W-test for Normality on JSTOR:C\:\\Users\\guney\\Zotero\\storage\\TL73B8HF\\2986146.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/2986146
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/2986146
+      \endverb
+      \keyw{src}
+    \endentry
+    \entry{shapiro_analysis_1965}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=d68649e4f2a1a671378e6b8133ccb0d3}{%
+           family={Shapiro},
+           familyi={S\bibinitperiod},
+           given={S.\bibnamedelimi S.},
+           giveni={S\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=4804e1730322ac9acf50f7acded4b705}{%
+           family={Wilk},
+           familyi={W\bibinitperiod},
+           given={M.\bibnamedelimi B.},
+           giveni={M\bibinitperiod\bibinitdelim B\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {EN}%
+      }
+      \strng{namehash}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{fullhash}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{fullhashraw}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{bibnamehash}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{authorbibnamehash}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{authornamehash}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{authorfullhash}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{authorfullhashraw}{c79429df467595c7a5a1ca33b7d909f2}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Biometrica}
+      \field{month}{12}
+      \field{number}{3/4}
+      \field{title}{An {Analysis} of {Variance} {Test} for {Normality} ({Complete} {Samples})}
+      \field{urlday}{21}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{52}
+      \field{year}{1965}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \field{pages}{591\bibrangedash 611}
+      \range{pages}{21}
+      \verb{doi}
+      \verb 10.2307/2333709
+      \endverb
+      \verb{file}
+      \verb An Analysis of Variance Test for Normality (Complete Samples) on JSTOR:C\:\\Users\\guney\\Zotero\\storage\\AK9CJXV2\\2333709.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/2333709
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/2333709
+      \endverb
+      \keyw{src}
+    \endentry
+    \entry{wylupek_nonparametric_2023}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=eb0eed427d1ba9f6ccf2bfcb71f8eb92}{%
+           family={Wyłupek},
+           familyi={W\bibinitperiod},
+           given={Grzegorz},
+           giveni={G\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{fullhash}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{fullhashraw}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{bibnamehash}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{authorbibnamehash}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{authornamehash}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{authorfullhash}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{authorfullhashraw}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The paper proposes a weighted Kolmogorov–Smirnov type test for the two-sample problem for paired data. The asymptotic distribution of the test statistic under the null model is derived. The dependence of both the finite sample and the asymptotic distribution of the test statistic on the dependence structure of the data requires the use of the wild bootstrap technique for inference. The related wild bootstrap test turns out to be a consistent asymptotically level α test. With the finite sample correction applied, the test keeps the level well. An extensive simulation study demonstrates good finite sample behaviour of the test in comparison to the existing procedures. The main role in the proofs is played by tools from empirical processes. Additional simulation results, as well as an R code, which allow one to easily repeat the conducted numerical experiments, are attached as Supplementary Material.}
+      \field{issn}{0047-259X}
+      \field{journaltitle}{Journal of Multivariate Analysis}
+      \field{note}{Publisher: Elsevier}
+      \field{number}{C}
+      \field{title}{A nonparametric test for paired data}
+      \field{urlday}{29}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{198}
+      \field{year}{2023}
+      \field{urldateera}{ce}
+      \verb{doi}
+      \verb 10.1016/j.jmva.2023.105229
+      \endverb
+      \verb{file}
+      \verb Snapshot:C\:\\Users\\guney\\Zotero\\storage\\QR6X3XE7\\RePEceeejmvanav198y2023ics0047259x23000751.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://EconPapers.repec.org/RePEc:eee:jmvana:v:198:y:2023:i:c:s0047259x23000751
+      \endverb
+      \verb{url}
+      \verb https://EconPapers.repec.org/RePEc:eee:jmvana:v:198:y:2023:i:c:s0047259x23000751
+      \endverb
+      \keyw{Bootstrap,Copula,Dependence,Empirical process,Matched pairs,paper,Two-sample problem}
+    \endentry
+  \enddatalist
+  \datalist[entry]{apa/global//global/global/global}
+    \entry{chandy_nonparametric_2025}{misc}{}{}
+      \name{author}{4}{}{%
+        {{un=0,uniquepart=base,hash=0451e4d5b82dc42ef0994d31940a0bde}{%
+           family={Chandy},
+           familyi={C\bibinitperiod},
+           given={Mathew},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a99787221f91c9a1ae219f810eaea7e0}{%
+           family={Schifano},
+           familyi={S\bibinitperiod},
+           given={Elizabeth},
+           giveni={E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=934a0c3e849405255facd8113ba785b3}{%
+           family={Yan},
+           familyi={Y\bibinitperiod},
+           given={Jun},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b51e58508d19e3943ff9a5a29c23e5f5}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Xianyang},
+           giveni={X\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {arXiv}%
+      }
+      \strng{namehash}{6252c049ae5f6cd0e8a75e601c94088c}
+      \strng{fullhash}{86007a5a6a1167a111dbdd857f35b047}
+      \strng{fullhashraw}{86007a5a6a1167a111dbdd857f35b047}
+      \strng{bibnamehash}{86007a5a6a1167a111dbdd857f35b047}
+      \strng{authorbibnamehash}{86007a5a6a1167a111dbdd857f35b047}
+      \strng{authornamehash}{6252c049ae5f6cd0e8a75e601c94088c}
+      \strng{authorfullhash}{86007a5a6a1167a111dbdd857f35b047}
+      \strng{authorfullhashraw}{86007a5a6a1167a111dbdd857f35b047}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The Kolmogorov--Smirnov (KS) test is a widely used statistical test that assesses the conformity of a sample to a specified distribution. Its efficacy, however, diminishes with serially dependent data and when parameters within the hypothesized distribution are unknown. For independent data, parametric and nonparametric bootstrap procedures are available to adjust for estimated parameters. For serially dependent stationary data, parametric bootstrap has been developed with a working serial dependence structure. A counterpart for the nonparametric bootstrap approach, which needs a bias correction, has not been studied. Addressing this gap, our study introduces a bias correction method employing a nonparametric block bootstrap, which approximates the distribution of the KS statistic in assessing the goodness-of-fit of the marginal distribution of a stationary series, accounting for unspecified serial dependence and unspecified parameters. We assess its effectiveness through simulations, scrutinizing both its size and power. The practicality of our method is further illustrated with an examination of stock returns from the S{\textbackslash}\&P 500 index, showcasing its utility in real-world applications.}
+      \field{month}{11}
+      \field{note}{arXiv:2511.05733 [stat]}
+      \field{title}{Nonparametric {Block} {Bootstrap} {Kolmogorov}-{Smirnov} {Goodness}-of-{Fit} {Test}}
+      \field{urlday}{29}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{doi}
+      \verb 10.48550/arXiv.2511.05733
+      \endverb
+      \verb{file}
+      \verb Preprint PDF:C\:\\Users\\guney\\Zotero\\storage\\6DCABZ8M\\Chandy et al. - 2025 - Nonparametric Block Bootstrap Kolmogorov-Smirnov Goodness-of-Fit Test.pdf:application/pdf;Snapshot:C\:\\Users\\guney\\Zotero\\storage\\534YZB9B\\2511.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb http://arxiv.org/abs/2511.05733
+      \endverb
+      \verb{url}
+      \verb http://arxiv.org/abs/2511.05733
+      \endverb
+      \keyw{paper,Statistics - Methodology}
+    \endentry
+    \entry{david_distribution_1979}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=a8322cea03998fc619f1b5ef0d1ff4aa}{%
+           family={David},
+           familyi={D\bibinitperiod},
+           given={Dickey},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6365a38682e01d3c4acb344a5fead799}{%
+           family={Wayne},
+           familyi={W\bibinitperiod},
+           given={Fuller},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {EN}%
+      }
+      \strng{namehash}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{fullhash}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{fullhashraw}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{bibnamehash}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{authorbibnamehash}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{authornamehash}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{authorfullhash}{bd304b0c4bfc54622ecd953ad03907ed}
+      \strng{authorfullhashraw}{bd304b0c4bfc54622ecd953ad03907ed}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{David A. Dickey, Wayne A. Fuller, Distribution of the Estimators for Autoregressive Time Series With a Unit Root, Journal of the American Statistical Association, Vol. 74, No. 366 (Jun., 1979), pp. 427-431}
+      \field{journaltitle}{Journal of the American Statistical Association}
+      \field{month}{6}
+      \field{number}{366}
+      \field{title}{Distribution of the {Estimators} for {Autoregressive} {Time} {Series} {With} a {Unit} {Root}}
+      \field{urlday}{21}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{74}
+      \field{year}{1979}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \field{pages}{427\bibrangedash 431}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.2307/2286348
+      \endverb
+      \verb{file}
+      \verb Snapshot:C\:\\Users\\guney\\Zotero\\storage\\NNPRAUS6\\2286348.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/2286348
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/2286348
+      \endverb
+      \keyw{src}
+    \endentry
+    \entry{hackhard_9_2025}{misc}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=6559df3bd2285f45a51947da69889a2f}{%
+           family={Hackhard},
+           familyi={H\bibinitperiod},
+           given={Bob},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f99a3ffd8e591df29b6fb0d012588c3c}{%
+           family={Romer},
+           familyi={R\bibinitperiod},
+           given={Megan},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {EN}%
+      }
+      \strng{namehash}{b265ec76931630124f18cc15368b1d41}
+      \strng{fullhash}{b265ec76931630124f18cc15368b1d41}
+      \strng{fullhashraw}{b265ec76931630124f18cc15368b1d41}
+      \strng{bibnamehash}{b265ec76931630124f18cc15368b1d41}
+      \strng{authorbibnamehash}{b265ec76931630124f18cc15368b1d41}
+      \strng{authornamehash}{b265ec76931630124f18cc15368b1d41}
+      \strng{authorfullhash}{b265ec76931630124f18cc15368b1d41}
+      \strng{authorfullhashraw}{b265ec76931630124f18cc15368b1d41}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{9 Prewhitening; Intervention Analysis – STAT 510 {|} Applied Time Series Analysis}
+      \field{month}{7}
+      \field{title}{9 {Prewhitening}; {Intervention} {Analysis} – {STAT} 510 {|} {Applied} {Time} {Series} {Analysis}}
+      \field{type}{Lecture {Notes}}
+      \field{urlday}{28}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb 9  Prewhitening\; Intervention Analysis – STAT 510 | Applied Time Series Analysis:C\:\\Users\\guney\\Zotero\\storage\\9TGY5I8H\\Lesson09.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://online.stat.psu.edu/stat510/Lesson09
+      \endverb
+      \verb{url}
+      \verb https://online.stat.psu.edu/stat510/Lesson09
+      \endverb
+      \keyw{paper}
+    \endentry
+    \entry{mackinnon_numerical_1996}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=9ddb0098f0471a20d22b777477fd2824}{%
+           family={MacKinnon},
+           familyi={M\bibinitperiod},
+           given={James},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {EN}%
+      }
+      \strng{namehash}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{fullhash}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{fullhashraw}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{bibnamehash}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{authorbibnamehash}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{authornamehash}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{authorfullhash}{9ddb0098f0471a20d22b777477fd2824}
+      \strng{authorfullhashraw}{9ddb0098f0471a20d22b777477fd2824}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{James G. MacKinnon, Numerical Distribution Functions for Unit Root and Cointegration Tests, Journal of Applied Econometrics, Vol. 11, No. 6 (Nov. - Dec., 1996), pp. 601-618}
+      \field{journaltitle}{Journal of Applied Econometrics}
+      \field{number}{6}
+      \field{title}{Numerical {Distribution} {Functions} for {Unit} {Root} and {Cointegration} {Tests}}
+      \field{urlday}{21}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{11}
+      \field{year}{1996}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \field{pages}{601\bibrangedash 618}
+      \range{pages}{18}
+      \verb{file}
+      \verb Snapshot:C\:\\Users\\guney\\Zotero\\storage\\GBIPX7NX\\2285154.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/2285154
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/2285154
+      \endverb
+      \keyw{src}
+    \endentry
+    \entry{praestgaard_permutation_1995}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=db4eae3bc7a0b5cd15a8438a5a1e45fd}{%
+           family={Præstgaard},
+           familyi={P\bibinitperiod},
+           given={Jens},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {EN}%
+      }
+      \strng{namehash}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{fullhash}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{fullhashraw}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{bibnamehash}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{authorbibnamehash}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{authornamehash}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{authorfullhash}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \strng{authorfullhashraw}{db4eae3bc7a0b5cd15a8438a5a1e45fd}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Permutation and Bootstrap Kolmogorov-Smirnov Tests for the Equality of Two Distributions, Scandinavian Journal of Statistics, Vol. 22, No. 3 (Sep., 1995), pp. 305-322}
+      \field{journaltitle}{Scandinavian Journal of Statistics}
+      \field{month}{9}
+      \field{number}{3}
+      \field{title}{Permutation and {Bootstrap} {Kolmogorov}-{Smirnov} {Tests} for the {Equality} of {Two} {Distributions}}
+      \field{urlday}{28}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{22}
+      \field{year}{1995}
+      \field{urldateera}{ce}
+      \field{pages}{305\bibrangedash 322}
+      \range{pages}{18}
+      \verb{file}
+      \verb Snapshot:C\:\\Users\\guney\\Zotero\\storage\\8LKYEQX7\\4616362.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/4616362
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/4616362
+      \endverb
+      \keyw{paper,src}
+    \endentry
+    \entry{psaradakis_bootstrap_2003}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=b6fabdcf11a17e4ec9c4792f1f9f759a}{%
+           family={Psaradakis},
+           familyi={P\bibinitperiod},
+           given={Zacharias},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{fullhash}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{fullhashraw}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{bibnamehash}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{authorbibnamehash}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{authornamehash}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{authorfullhash}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \strng{authorfullhashraw}{b6fabdcf11a17e4ec9c4792f1f9f759a}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{This article considers a nonparametric test for symmetry of the marginal law of a stationary stochastic process based on a Kolmogorov–Smirnov type statistic. Since the asymptotic null distribution of this statistic depends on the unknown law of the data, P-values and critical values for the test are estimated by means of a symmetric sieve bootstrap procedure based on residual resampling from an autoregressive approximation to the given process. The small-sample performance of the sieve bootstrap test is assessed by means of Monte Carlo experiments, which show that the test performs satisfactorily in terms of null rejection rates and power, although it does tend to be somewhat conservative for time series of relatively short length.}
+      \field{issn}{0361-0918}
+      \field{journaltitle}{Communications in Statistics - Simulation and Computation}
+      \field{month}{1}
+      \field{note}{Publisher: Taylor \& Francis \_eprint: https://doi.org/10.1081/SAC-120013116}
+      \field{number}{1}
+      \field{title}{A {Bootstrap} {Test} for {Symmetry} of {Dependent} {Data} {Based} on a {Kolmogorov}–{Smirnov} {Type} {Statistic}}
+      \field{urlday}{29}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{32}
+      \field{year}{2003}
+      \field{urldateera}{ce}
+      \field{pages}{113\bibrangedash 126}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1081/SAC-120013116
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1081/SAC-120013116
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1081/SAC-120013116
+      \endverb
+      \keyw{Autoregressive approximation,Empirical distribution function,paper,Schuster–Narvarte estimator,Sieve bootstrap,Stationary process}
+    \endentry
+    \entry{royston_extension_1982}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=7b09be093a25f789487bb579dfebbef8}{%
+           family={Royston},
+           familyi={R\bibinitperiod},
+           given={J.\bibnamedelimi P.},
+           giveni={J\bibinitperiod\bibinitdelim P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {En}%
+      }
+      \strng{namehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{fullhash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{fullhashraw}{7b09be093a25f789487bb579dfebbef8}
+      \strng{bibnamehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authorbibnamehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authornamehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authorfullhash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authorfullhashraw}{7b09be093a25f789487bb579dfebbef8}
+      \field{extraname}{1}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{J. P. Royston, An Extension of Shapiro and Wilk's W Test for Normality to Large Samples, Journal of the Royal Statistical Society. Series C (Applied Statistics), Vol. 31, No. 2 (1982), pp. 115-124}
+      \field{journaltitle}{Journal of the Royal Statistical Society}
+      \field{number}{2}
+      \field{title}{An {Extension} of {Shapiro} and {Wilk}'s {W} {Test} for {Normality} to {Large} {Samples}}
+      \field{urlday}{21}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{31}
+      \field{year}{1982}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \field{pages}{115\bibrangedash 124}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.2307/2347973
+      \endverb
+      \verb{file}
+      \verb Snapshot:C\:\\Users\\guney\\Zotero\\storage\\TYU6P5Z7\\2347973.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/2347973
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/2347973
+      \endverb
+      \keyw{src}
+    \endentry
+    \entry{royston_remark_1995}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=7b09be093a25f789487bb579dfebbef8}{%
+           family={Royston},
+           familyi={R\bibinitperiod},
+           given={J.\bibnamedelimi P.},
+           giveni={J\bibinitperiod\bibinitdelim P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {EN}%
+      }
+      \strng{namehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{fullhash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{fullhashraw}{7b09be093a25f789487bb579dfebbef8}
+      \strng{bibnamehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authorbibnamehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authornamehash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authorfullhash}{7b09be093a25f789487bb579dfebbef8}
+      \strng{authorfullhashraw}{7b09be093a25f789487bb579dfebbef8}
+      \field{extraname}{2}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of the Royal Statistical Society}
+      \field{number}{4}
+      \field{title}{Remark {AS} {R94}: {A} {Remark} on {Algorithm} {AS} 181: {The} {W}-test for {Normality}}
+      \field{urlday}{21}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{44}
+      \field{year}{1995}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \field{pages}{547\bibrangedash 551}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.2307/2986146
+      \endverb
+      \verb{file}
+      \verb Remark AS R94\: A Remark on Algorithm AS 181\: The W-test for Normality on JSTOR:C\:\\Users\\guney\\Zotero\\storage\\TL73B8HF\\2986146.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/2986146
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/2986146
+      \endverb
+      \keyw{src}
+    \endentry
+    \entry{shapiro_analysis_1965}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=d68649e4f2a1a671378e6b8133ccb0d3}{%
+           family={Shapiro},
+           familyi={S\bibinitperiod},
+           given={S.\bibnamedelimi S.},
+           giveni={S\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=4804e1730322ac9acf50f7acded4b705}{%
+           family={Wilk},
+           familyi={W\bibinitperiod},
+           given={M.\bibnamedelimi B.},
+           giveni={M\bibinitperiod\bibinitdelim B\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {EN}%
+      }
+      \strng{namehash}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{fullhash}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{fullhashraw}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{bibnamehash}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{authorbibnamehash}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{authornamehash}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{authorfullhash}{c79429df467595c7a5a1ca33b7d909f2}
+      \strng{authorfullhashraw}{c79429df467595c7a5a1ca33b7d909f2}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Biometrica}
+      \field{month}{12}
+      \field{number}{3/4}
+      \field{title}{An {Analysis} of {Variance} {Test} for {Normality} ({Complete} {Samples})}
+      \field{urlday}{21}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{52}
+      \field{year}{1965}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \field{pages}{591\bibrangedash 611}
+      \range{pages}{21}
+      \verb{doi}
+      \verb 10.2307/2333709
+      \endverb
+      \verb{file}
+      \verb An Analysis of Variance Test for Normality (Complete Samples) on JSTOR:C\:\\Users\\guney\\Zotero\\storage\\AK9CJXV2\\2333709.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.jstor.org/stable/2333709
+      \endverb
+      \verb{url}
+      \verb https://www.jstor.org/stable/2333709
+      \endverb
+      \keyw{src}
+    \endentry
+    \entry{wylupek_nonparametric_2023}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=eb0eed427d1ba9f6ccf2bfcb71f8eb92}{%
+           family={Wyłupek},
+           familyi={W\bibinitperiod},
+           given={Grzegorz},
+           giveni={G\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{fullhash}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{fullhashraw}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{bibnamehash}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{authorbibnamehash}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{authornamehash}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{authorfullhash}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \strng{authorfullhashraw}{eb0eed427d1ba9f6ccf2bfcb71f8eb92}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The paper proposes a weighted Kolmogorov–Smirnov type test for the two-sample problem for paired data. The asymptotic distribution of the test statistic under the null model is derived. The dependence of both the finite sample and the asymptotic distribution of the test statistic on the dependence structure of the data requires the use of the wild bootstrap technique for inference. The related wild bootstrap test turns out to be a consistent asymptotically level α test. With the finite sample correction applied, the test keeps the level well. An extensive simulation study demonstrates good finite sample behaviour of the test in comparison to the existing procedures. The main role in the proofs is played by tools from empirical processes. Additional simulation results, as well as an R code, which allow one to easily repeat the conducted numerical experiments, are attached as Supplementary Material.}
+      \field{issn}{0047-259X}
+      \field{journaltitle}{Journal of Multivariate Analysis}
+      \field{note}{Publisher: Elsevier}
+      \field{number}{C}
+      \field{title}{A nonparametric test for paired data}
+      \field{urlday}{29}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{volume}{198}
+      \field{year}{2023}
+      \field{urldateera}{ce}
+      \verb{doi}
+      \verb 10.1016/j.jmva.2023.105229
+      \endverb
+      \verb{file}
+      \verb Snapshot:C\:\\Users\\guney\\Zotero\\storage\\QR6X3XE7\\RePEceeejmvanav198y2023ics0047259x23000751.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb https://EconPapers.repec.org/RePEc:eee:jmvana:v:198:y:2023:i:c:s0047259x23000751
+      \endverb
+      \verb{url}
+      \verb https://EconPapers.repec.org/RePEc:eee:jmvana:v:198:y:2023:i:c:s0047259x23000751
+      \endverb
+      \keyw{Bootstrap,Copula,Dependence,Empirical process,Matched pairs,paper,Two-sample problem}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
