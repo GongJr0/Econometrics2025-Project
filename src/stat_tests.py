@@ -245,7 +245,7 @@ def D_CRIT(alpha, n, m):
         return float64(np.sqrt(-0.5 * np.log(alpha / 2.0))) * float64(np.sqrt((n + m) / (n * m)))
 
 
-def Standardized_KS(X, Y, alpha=0.05, pval_terms=100) -> StatsTest:
+def Standardized_KS(X, Y, alpha=0.05, pval_terms=101) -> StatsTest:
     """Compute the Kolmogorov-Smirnov test statistic between mean-variance standardized samples X and Y."""
     s = StandardScaler()
     X = s.fit_transform(X.reshape(-1, 1)).ravel().astype(float64)
@@ -291,7 +291,7 @@ def Standardized_KS(X, Y, alpha=0.05, pval_terms=100) -> StatsTest:
     )
 
 
-def VectorKS2Samp(X, alpha=0.05, pval_terms=100) -> tuple[NDArray[float64], NDArray[bool], NDArray[StatsTest]]:
+def VectorKS2Samp(X, alpha=0.05, pval_terms=101) -> tuple[NDArray[float64], NDArray[bool], NDArray[StatsTest]]:
     """Compute the Kolmogorov-Smirnov test statistic for each dimension of the input 2D array X."""
     X = np.asarray(X, dtype=float64)
     n_features = X.shape[1]
@@ -309,7 +309,7 @@ def VectorKS2Samp(X, alpha=0.05, pval_terms=100) -> tuple[NDArray[float64], NDAr
     return ks_stats, ks_reject_map, ks_tests
 
 
-def KS2Sample(X, alpha=0.05, pval_terms=100, display_plot=False, varnames: list[str] | None = None):
+def KS2Sample(X, alpha=0.05, pval_terms=101, display_plot=False, varnames: list[str] | None = None):
     """Compute the Kolmogorov-Smirnov test statistic between all columns in X."""
     ks_stats, ks_reject, tests = VectorKS2Samp(X, alpha=alpha, pval_terms=pval_terms)
 
@@ -353,16 +353,14 @@ def KS2Sample(X, alpha=0.05, pval_terms=100, display_plot=False, varnames: list[
         linewidths=0.5,
         linecolor="white",
         annot=np.array(annot_arr).reshape(ks_reject_df.shape),
+        annot_kws={'fontsize': 22, "weight": "bold"},
         fmt="",
-        annot_kws={"weight": "bold"},
         vmin=0,
         vmax=1,
     )
-    plt.title(f"KS Test Matrix (α = {alpha})", fontsize=12)
-    plt.xlabel("Features")
-    plt.ylabel("Features")
-    plt.tick_params(axis="x", rotation=0)
-    plt.tick_params(axis="y", rotation=0)
+    plt.title(f"KS Test Matrix (α = {alpha})", fontsize=32, weight="bold")
+    plt.tick_params(axis="x", rotation=0, labelsize=28)
+    plt.tick_params(axis="y", rotation=0, labelsize=28)
     return ks_stats_df, ks_reject_df, ks_pvals
 
 
@@ -409,7 +407,7 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
             
             crit = D_CRIT(alpha, len(Xi), len(Xj))
             D_boot = np.zeros(n_bootstrap, dtype=float64)
-            obs_stat = Standardized_KS(Xi, Xj, alpha=alpha, pval_terms=100).test_stat
+            obs_stat = Standardized_KS(Xi, Xj, alpha=alpha).test_stat
             for b in range(n_bootstrap):
                 idx = block_bootstrap(pool, block_len=block_len)
                 Xi_b = idx[:len(Xi)]
@@ -418,7 +416,7 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
                 Xi_b = pool[Xi_b]
                 Xj_b = pool[Xj_b]
                 
-                ks_test_b = Standardized_KS(Xi_b, Xj_b, alpha=alpha, pval_terms=100)
+                ks_test_b = Standardized_KS(Xi_b, Xj_b, alpha=alpha)
                 D_boot[b] = ks_test_b.test_stat
                 
             D_pval_est = (np.sum(D_boot >= obs_stat) + 1) / (n_bootstrap + 1)
@@ -471,16 +469,13 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
             linecolor="white",
             annot=np.array(annot_arr).reshape(ks_reject_df.shape),
             fmt="",
-            annot_kws={"weight": "bold"},
+            annot_kws={"weight": "bold", "fontsize": 22},
             vmin=0,
             vmax=1,
         )
-        plt.title(f"Bootstrapped KS Test Matrix (α = {alpha})", fontsize=12)
-        plt.xlabel("Features")
-        plt.ylabel("Features")
-        plt.tick_params(axis="x", rotation=0)
-        plt.tick_params(axis="y", rotation=0)
-
+        plt.title(f"Bootstrapped KS Test Matrix (α = {alpha})", fontsize=32, weight="bold")
+        plt.tick_params(axis="x", rotation=0, labelsize=28)
+        plt.tick_params(axis="y", rotation=0, labelsize=28)
     
     return ks_stats, ks_pvals, ks_reject, ks_tests
     

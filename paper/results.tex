@@ -76,6 +76,35 @@ The objective equation is as follows:
 \noindent At this stage, all model variables were known, and rescaling was performed to standardize the data.
 With a concrete design matrix, a final check of VIF between the two exogenous variables was performed to confirm the model parameters did not yield multicollinear exogenous components.
 $VIF_{CPI, u}$ was found to be 1.023, indicating near-perfect orthogonality between exogenous regressors.
+
+\subsubsection{Variable Distribution Equality}\label{subsubsec:var_analysis}
+The standardized design matrix was used to conduct KS tests to confirm the equality of distributions.
+For demonstration purposes, both a simple KS test, and a bootstrapped test with 1,000 iterations were performed.
+
+\begin{figure}[ht]
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/ks}
+        \caption{KS Test Matrix}
+        \label{fig:ks_matrix}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/ks_boot}
+        \caption{Bootstrapped KS Test Matrix}
+        \label{fig:bootstrapped_ks_matrix}
+    \end{minipage}
+\end{figure}
+
+We observe that the only difference in results between the two tests is in the $\{y_{t-1}, \ u_{t-1}\}$ pair.
+Both tests use $H_0$: $F_x = F_y$ therefore failing to reject means there was not enough evidence to refute the equality of distributions.
+However, it is important to note that these tests are not proof of equality, but rather an indication that the distributions are similar enough to not be statistically different.
+In this paper, we proceed respect the results of the bootstrapped test (Figure~\ref{fig:bootstrapped_ks_matrix}) and assume equality of distributions for all variable pairs.
+
+\vspace{\baselineskip}
+
+\noindent\textbf{NOTE: } The p-values annotated in the Standard KS matrix are approximations derived by a 101-term Taylor expansion. (Expansion is ill-defined at $D = 0 $ for an even number of terms) The test results are evaluated by a comparison of statistics and are not supposed to yield concrete p-values.
+
 \subsection{Model Fit}\label{subsubsec:model_fit}
 The fit was performed using Ordinary Least Squares (OLS) on the matrix expansion of Equation~\ref{eq:arx}.
 
