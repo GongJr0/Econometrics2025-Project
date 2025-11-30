@@ -164,7 +164,7 @@ def BP(X: NDArray[float64],
        y: NDArray[float64],
        alpha:float64 = 0.05) -> StatsTest:
 
-    ddof = X.shape[1]
+    ddof = X.shape[1]  # = k-1 because intercept is not inclded yet.
 
     X = np.column_stack([np.ones(X.shape[0]), X])
 
@@ -309,7 +309,7 @@ def VectorKS2Samp(X, alpha=0.05, pval_terms=100) -> tuple[NDArray[float64], NDAr
     return ks_stats, ks_reject_map, ks_tests
 
 
-def KS2Sample(X, alpha=0.05, pval_terms=100, display_plot=False):
+def KS2Sample(X, alpha=0.05, pval_terms=100, display_plot=False, varnames: list[str] | None = None):
     """Compute the Kolmogorov-Smirnov test statistic between all columns in X."""
     ks_stats, ks_reject, tests = VectorKS2Samp(X, alpha=alpha, pval_terms=pval_terms)
 
@@ -322,59 +322,47 @@ def KS2Sample(X, alpha=0.05, pval_terms=100, display_plot=False):
     import pandas as pd
 
     if isinstance(X, pd.DataFrame):
-        cols = X.columns.tolist()
+        cols = varnames or X.columns.tolist()
     else:
-        cols = [f"X{i+1}" for i in range(X.shape[1])]
+        cols = varnames or [f"X{i+1}" for i in range(X.shape[1])]
 
     ks_reject_df = pd.DataFrame(ks_reject, index=cols, columns=cols)
     ks_stats_df = pd.DataFrame(ks_stats, index=cols, columns=cols)
 
     ks_pvals = [[tests[i, j].pval for j in range(len(cols))] for i in range(len(cols))]
     ks_pvals = pd.DataFrame(ks_pvals, index=cols, columns=cols)
+    
+    nr_template = lambda x, y: f"Fail to Reject $\mathbf{{H_0}}$ \n $p={x:.4f}$ \n $C = {y:.4f}$"
+    r_template = lambda x, y: f"Reject $\mathbf{{H_0}}$\n $p={x:.4f}$ \n $C = {y:.4f}$"
+    annot_arr = []
+    for i in range(ks_reject_df.shape[0]):
+        for j in range(ks_reject_df.shape[1]):
+            pval_ij = ks_pvals.iloc[i, j]
+            if ks_reject_df.iloc[i, j]:
+                annot_arr.append(r_template(pval_ij, ks_stats_df.iloc[i, j]))
+            else:
+                annot_arr.append(nr_template(pval_ij, ks_stats_df.iloc[i, j]))
 
-    fig, ax = plt.subplots(1, 2, figsize=(12, 5))
+    fig = plt.figure(figsize=(12, 8))
 
     # KS Reject Matrix (green → red)
     sns.heatmap(
         ks_reject_df,
         cmap="RdYlGn_r",
-        ax=ax[0],
-        cbar=True,
+        cbar=False,
         linewidths=0.5,
         linecolor="white",
-        annot=np.where(ks_reject_df.values == 1, r"Reject $\mathbf{H_0}$", "Fail to Reject"),
+        annot=np.array(annot_arr).reshape(ks_reject_df.shape),
         fmt="",
         annot_kws={"weight": "bold"},
         vmin=0,
         vmax=1,
     )
-    ax[0].set_title(f"KS Test Reject Matrix (α = {alpha})", fontsize=12)
-    ax[0].set_xlabel("Features")
-    ax[0].set_ylabel("Features")
-    ax[0].tick_params(axis="x", rotation=45)
-    ax[0].tick_params(axis="y", rotation=0)
-
-    # KS Statistic Matrix
-    sns.heatmap(
-        ks_stats_df,
-        annot=True,
-        cmap="RdYlGn_r",
-        ax=ax[1],
-        cbar=True,
-        linewidths=0.5,
-        linecolor="white",
-    )
-    ax[1].set_title("KS Test Statistic Matrix", fontsize=12)
-    ax[1].set_xlabel("Features")
-    ax[1].set_ylabel("Features")
-    ax[1].tick_params(axis="x", rotation=45)
-    ax[1].tick_params(axis="y", rotation=0)
-
-    # Add a main title and adjust layout
-    plt.suptitle("KS Test Results Between Feature Distributions", fontsize=14, fontweight="bold")
-    plt.tight_layout(rect=[0, 0, 1, 0.95])
-    plt.show()
-
+    plt.title(f"KS Test Matrix (α = {alpha})", fontsize=12)
+    plt.xlabel("Features")
+    plt.ylabel("Features")
+    plt.tick_params(axis="x", rotation=0)
+    plt.tick_params(axis="y", rotation=0)
     return ks_stats_df, ks_reject_df, ks_pvals
 
 
@@ -400,7 +388,7 @@ def block_bootstrap(X, *, block_len: int | None = None, rng: np.random.Generator
         blocks.append(block)
     return np.asarray(np.concatenate(blocks), dtype=np.int64)
 
-def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, alpha: float = 0.05, display_plot: bool = False):
+def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, alpha: float = 0.05, display_plot: bool = False, varnames: list[str] | None = None):
     """Perform block-bootstrap KS tests on all pairs of columns in X."""
     s = StandardScaler()
     X = s.fit_transform(np.asarray(X, dtype=float64))
@@ -450,9 +438,9 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
         import pandas as pd
 
         if isinstance(X, pd.DataFrame):
-            cols = X.columns.tolist()
+            cols = varnames or X.columns.tolist()
         else:
-            cols = [f"X{i+1}" for i in range(X.shape[1])]
+            cols = varnames or [f"X{i+1}" for i in range(X.shape[1])]
 
         ks_reject_df = pd.DataFrame(ks_reject, index=cols, columns=cols)
         ks_stats_df = pd.DataFrame(ks_stats, index=cols, columns=cols)
@@ -460,49 +448,39 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
         ks_pvals = [[ks_tests[i, j].pval for j in range(len(cols))] for i in range(len(cols))]
         ks_pvals = pd.DataFrame(ks_pvals, index=cols, columns=cols)
 
-        fig, ax = plt.subplots(1, 2, figsize=(12, 5))
+        fig = plt.figure(figsize=(12, 8))
+
+        nr_template = lambda x, y: f"Fail to Reject $\mathbf{{H_0}}$ \n $p={x:.4f}$ \n $C = {y:.4f}$"
+        r_template = lambda x, y: f"Reject $\mathbf{{H_0}}$\n $p={x:.4f}$ \n $C = {y:.4f}$"
+        annot_arr = []
+        for i in range(ks_reject_df.shape[0]):
+            for j in range(ks_reject_df.shape[1]):
+                pval_ij = ks_pvals.iloc[i, j]
+                if ks_reject_df.iloc[i, j]:
+                    annot_arr.append(r_template(pval_ij, ks_stats_df.iloc[i, j]))
+                else:
+                    annot_arr.append(nr_template(pval_ij, ks_stats_df.iloc[i, j]))
+        # Old annot: np.where(ks_reject_df.values == 1, r"Reject $\mathbf{H_0}$", "Fail to Reject")
 
         # KS Reject Matrix (green → red)
         sns.heatmap(
             ks_reject_df,
             cmap="RdYlGn_r",
-            ax=ax[0],
-            cbar=True,
+            cbar=False,
             linewidths=0.5,
             linecolor="white",
-            annot=np.where(ks_reject_df.values == 1, r"Reject $\mathbf{H_0}$", "Fail to Reject"),
+            annot=np.array(annot_arr).reshape(ks_reject_df.shape),
             fmt="",
             annot_kws={"weight": "bold"},
             vmin=0,
             vmax=1,
         )
-        ax[0].set_title(f"KS Test Reject Matrix (α = {alpha})", fontsize=12)
-        ax[0].set_xlabel("Features")
-        ax[0].set_ylabel("Features")
-        ax[0].tick_params(axis="x", rotation=45)
-        ax[0].tick_params(axis="y", rotation=0)
+        plt.title(f"Bootstrapped KS Test Matrix (α = {alpha})", fontsize=12)
+        plt.xlabel("Features")
+        plt.ylabel("Features")
+        plt.tick_params(axis="x", rotation=0)
+        plt.tick_params(axis="y", rotation=0)
 
-        # KS Statistic Matrix
-        sns.heatmap(
-            ks_stats_df,
-            annot=True,
-            fmt=".4f",
-            cmap="RdYlGn_r",
-            ax=ax[1],
-            cbar=True,
-            linewidths=0.5,
-            linecolor="white",
-        )
-        ax[1].set_title(rf"KS Test Statistic Matrix $C_X = {no_boot_crit:.4f}$", fontsize=12)
-        ax[1].set_xlabel("Features")
-        ax[1].set_ylabel("Features")
-        ax[1].tick_params(axis="x", rotation=45)
-        ax[1].tick_params(axis="y", rotation=0)
-
-        # Add a main title and adjust layout
-        plt.suptitle("KS Test Results Between Feature Distributions", fontsize=14, fontweight="bold")
-        plt.tight_layout(rect=[0, 0, 1, 0.95])
-        plt.show()      
     
     return ks_stats, ks_pvals, ks_reject, ks_tests
     
@@ -555,4 +533,28 @@ def DW(eps: NDArray[float64], X:NDArray[float64], idx_ar: int = 0, alpha: float 
         pval=float(pval),
         test_stat=float(h),
         stat_name="Durbin-Watson H Test (Z-Statistic)"
+    )
+
+def BG(eps: NDArray[float64], p: int = 1, alpha: float = 0.05) -> StatsTest:
+    T = eps.shape[0]
+    
+    y = eps[p:]
+    X = np.zeros((T-p, p), dtype=float64)
+    for i in range(p):
+        X[:, i] = eps[p - i - 1: T - i - 1]
+    
+    XT_X = X.T @ X
+    beta = np.linalg.inv(XT_X) @ X.T @ y
+    fitted = X @ beta
+
+    r2_val = r2(y, fitted)
+    bg_stat = (T-p) * r2_val
+
+    pval = gammainc(p/2, 0, bg_stat/2)/gamma(p/2)  # Chi^2(p) CDF
+
+    return StatsTest(
+        reject=pval<alpha,
+        pval=float(pval),
+        test_stat=float(bg_stat),
+        stat_name=f"BG({p}) Test (Chi^2 Statistic)"
     )

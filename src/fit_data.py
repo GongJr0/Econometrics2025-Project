@@ -51,7 +51,7 @@ class FitResults:
 
     resid_heteroske: StatsTest
     resid_stationarity: StatsTest
-    resid_autocorr: StatsTest
+    resid_autocorr: list[StatsTest]
     resid_normality: StatsTest
 
     def qq(self,

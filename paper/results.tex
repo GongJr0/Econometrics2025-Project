@@ -58,7 +58,7 @@ Although not as clear as the PACF results, Figure~\ref{fig:ccf} carries much str
 $CPI$ shows several spikes above the significance bounds with notable lags being $\{0, 45, 47\}$.
 For $u$, we observe that lag-0 is the only significant entry.
 Based on the observations, lag-0 is the only selection that ensures significant lags of both exogenous variables are included.
-Therefore, the cross-correlation analysis yields $q=0$ to be the optimal selection.
+Therefore, the cross-correlation analysis yields $q=0$ to be the optimal selection.\footnote{In Equation~\ref{eq:model_eq}, $q=0$ would mean not including exogenous variables. But as a lag order selection, it should be interpreted as using the current observations as regressors.}
 
 \vspace{\baselineskip}
 Using $q=0$ introduces the problem of \textbf{data leakage}, as current quarter values of exogenous variables would not be available at the time of estimation.

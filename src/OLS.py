@@ -6,7 +6,7 @@ from typing import Union, Literal
 
 from .error_functions import r2, r2_adj, rmse, mape
 from .fit_data import ErrorMetrics, FitResults
-from .stat_tests import ADF, BP, SW, DW
+from .stat_tests import ADF, BP, SW, BG
 
 class OLS:
     """Ordinary Least Squares (OLS) Regression Model"""
@@ -59,10 +59,11 @@ class OLS:
             rmse=round(rmse(y, y_hat), 4),
             mape=round(mape(y, y_hat), 4),
         )
+        BGN = lambda x: BG(resid, x, diagnosis_alpha)
 
         heteroske = BP(X_raw, y, diagnosis_alpha)
         stationarity = ADF(resid, diagnosis_trend, diagnosis_alpha)
-        autocorr = DW(resid, X_raw, alpha=diagnosis_alpha)
+        autocorr = [BGN(i) for i in range(1, 9)]  # BG tests for lags 1 to 8 (2 years quarterly)
         normality = SW(resid, diagnosis_alpha)
 
         return FitResults(
@@ -74,8 +75,8 @@ class OLS:
             intercept=betas[0],
             error=err,
             resid_heteroske=heteroske,
-            resid_stationarity=stationarity,
             resid_autocorr=autocorr,
+            resid_stationarity=stationarity,
             resid_normality=normality
         )
     

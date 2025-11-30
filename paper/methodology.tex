@@ -190,5 +190,39 @@ Previous stages of the methodology involve checks for the pre-fit Gauss--Markov 
 \begin{itemize}
     \item \textbf{Strict Exogeneity:} Verified by checking that $\sum_{i=1}^n X_i\varepsilon_i = 0$ (or $X^\top \varepsilon = 0$)  holds within tight tolerances.
     \item \textbf{Spherical Errors:} This condition holds if $\operatorname{Var}(\varepsilon) = \sigma^2 I_n$.
-    A confirmation of homoscedasticity via the \textbf{Breusch\textbf{\rule[0.5ex]{0.5em}{0.7pt}Pagan Test}} and absence of first order autocorrelation via the \textbf{Durbin\textbf{\rule[0.5ex]{0.5em}{0.7pt}Watson Test}} will be performed to validate this condition.
+    If residuals are homoskedastic and uncorrelated, this condition is satisfied. The two criteria can be tested separately using the \textbf{Breusch\rule[0.5ex]{0.5em}{0.7pt}Pagan Test} for homoskedasticity and the \textbf{Breusch\rule[0.5ex]{0.5em}{0.7pt}Godfrey Test} for autocorrelation.
 \end{itemize}
+
+Noticeably, all conditions except spherical errors can be verified through deterministic calculations using the information attained at-or-before estimation.
+Fittingly, the tests involved in verifying spherical errors are relatively simple and lead to intuitive test statistics.
+
+\vspace{\baselineskip}
+
+The Breusch--Pagan test checks for heteroskedasticity by first deriving the residual based dependent variable $g$:
+
+\begin{equation}
+    \label{eq:bp_aux}
+    \begin{aligned}
+        \varepsilon^2 &= (y-X\hat{\beta})^2 \\
+        \hat{\sigma}^2 &= \frac{\sum_{i=1}^n \varepsilon_i^2}{n} \\
+        g &= \frac{\varepsilon^2}{\hat{\sigma}^2}
+    \end{aligned}
+\end{equation}
+
+\noindent Where $\hat{\sigma}^2$ is the mean of squared residuals. Therefore, $g$ is a mean-scaled vector of squared errors.
+Afterward, an auxiliary regression of $g$ on $X$ is performed to attain the $R^2$ of the fit. The test statistic is then computed:
+\begin{equation}
+    \label{eq:bp_stat}
+    nR^2(g, \ \hat{g}) \sim \chi^2_{k-1}
+\end{equation}
+\noindent Where $k$ is the number of regressors (including the intercept).
+
+\vspace{\baselineskip}
+The Breusch--Godfrey test creates a very similar statistic, again derived from a regression of residuals.
+The test is performed by estimating an $AR(p)$ model of the residuals. The statistic is again derived from $R^2$ with only a slight modification:
+\begin{equation}
+    \label{eq:bg_stat}
+    (n-p)R^2(\varepsilon, \ \hat{\varepsilon}) \sim \chi^2_{p}
+\end{equation}
+
+\noindent Where $p$ ($=k-1$ from the BP test) is the number of lags used in the auxiliary regression.
