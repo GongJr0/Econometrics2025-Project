@@ -101,7 +101,7 @@ For demonstration purposes, both a simple KS test, and a bootstrapped test with 
 We observe that the only difference in results between the two tests is in the $\{y_{t-1}, \ u_{t-1}\}$ pair.
 Both tests use $H_0$: $F_x = F_y$ therefore failing to reject means there was not enough evidence to refute the equality of distributions.
 However, it is important to note that these tests are not proof of equality, but rather an indication that the distributions are similar enough to not be statistically different.
-In this paper, we proceed respect the results of the bootstrapped test (Figure~\ref{fig:bootstrapped_ks_matrix}) and assume equality of distributions for all variable pairs.
+In this paper, we proceed respect the results of the bootstrapped test (Figure~\ref{fig:bootstrapped_ks_matrix}) and assume approximate equality of distributions for all variable pairs.
 
 \vspace{\baselineskip}
 
@@ -135,7 +135,7 @@ This anomaly is likely attributable to the normalization step introducing negati
 The overall model fit statistics are as follows:
 \begin{figure}[H]
     \centering
-    \begin{minipage}{0.35\textwidth}
+    \begin{minipage}{0.4\textwidth}
         \centering
         \begin{tabular}{cc}
             \toprule
@@ -178,7 +178,7 @@ In fact, despite the reasonable fit statistics, the use of \textbf{Ridge} or \te
 
 \vspace{\baselineskip}
 
-To test the predictive performance of the model, a quick test with the only available out-of-sample data (Q2 2025) was conduicted. A prediction of $\$23,632.14$ Bn was achieved against a true value of $\$23,770.98$ Bn.
+To test the predictive performance of the model, a quick test with the only available out-of-sample data (Q2 2025) was conducted. A prediction of $\$23,632.14$ Bn was achieved against a true value of $\$23,770.98$ Bn.
 This results in a percentage error of $-0.58$\% which is within the expected range by MAPE.
 
 \subsection{Residual Analysis}\label{subsubsec:residual_analysis}
@@ -227,7 +227,7 @@ As an added confirmation, the Shapiro--Wilk test rejects normality with $W=0.62$
 
 As a final descriptor of residual behavior, we inspect the stationarity using the ADF test. 
 Knowing the residuals are zero-centered, we fit an ADF regression with no deterministic terms.
-with $ADF = -2.25$ we obtain a $p$-value of 0.02 and reject the null hypothesis of a unit root at the 5\% significance level.
+With $ADF = -2.25$ we obtain a $p$-value of 0.02 and reject the null hypothesis of a unit root at the 5\% significance level.
 This confirms the stationarity of residuals and presents further evidence towards homoskedasticity.
 
 \subsection{Gauss\rule[0.5ex]{0.5em}{0.7pt}Markov Conditions}\label{subsubsec:gm_conditions}
@@ -237,7 +237,8 @@ Although we present strong evidence towards all Gauss-Markov conditions being sa
 \begin{itemize}
     \item \textbf{Linearity:} The model is linear in parameters by design (Equation~\ref{eq:arx} \& Equation~\ref{eq:model_eq}).
     \item \textbf{Full Rank:} We computed a lack of perfect multicollinearity with $VIF_{CPI, u} = 1.023 < 5$ and $\operatorname{cond}(X) = 14.75 < 30$
-    \item \textbf{Strict Exogeneity:} We computed $X^\top \hat{\varepsilon} = -6.25 \times 10^{-9} \approxeq 0$ which shows no correlation between the regressors and residuals.
-    \item \textbf{Spherical Errors:} Results of the BP test yielded $BP=3.88$ and $p=0.73$ failing to reject the null hypothesis of homoskedasticity. 
+    \item \textbf{Spherical Errors:} Results of the BP test yielded $BP=3.88$ and $p=0.73$ failing to reject the null hypothesis of homoskedasticity.
     Additionally, BG tests for lags $[1, 8]$ (2 years) all failed to reject the null hypothesis of no autocorrelation with the most significant result being $BG(7)=6.14$ and $p=0.48$; while the least significant was $BG(3)=5.19$ and $p=0.61$.
+    \item \textbf{Strict Exogeneity:} While strict exogeneity is not testable, the BG test and correlation analysis of $X$ support the weak exogeneity assumption. Therefore, we elect to proceed with the assumption of exogeneity given the results of all prior diagnostics.
+    
 \end{itemize}

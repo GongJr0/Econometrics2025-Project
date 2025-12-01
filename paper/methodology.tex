@@ -181,16 +181,19 @@ Previous stages of the methodology involve checks for the pre-fit Gauss--Markov 
 \begin{itemize}
     \item \textbf{Linearity of Parameters:} by definition the model employed is a linear combination of regressors and coefficients.
     Therefore, this condition is satisfied at the stage of model selection.
-    \item \textbf{Full Rank:} $rank(X)=k$ must hold for $X^\top X$ to be invertible. 
+    \item \textbf{Full Rank:} $\operatorname{rank}(X)=k$ must hold for $X^\top X$ to be invertible. 
     Therefore, this condition must hold for the model to be estimable via OLS.
 \end{itemize}
 
 \noindent The remaining Gauss--Markov conditions concern $\varepsilon$ and are verified post-estimation:
 
 \begin{itemize}
-    \item \textbf{Strict Exogeneity:} Verified by checking that $\sum_{i=1}^n X_i\varepsilon_i = 0$ (or $X^\top \varepsilon = 0$)  holds within tight tolerances.
-    \item \textbf{Spherical Errors:} This condition holds if $\operatorname{Var}(\varepsilon) = \sigma^2 I_n$.
-    If residuals are homoskedastic and uncorrelated, this condition is satisfied. The two criteria can be tested separately using the \textbf{Breusch\rule[0.5ex]{0.5em}{0.7pt}Pagan Test} for homoskedasticity and the \textbf{Breusch\rule[0.5ex]{0.5em}{0.7pt}Godfrey Test} for autocorrelation.
+    \item \textbf{Spherical Errors:} This condition holds if $\operatorname{Var}(\varepsilon) = \sigma^2 I_n$;
+    implies that the residuals are homoskedastic and uncorrelated. The two criteria can be tested separately using the \textbf{Breusch\rule[0.5ex]{0.5em}{0.7pt}Pagan Test} for homoskedasticity and the \textbf{Breusch\rule[0.5ex]{0.5em}{0.7pt}Godfrey Test} for autocorrelation.
+    \item \textbf{Strict Exogeneity:} In textbook terms strict exogeneity requires $\mathbb{E}[\varepsilon_i \ |\ X] = 0$.  However, this condition is not directly testable.
+    It's often assumed to hold given weak exogeneity holds, and the design matrix $X$ shows no direct signs of endogenous interactions.
+    In our paper, we will rely on the Breusch--Godfrey test, VIF, and ACF/PACF analysis to check for evidence against weak exogeneity.
+    Strong exogeneity will then be assumed, and therefore any finding of BLUE will be referred to as "approximate" under the modelling assumptions.
 \end{itemize}
 
 Noticeably, all conditions except spherical errors can be verified through deterministic calculations using the information attained at-or-before estimation.
