@@ -193,7 +193,8 @@ Previous stages of the methodology involve checks for the pre-fit Gauss--Markov 
     \item \textbf{Strict Exogeneity:} In textbook terms strict exogeneity requires $\mathbb{E}[\varepsilon_i \ |\ X] = 0$.  However, this condition is not directly testable.
     It's often assumed to hold given weak exogeneity holds, and the design matrix $X$ shows no direct signs of endogenous interactions.
     In our paper, we will rely on the Breusch--Godfrey test, VIF, and ACF/PACF analysis to check for evidence against weak exogeneity.
-    Strong exogeneity will then be assumed, and therefore any finding of BLUE will be referred to as "approximate" under the modelling assumptions.
+    Given the application of RESET is inappropriate for level based time-series data, as a final check, we will apploy the \textbf{Harvey\rule[0.5ex]{0.5em}{0.7pt}Collier Test} for to assess model specification.
+    Strong exogeneity will then be assumed, and therefore any finding of BLUE will be referred to as \enquote{approximate} under the modelling assumptions.
 \end{itemize}
 
 Noticeably, all conditions except spherical errors can be verified through deterministic calculations using the information attained at-or-before estimation.
@@ -229,3 +230,18 @@ The test is performed by estimating an $AR(p)$ model of the residuals. The stati
 \end{equation}
 
 \noindent Where $p$ ($=k-1$ from the BP test) is the number of lags used in the auxiliary regression.
+
+\vspace{\baselineskip}
+Finally, the Harvey--Collier test is applied to check for model specification. The test is performed by fitting $n-k$ simple regressions of $y$ using the design matrix $X$.
+Each fitted model is used to calculate a one-step ahead prediction error, giving us a vector of errors $w$.
+The test confirms $H_0: \mathbb{E}[w_i] = 0 \ \forall w$. This is achieved by computing:
+
+\begin{equation}
+    \centering
+    \begin{aligned}
+        \bar{w} & = \frac{1}{n-k} \sum_{i=1}^{n-k} w_i \\
+        s_w^2 & = \frac{1}{n-k-1} \sum_{i=1}^{n-k} (w_i - \bar{w})^2 \\
+        t_{HC} & = \bigg\lvert \frac{\bar{w}}{s_w / \sqrt{n-k}} \bigg\rvert \sim t_{n-k-1}
+    \end{aligned}
+    \label{eq:hc_stat}
+\end{equation}

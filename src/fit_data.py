@@ -50,7 +50,8 @@ class FitResults:
     error: ErrorMetrics
 
     F_test: StatsTest
-
+    HC_test: StatsTest
+    
     resid_heteroske: StatsTest
     resid_stationarity: StatsTest
     resid_autocorr: list[StatsTest]

@@ -6,7 +6,7 @@ from typing import Union, Literal
 
 from .error_functions import r2, r2_adj, rmse, mape
 from .fit_data import ErrorMetrics, FitResults
-from .stat_tests import ADF, BP, SW, BG, F_TEST
+from .stat_tests import ADF, BP, SW, BG, F_TEST, HC
 
 class OLS:
     """Ordinary Least Squares (OLS) Regression Model"""
@@ -32,7 +32,7 @@ class OLS:
         self._n_cols: int | None = None
         self._n_obs: int | None = None
 
-    def fit(self, diagnosis_alpha: float = 0.05, diagnosis_trend: Literal["c", "ct", "ctt", "n"] = "c") -> FitResults:
+    def fit(self, diagnosis_alpha: float = 0.05, diagnosis_trend: Literal["c", "ct", "ctt", "n"] = "c", **kwargs) -> FitResults:
         X = self.X.values
         X_raw = X.copy()
         X = np.array([[1, *row] for row in X], dtype=np.float64)
@@ -71,7 +71,10 @@ class OLS:
 
         BGN = lambda x: BG(resid, x, diagnosis_alpha)
 
+        
+        
         f_test = F_TEST(F, dfn, dfd, diagnosis_alpha)
+        hc = HC(y, X, diagnosis_alpha)
         heteroske = BP(X_raw, y, diagnosis_alpha)
         stationarity = ADF(resid, diagnosis_trend, diagnosis_alpha)
         autocorr = [BGN(i) for i in range(1, 9)]  # BG tests for lags 1 to 8 (2 years quarterly)
@@ -82,6 +85,7 @@ class OLS:
             resid=resid,
             XT_e=XT_e,
             F_test=f_test,
+            HC_test=hc,
             beta=betas,
             coefs=betas[1:],
             intercept=betas[0],

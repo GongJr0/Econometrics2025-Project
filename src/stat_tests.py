@@ -78,6 +78,30 @@ class AR1:
         beta: NDArray[float64] = np.linalg.inv(xt @ x) @ xt @ y
         return beta
 
+def T_CDF(stat: float64, df: int) -> float64:
+    """Compute the CDF of the t-distribution at a given statistic value.
+
+    Args:
+        stat (float): The t-statistic
+        df (int): Degrees of freedom.
+    Returns:
+        float: The CDF value at the given statistic.
+    """
+    stat = float(stat)
+    df = float(df)
+    a = df / 2.0
+    b = 0.5
+    x = df / (df + stat*stat)
+    I = betainc(a, b, 0, x, regularized=True)  # regularized incomplete beta
+
+    if stat >= 0:
+        # upper tail of beta gives upper tail of t
+        return 1.0 - 0.5 * I
+    else:
+        return 0.5 * I
+    
+    
+
 def F_CDF(stat: float64, dfn: int, dfd: int) -> float64:
     """Compute the CDF of the F-distribution at a given statistic value.
 
@@ -585,3 +609,74 @@ def BG(eps: NDArray[float64], p: int = 1, alpha: float = 0.05) -> StatsTest:
         test_stat=float(bg_stat),
         stat_name=f"BG({p}) Test (Chi^2 Statistic)"
     )
+    
+def RESET(y: NDArray[float64], y_hat: NDArray[float64], X: NDArray[float64], q: int = 2, alpha: float64 = 0.05) -> StatsTest:
+    
+    n = y.shape[0]
+    k = X.shape[1]
+
+    unrestricted_X = np.column_stack([X, *[y_hat**(i+2) for i in range(q)]])
+    uXT_X = unrestricted_X.T @ unrestricted_X
+    u_beta = np.linalg.inv(uXT_X) @ unrestricted_X.T @ y
+    u_fitted = unrestricted_X @ u_beta
+    r2_ur = r2(y, u_fitted)
+    
+    res_fitted = X @ (np.linalg.inv(X.T @ X) @ X.T @ y)
+    r2_r = r2(y, res_fitted)
+    
+    F_num = (r2_ur - r2_r) / q
+    F_denom = (1 - r2_ur) / (n-k-q)
+    
+    F_stat = F_num / F_denom
+    
+    pval = 1 - F_CDF(F_stat, q, n - k - q)
+    return StatsTest(
+        reject=pval<alpha,
+        pval=float(pval),
+        test_stat=float(F_stat),
+        stat_name=f"RESET Test (F-Statistic)"
+    )
+    
+def HC(y: NDArray[float64], X:NDArray[float64], alpha: float = 0.05) -> StatsTest:
+    y = np.asarray(y, dtype=float64).ravel()
+    X = np.asarray(X, dtype=float64)
+    n, k = X.shape
+
+    w_list: list[float] = []
+
+    for t in range(k, n):
+        X_t1 = X[:t, :]
+        y_t1 = y[:t]
+
+        XtX = X_t1.T @ X_t1
+        beta_t1 = np.linalg.solve(XtX, X_t1.T @ y_t1)
+
+        x_t = X[t, :]
+        y_hat_t = float(x_t @ beta_t1)
+        e_t = float(y[t] - y_hat_t)
+
+        XtX_inv = np.linalg.inv(XtX)
+        d_t = float(np.sqrt(1.0 + x_t @ XtX_inv @ x_t))
+
+        w_list.append(e_t / d_t)
+
+    w = np.asarray(w_list, dtype=float64)
+    m = w.shape[0]
+
+    w_bar = float(w.mean())
+    s2 = float(np.sum((w - w_bar)**2) / (m - 1))
+
+    se_mean = float(np.sqrt(s2 / m))
+    t_stat = w_bar / se_mean
+    df = m - 1
+
+    pval = 2.0 * (1.0 - T_CDF(abs(t_stat), df))
+
+    return StatsTest(
+        reject=bool(pval < alpha),
+        pval=float(pval),
+        test_stat=float(t_stat),
+        stat_name="Harvey-Collier Test (t-statistic)",
+    )
+    
+    
