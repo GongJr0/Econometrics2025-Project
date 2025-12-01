@@ -6,7 +6,7 @@ from typing import Union, Literal
 
 from .error_functions import r2, r2_adj, rmse, mape
 from .fit_data import ErrorMetrics, FitResults
-from .stat_tests import ADF, BP, SW, BG
+from .stat_tests import ADF, BP, SW, BG, F_TEST
 
 class OLS:
     """Ordinary Least Squares (OLS) Regression Model"""
@@ -52,15 +52,26 @@ class OLS:
         resid = y - y_hat
         
         XT_e = np.sum(XT @ resid)
+
+        SSR = np.sum((y_hat - np.mean(y))**2)
+        SSE = np.sum((resid)**2)
         
+        dfn = X.shape[1]
+        dfd = X.shape[0]-X.shape[1]-1
+        F = ((SSR/dfn) / (SSE/dfd))
+        
+         
+
         err = ErrorMetrics(
             r2=round(r2(y, y_hat), 4),
             r2_adj=round(r2_adj(y, y_hat, X.shape[1]), 4),
             rmse=round(rmse(y, y_hat), 4),
             mape=round(mape(y, y_hat), 4),
         )
+
         BGN = lambda x: BG(resid, x, diagnosis_alpha)
 
+        f_test = F_TEST(F, dfn, dfd, diagnosis_alpha)
         heteroske = BP(X_raw, y, diagnosis_alpha)
         stationarity = ADF(resid, diagnosis_trend, diagnosis_alpha)
         autocorr = [BGN(i) for i in range(1, 9)]  # BG tests for lags 1 to 8 (2 years quarterly)
@@ -70,6 +81,7 @@ class OLS:
             fitted_values=y_hat,
             resid=resid,
             XT_e=XT_e,
+            F_test=f_test,
             beta=betas,
             coefs=betas[1:],
             intercept=betas[0],
@@ -84,10 +96,7 @@ class OLS:
         if isinstance(X, (pd.DataFrame, pd.Series)):
             X = X.values
 
-        if X.ndim == 1:
-            X = np.array([1, *X], dtype=np.float64)
-        else:
-            np.array([[1, *row] for row in X], dtype=np.float64)
+        X = np.column_stack([np.ones(X.shape[0]), X])
 
         return X@self.betas
 

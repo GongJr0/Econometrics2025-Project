@@ -5,7 +5,7 @@ Although VIF just a measure and has no constraints on its application, the conve
 In models with AR components, this application of VIF leads to two issues (assuming the dependent variable is actually autocorrelated):
 
 \begin{itemize}
-    \item The AR components inside $X$ will create processes equivalent to the designed AR estimator of $y$. 
+    \item The AR components inside $X$ will create processes equivalent to the an AR estimator of $y$. 
     To demonstrate, let's assume a relationship $y_t \sim y_{t-1}$ exists in an $AR(2)$ model. 
     As shifting the variable in time does not change the assumed relationship, we also have $y_{t-1} \sim y_{t-2}$.
     As a consequence, the design matrix (which is composed of $y_{t-1}$ and $y_{t-2}$) will exactly replicate an $AR(1)$ estimator of $y$.

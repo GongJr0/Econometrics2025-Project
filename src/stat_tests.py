@@ -8,7 +8,7 @@ from .sw_coefs import swilk
 from .error_functions import r2
 from .StandardScaler import StandardScaler
 from math import gamma, erf
-from mpmath import gammainc
+from mpmath import gammainc, betainc
 import warnings
 
 
@@ -78,6 +78,38 @@ class AR1:
         beta: NDArray[float64] = np.linalg.inv(xt @ x) @ xt @ y
         return beta
 
+def F_CDF(stat: float64, dfn: int, dfd: int) -> float64:
+    """Compute the CDF of the F-distribution at a given statistic value.
+
+    Args:
+        stat (float): The F-statistic value.
+        dfn (int): Degrees of freedom in the numerator.
+        dfd (int): Degrees of freedom in the denominator.
+    Returns:
+        float: The CDF value at the given statistic.
+    """
+    
+    x = (dfn * stat) / (dfn * stat + dfd)
+    return float64(betainc(dfn / 2, dfd / 2, 0, x, regularized=True))
+
+def F_TEST(stat: float64, dfn: int, dfd: int, alpha: float64 = 0.05) -> StatsTest:
+    """Perform an F-test given the F-statistic and degrees of freedom.
+
+    Args:
+        stat (float): The F-statistic
+        dfn (int): Degrees of freedom in the numerator.
+        dfd (int): Degrees of freedom in the denominator.
+        alpha (float): Significance level for the test.
+    Returns:
+        StatsTest: Result of the F-test.
+    """
+    pval = 1 - F_CDF(stat, dfn, dfd)
+    return StatsTest(
+        reject=pval < alpha,
+        pval=pval,
+        test_stat=float(stat),
+        stat_name="F Test (F-Statistic)"
+    )
 
 def ADF(
     X: NDArray[float64],

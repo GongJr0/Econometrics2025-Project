@@ -49,6 +49,8 @@ class FitResults:
     XT_e: np.float64
     error: ErrorMetrics
 
+    F_test: StatsTest
+
     resid_heteroske: StatsTest
     resid_stationarity: StatsTest
     resid_autocorr: list[StatsTest]
@@ -113,11 +115,11 @@ class FitResults:
             plt.plot(*sup, linestyle="--", color="orange", label=lab)
 
         plt.scatter(x, y, s=12, color='C0')
-        plt.grid(alpha=0.5, linestyle="--")
-        plt.title("QQ Plot")
-        plt.legend()
-        plt.xlabel("Theoretical Quantiles (Normal)")
-        plt.ylabel("Sample Quantiles")
+        plt.grid(alpha=1, linestyle=":")
+        plt.title("QQ Plot", fontsize=18, weight='bold')
+        plt.legend(fontsize=12)
+        plt.xlabel("Theoretical Quantiles (Normal)", fontsize=14)
+        plt.ylabel("Sample Quantiles", fontsize=14)
         plt.show()
 
     # def qq(self, line: Literal["r", "q", "45"] | None = None):
