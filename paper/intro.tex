@@ -84,6 +84,28 @@ Next, for unemployment, we have:
 
 A simple yet fundamental observation is that both exogenous variables have non-zero contributions to output.
 However, the above defined relationships of $P_t$ are relative to inflation $\pi_t$ instead of output $Y$.
+Using the \textbf{Fischer Equation} we can relate inflation to nominal interest rates, and express output as a function of price levels.
+\begin{equation}
+    \begin{aligned}
+        r_t &= i_t - \frac{\mathbb{E}_t[P_{t+1}] - P_t}{P_t} \\
+        \Rightarrow y_t &= y^\star - \alpha(r_t - r_t^\star)
+    \end{aligned}
+    \label{eq:fischer_output}
+\end{equation}
+Computing the partial derivative and elasticity of output with respect to price levels yield:
+\begin{equation}
+    \begin{aligned}
+        \frac{\delta y_t}{\delta P_t} &= -\frac{\alpha\mathbb{E}_t[P_{t+1}]}{P_t^2} \\
+        \epsilon_{y_t, P_t} &= \frac{\alpha\mathbb{E}_t[P_{t+1}]}{P_t(P_tY^\star -\alpha(P_t(i_t-r^\star) + P_t - \mathbb{E}_t[P_{t+1}]))}
+    \end{aligned}
+    \label{eq:partial_output_price}
+\end{equation}
+
+\noindent Again, we see a negative absolute relationship and a non-zero elasticity between $P_t$ and $y_t$.
+
+\vspace{\baselineskip}
+The theoretical examinations show a clear relationship with defined interactions.
+Therefore, an empirical relationship can be expected; and such relationship can be analyzed to determine the differences between theoretical and observed interactions.
 
 \subsection{Literature Review}\label{subsec:litreview}
 The literature review in this paper is aimed to justify two main choices made for our methodology and selection of variables:
@@ -103,6 +125,11 @@ However, an important note regarding their application is the usage of $CPI_{t-0
 Another relevant paper, \enquote{GDP Forecasting: Machine Learning, Linear or Autoregression?} (\cite{maccarrone_gdp_2021}), compares the performance of various simple regression models and machine learning algorithms in forecasting GDP.
 The authors conclude that $ARX$ in their specification is the best model in \enquote{one-step-ahead} and comparable to the best in \enquote{multi-step-ahead} forecasts.
 This paper confirms the intuitively autocorrelated nature of GDP, and the fact that exogenous variables have the ability to improve fit quality.
+
+\vspace{\baselineskip}
+
+Although there are many other papers investigating GDP modelling from simple regression to deep learning, the two papers mentioned above capture the reasoning behind the methodology design and model selection in our paper.
+
 
 % Numerous of earlier research show that price levels (CPI) and unemployment rates (u) are predictors of GDP. 
 % A multiple regression study conducted correlation analysis using a model containing CPI and $u$ (Among INDRO and Personal Income) against Real GDP and confirmed the existence of such correlation. (\cite{mandel_relationship_2019})
