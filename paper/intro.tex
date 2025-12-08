@@ -28,6 +28,63 @@ The formal hypothesis of this paper is that an $ARX(p, q)$ representation of Rea
 
 \noindent yields OLS parameter estimates that satisfy the \textbf{Gauss\rule[0.5ex]{0.5em}{0.7pt}}Markov conditions for time-series estimators.
 
+\subsection{Theoretical Background}\label{sec:theory}
+We consider two equations to base our selection of exogenous variables.
+First, the \textbf{Phillips Curve} describes the relationship between inflation and unemployment.
+It can be expressed in terms of expected inflation and the unemployment gap as follows:
+\begin{equation}
+    \pi_t = \mathbb{E}_t[\pi_{t+1}] - \alpha (u_t - u^\star) + \varepsilon_t
+    \label{eq:philips_gap}
+\end{equation}
+where $\pi_t$ is the inflation rate at time $t$, $\mathbb{E}_t[\pi_{t+1}]$ is the expected inflation rate at time $t+1$, $\bar{u}_t$ is the unemployment gap, $\alpha$ is a positive constant, and $\varepsilon_t$ is a random error term.
+We're interested in the partial contributions of the deterministic terms, therefore $\varepsilon_t$ will be omitted from equations in this section.
+First, we transform $\mathbb{E}_t[\pi_{t+1}]$ to be expressed in terms of price levels:
+\begin{equation}
+    \begin{aligned}
+        \mathbb{E}_t[\pi_{t+1}] &= \mathbb{E}_t\bigg\lbrack \frac{P_{t+1} - P_t}{P_t}\bigg\rbrack \\
+        &= \frac{\mathbb{E}_t[P_{t+1}] - P_t}{P_t}
+    \end{aligned}
+    \label{eq:expected_inflation}
+\end{equation}
+
+Substituting this back into Equation~\ref{eq:philips_gap} gives:
+\begin{equation}
+    \pi_t = \frac{\mathbb{E}_t[P_{t+1}] - P_t}{P_t} - \alpha (u_t - u^\star)
+    \label{eq:philips_price}
+\end{equation}
+This adjustment transforms the Philips Curve to have computable partial contributions from price levels at time $t$ and expectations of time $t+1$.
+Next, we consider \textbf{Okun's Law}, which describes the relationship between unemployment and output (Real GDP):
+\begin{equation}
+    \frac{(Y-Y^\star)}{Y^\star} = -\gamma(u_t - u^\star)
+    \label{eq:okuns_law}
+\end{equation}
+where $Y$ is the actual output, $Y^\star$ is the potential output, $\gamma$ is a positive constant, and $(u_t - u^\star)$ is the unemployment gap.
+Okun's Law does not require transformations to have a computable partial contribution from unemployment.
+
+\vspace{\baselineskip}
+Using the above equations, we can compute unit-change in output per exogenous variable (partial derivatives), and percent-change in output per exogenous variable (elasticities).
+Starting with price levels, we have:
+\begin{equation}
+    \begin{aligned}
+        \frac{\delta \pi_t}{\delta P_t} &= -\frac{\mathbb{E}_t[P_{t+1}]}{P_t^2} \\
+        \epsilon_{\pi_t, P_t} &= \frac{\mathbb{E}_t[P_{t+1}]}{P_t(P_t\alpha(u_t - u^\star)) + P_t - \mathbb{E}_t[P_{t+1}]}
+    \end{aligned}
+    \label{eq:partial_price}
+\end{equation}
+
+
+Next, for unemployment, we have:
+\begin{equation}
+    \begin{aligned}
+        \frac{\delta \big(\frac{\bar{Y}}{Y^\star}\big)}{\delta u_t} &= -\gamma \\
+        \epsilon_{\frac{\bar{Y}}{Y^\star}, u_t} &= \frac{1}{u_t - u^\star}
+    \end{aligned}
+    \label{eq:partial_unemp}
+\end{equation}
+
+A simple yet fundamental observation is that both exogenous variables have non-zero contributions to output.
+However, the above defined relationships of $P_t$ are relative to inflation $\pi_t$ instead of output $Y$.
+
 \subsection{Literature Review}\label{subsec:litreview}
 
 \subsubsection{Theoretical Research}\label{subsubsec:theoretical_research}
