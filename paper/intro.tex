@@ -29,4 +29,41 @@ The formal hypothesis of this paper is that an $ARX(p, q)$ representation of Rea
 \noindent yields OLS parameter estimates that satisfy the \textbf{Gauss\rule[0.5ex]{0.5em}{0.7pt}}Markov conditions for time-series estimators.
 
 \subsection{Literature Review}\label{subsec:litreview}
-\dots
+
+\subsubsection{Theoretical Research}\label{subsubsec:theoretical_research}
+The project aims to analyze the relationship between real economics growth and state of economy. Numberous of earlier researches shows that changes of real GDP 
+are closely related to price levels (CPI) and unemployment rates (u). In (\cite{mandel_relationship_2019}) research find
+there's a existing relationship by using multiple regression analysis. 
+It shows a continously existing correlation between GDP and and unemployment rate in U.S. over fifty years. 
+While the finding in (\cite{kitov_link_2021}) research shows the motified okun's law is an extraordinary predictive power and valid model.
+They re-estimated the models of link between real GDP per capita and unemployment rate over eight delevoped countries.
+Indifferent from previous research (\cite{mandel_relationship_2019}), they pointed out the real GDP per capita is nescessary to 
+present the real economic growth while the price levels and unemployment rate are both real economic indicators.
+It shows the accuarte prediction of the dynamics of independent variable sine 1960s. 
+In addition, (\cite{rouksar-dussoyea_economic_2017}) research highlight the importance of both independent variables (CPI and unemployment rate) in determining the real GDP.
+Matching the result in (\cite{kitov_link_2021}), showing significant relationship with dependent variable (GDP). 
+
+In (\cite{chen_development_2025}) study on GDP forecasting support the use of two key predictors (CPI and unemployment rate). In their model,
+used two independent variables (CPI and unemployment rate) to predict real GPD per capita and showed high accuartecy even in advanced models.
+Together with (\cite{mandel_relationship_2019}) and (\cite{kitov_link_2021}) demonstrated short-term econmoics flucatoins and long-term structural conditions.
+They also pointed out both traditonal time-series models and morden deep learning models, indicators (CPI and unemployment rate) are the fundamental drivers of real economics growth.
+Theoretically, it supports the hypothesis proposed with ARX model in this paper.
+
+\subsubsection{Empirical Research}\label{subsubsec:empirical_research}
+In (\cite{tang_application_2020}) study, they're approaching macronomic forecasting by nonlinear autogressive with exogenous inputs model (NARX).
+It shows the autogression structure with exogenous inputs (CPI and unemployment rate) match the real economics activity. 
+While they found adding exogenous variable like economic key indciator can improve the prediction.
+Even though the NARX model is different from ARX model, we can see the economic growth jsut like dynamic system with past value and respond to extenral variable like price levels and unemployment rate.
+
+
+
+
+
+
+
+In (\cite{mandel_relationship_2019} and (\cite{kitov_link_2021}), we can see
+both apply Breusch-Pagan test and Variance Inflation Factor.
+Among independent variables, Variance Inflaiton Factor (VIF) is widely used in showing the regression cofficients are reliable and stable.
+Same for Breusch-Pagan test, it is a common method to detect the hetroscedasticity in regreession model. 
+Moverover, (\cite{granville_tunnicliffe_pdf_2025}) show just pure autogressive models often can't capture the full dynamics of time series due to external forces.
+All evidences and diagontic tests show the nescessity of exogenous variable for well fitted model.
