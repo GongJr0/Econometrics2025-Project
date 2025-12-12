@@ -1,7 +1,7 @@
 from numpy import array, float64
 import numpy as np
 
-# Ploynomial Coefficients Copied from SciPy
+# Polynomial Coefficients Copied from SciPy
 
 c1 = array(
     [0., 0.221157, -0.147981, -0.207119e1, 0.4434685e1, -0.2706056e1],

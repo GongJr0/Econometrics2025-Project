@@ -5,7 +5,7 @@ from typing import Literal
 
 # All code regarding tau coefficients was directly copied from statsmodels/tsa/adfvalues.py
 # 
-# Below are the coefficients are used in response-surface appriximations (MacKinnon, 1994) 
+# Below are the coefficients are used in response-surface approximations (MacKinnon, 1994)
 # for the Dickey-Fuller distribution critical values and p-values.
 # The coefficients below are the second iteration of coefs released in 2010 as an update to the original 1994 paper facilitating ADF tests.
 
@@ -257,4 +257,4 @@ def mackinnon_p(stat: float64, trend: Literal["n", "c", "ct", "ctt"] = "c") -> f
         coef = _tau_largeps[trend][0]
     
     norm_x = polyval(coef[::-1], stat)
-    return (1/2) * (1+erf(norm_x/sqrt(2)))  # Standard Normal CDF
+    return float64((1/2) * (1+erf(norm_x/sqrt(2))))  # Standard Normal CDF
