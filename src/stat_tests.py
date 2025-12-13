@@ -374,7 +374,7 @@ def KS2Sample(X, alpha=0.05, pval_terms=101, display_plot=False, varnames: list[
 
     # scoped imports
     import matplotlib.pyplot as plt
-    import seaborn as sns
+    import seaborn as sns  # type: ignore[import-untyped]
     import pandas as pd
 
     if isinstance(X, pd.DataFrame):
@@ -386,14 +386,14 @@ def KS2Sample(X, alpha=0.05, pval_terms=101, display_plot=False, varnames: list[
     ks_stats_df = pd.DataFrame(ks_stats, index=cols, columns=cols)
 
     ks_pvals = [[tests[i, j].pval for j in range(len(cols))] for i in range(len(cols))]
-    ks_pvals = pd.DataFrame(ks_pvals, index=cols, columns=cols)
+    ks_pvals_df = pd.DataFrame(ks_pvals, index=cols, columns=cols)
     
-    nr_template = lambda x, y: f"Fail to Reject $\mathbf{{H_0}}$ \n $p={x:.4f}$ \n $C = {y:.4f}$"
-    r_template = lambda x, y: f"Reject $\mathbf{{H_0}}$\n $p={x:.4f}$ \n $C = {y:.4f}$"
+    nr_template = lambda x, y: f"$\mathbf{{H_0}}$ \n $p={x:.4f}$ \n $C = {y:.4f}$"
+    r_template = lambda x, y: f"$\mathbf{{H_1}}$\n $p={x:.4f}$ \n $C = {y:.4f}$"
     annot_arr = []
     for i in range(ks_reject_df.shape[0]):
         for j in range(ks_reject_df.shape[1]):
-            pval_ij = ks_pvals.iloc[i, j]
+            pval_ij = ks_pvals_df.iloc[i, j]
             if ks_reject_df.iloc[i, j]:
                 annot_arr.append(r_template(pval_ij, ks_stats_df.iloc[i, j]))
             else:
@@ -409,14 +409,14 @@ def KS2Sample(X, alpha=0.05, pval_terms=101, display_plot=False, varnames: list[
         linewidths=0.5,
         linecolor="white",
         annot=np.array(annot_arr).reshape(ks_reject_df.shape),
-        annot_kws={'fontsize': 22, "weight": "bold"},
+        annot_kws={'fontsize': 14, "weight": "bold"},
         fmt="",
         vmin=0,
         vmax=1,
     )
-    plt.title(f"KS Test Matrix (α = {alpha})", fontsize=32, weight="bold")
-    plt.tick_params(axis="x", rotation=0, labelsize=28)
-    plt.tick_params(axis="y", rotation=0, labelsize=28)
+    plt.title(f"KS Test Matrix (α = {alpha})", fontsize=18, weight="bold")
+    plt.tick_params(axis="x", rotation=0, labelsize=14)
+    plt.tick_params(axis="y", rotation=0, labelsize=14)
     return ks_stats_df, ks_reject_df, ks_pvals
 
 
@@ -500,16 +500,16 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
         ks_stats_df = pd.DataFrame(ks_stats, index=cols, columns=cols)
 
         ks_pvals = [[ks_tests[i, j].pval for j in range(len(cols))] for i in range(len(cols))]
-        ks_pvals = pd.DataFrame(ks_pvals, index=cols, columns=cols)
+        ks_pvals_df = pd.DataFrame(ks_pvals, index=cols, columns=cols)
 
         fig = plt.figure(figsize=(12, 8))
 
-        nr_template = lambda x, y: f"Fail to Reject $\mathbf{{H_0}}$ \n $p={x:.4f}$ \n $C = {y:.4f}$"
-        r_template = lambda x, y: f"Reject $\mathbf{{H_0}}$\n $p={x:.4f}$ \n $C = {y:.4f}$"
+        nr_template = lambda x, y: f"$\mathbf{{H_0}}$ \n $p={x:.4f}$ \n $C = {y:.4f}$"
+        r_template = lambda x, y: f"$\mathbf{{H_1}}$\n $p={x:.4f}$ \n $C = {y:.4f}$"
         annot_arr = []
         for i in range(ks_reject_df.shape[0]):
             for j in range(ks_reject_df.shape[1]):
-                pval_ij = ks_pvals.iloc[i, j]
+                pval_ij = ks_pvals_df.iloc[i, j]
                 if ks_reject_df.iloc[i, j]:
                     annot_arr.append(r_template(pval_ij, ks_stats_df.iloc[i, j]))
                 else:
@@ -525,13 +525,13 @@ def BootstrapKS2Samp(X, block_len: int | None = None, n_bootstrap: int = 1000, a
             linecolor="white",
             annot=np.array(annot_arr).reshape(ks_reject_df.shape),
             fmt="",
-            annot_kws={"weight": "bold", "fontsize": 22},
+            annot_kws={"weight": "bold", "fontsize": 14},
             vmin=0,
             vmax=1,
         )
-        plt.title(f"Bootstrapped KS Test Matrix (α = {alpha})", fontsize=32, weight="bold")
-        plt.tick_params(axis="x", rotation=0, labelsize=28)
-        plt.tick_params(axis="y", rotation=0, labelsize=28)
+        plt.title(f"Bootstrapped KS Test Matrix (α = {alpha})", fontsize=14, weight="bold")
+        plt.tick_params(axis="x", rotation=0, labelsize=14)
+        plt.tick_params(axis="y", rotation=0, labelsize=14)
     
     return ks_stats, ks_pvals, ks_reject, ks_tests
     
