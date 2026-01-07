@@ -50,6 +50,8 @@ class FitResults:
     error: ErrorMetrics
 
     F_test: StatsTest
+    T_tests: list[StatsTest]
+
     HC_test: StatsTest
     
     resid_heteroske: StatsTest

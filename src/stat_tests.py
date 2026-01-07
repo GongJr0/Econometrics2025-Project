@@ -269,7 +269,7 @@ def SW(X, alpha = 0.05) -> StatsTest:
 
     if n > 5000:
         warnings.warn("For N > 5000, computed p-value "
-                      f"may not be accurate. Current N is {n}.")
+                      f"may not be accurate. Current N is {n:,}.")
     
     return StatsTest(
         reject=pw<alpha,
@@ -610,19 +610,26 @@ def BG(eps: NDArray[float64], p: int = 1, alpha: float = 0.05) -> StatsTest:
         stat_name=f"BG({p}) Test (Chi^2 Statistic)"
     )
     
-def RESET(y: NDArray[float64], y_hat: NDArray[float64], X: NDArray[float64], q: int = 2, alpha: float64 = 0.05) -> StatsTest:
+def RESET(y: NDArray[float64],  
+          X: NDArray[float64], 
+          q: int = 2, 
+          alpha: float64 = 0.05) -> StatsTest:
     
     n = y.shape[0]
-    k = X.shape[1]
+    k = X.shape[1] + 1 # +1 for intercept
+
+    ones = np.ones((n,1), dtype=float64)
+    X = np.column_stack([ones, X])  # add intercept
+
+    y_hat = X @ (np.linalg.inv(X.T @ X) @ X.T @ y)
 
     unrestricted_X = np.column_stack([X, *[y_hat**(i+2) for i in range(q)]])
     uXT_X = unrestricted_X.T @ unrestricted_X
     u_beta = np.linalg.inv(uXT_X) @ unrestricted_X.T @ y
     u_fitted = unrestricted_X @ u_beta
     r2_ur = r2(y, u_fitted)
-    
-    res_fitted = X @ (np.linalg.inv(X.T @ X) @ X.T @ y)
-    r2_r = r2(y, res_fitted)
+
+    r2_r = r2(y, y_hat)
     
     F_num = (r2_ur - r2_r) / q
     F_denom = (1 - r2_ur) / (n-k-q)
@@ -679,4 +686,20 @@ def HC(y: NDArray[float64], X:NDArray[float64], alpha: float = 0.05) -> StatsTes
         stat_name="Harvey-Collier Test (t-statistic)",
     )
     
-    
+def T_TESTS(betas: NDArray, SE:NDArray, df: int, alpha: float=0.05) -> list[StatsTest]:
+    tests = []
+    for i in range(len(betas)):
+        coef = betas[i]
+        se = SE[i]
+
+        t_stat = abs(coef/se)
+        pval = 2*(1-T_CDF(t_stat, df))
+        tests.append(
+            StatsTest(
+            reject= bool(pval<alpha),
+            pval=pval,
+            test_stat=t_stat,
+            stat_name="Coefficient Significance Test (T-Statistic)"
+            )
+        )
+    return tests

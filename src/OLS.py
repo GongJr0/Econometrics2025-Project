@@ -6,7 +6,7 @@ from typing import Union, Literal
 
 from .error_functions import r2, r2_adj, rmse, mape
 from .fit_data import ErrorMetrics, FitResults
-from .stat_tests import ADF, BP, SW, BG, F_TEST, HC
+from .stat_tests import ADF, BP, SW, BG, F_TEST, HC, T_TESTS
 
 class OLS:
     """Ordinary Least Squares (OLS) Regression Model"""
@@ -43,8 +43,9 @@ class OLS:
 
         XT = X.T
         XT_X = XT @ X
+        XTX_inv = np.linalg.inv(XT_X)
 
-        betas = np.linalg.inv(XT_X) @ XT @ y
+        betas =  XTX_inv @ XT @ y
         self.betas = betas
         
 
@@ -60,7 +61,12 @@ class OLS:
         dfd = X.shape[0]-X.shape[1]-1
         F = ((SSR/dfn) / (SSE/dfd))
         
-         
+        tdf = X.shape[0]-X.shape[1]
+        sig_hat = SSE/ tdf
+        cov = sig_hat * XTX_inv
+        SE = np.sqrt(np.diag(cov))
+
+        t_test = T_TESTS(betas, SE, tdf, diagnosis_alpha)
 
         err = ErrorMetrics(
             r2=round(r2(y, y_hat), 4),
@@ -85,6 +91,7 @@ class OLS:
             resid=resid,
             XT_e=XT_e,
             F_test=f_test,
+            T_tests=t_test,
             HC_test=hc,
             beta=betas,
             coefs=betas[1:],
