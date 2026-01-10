@@ -8,13 +8,13 @@ Our initial VIF computations are as follows:
         \toprule
         \textbf{Regressor} & \textbf{VIF} \\
         \midrule
-        $pce$ & 1.31 \\
-        $pdi$ & 1.21 \\
-        $govexp$ & 1.37 \\
-        $ugap$ & 1.76 \\
-        $ogap$ & 1.80 \\
-        $okun$ & 2.56 \\
-        $phillips$ & 2.80 \\
+        $pce$ & 1.73 \\
+        $pdi$ & 1.61 \\
+        $govexp$ & 1.43 \\
+        $ugap$ & 1.45 \\
+        $ogap$ & 1.85 \\
+        $okun$ & 2.86 \\
+        $phillips$ & 2.76 \\
         \bottomrule
     \end{tabular}
     \caption{Variance Inflation Factor (VIF) of all regressors.}
@@ -27,34 +27,87 @@ All VIF values are well below the threshold; and we can safely conclude that mul
 \begin{figure}[H]
 \label{fig:ccf}
     \centering
-    \includegraphics[width=0.7\textwidth]{fig/ccf}
+    \includegraphics[width=0.75\textwidth]{fig/ccf}
     \caption{CCF plots of the whitened exogenous variables and the dependent variable.}
 \end{figure}
 
-Although not as clear as the PACF results, Figure~\ref{fig:ccf} carries much stronger insights into the cross-correlation structure compared to raw correlation coefficients.
-$CPI$ shows several spikes above the significance bounds with notable lags being $\{0, 45, 47\}$.
-For $u$, we observe that lag-0 is the only significant entry.
-Based on the observations, lag-0 is the only selection that ensures significant lags of both exogenous variables are included.
-Therefore, the cross-correlation analysis yields $q=0$ to be the optimal selection.\footnote{In Equation~\ref{eq:model_eq}, $q=0$ would mean not including exogenous variables. But as a lag order selection, it should be interpreted as using the current observations as regressors.}
+The CCF results all but one regressor has at least one significant lagged correlation with the target.
+The regressors $pce$, and $pdi$ are direct contributors to GDP\@. 
+As expected, they show strong positive correlations at lag-1.
+Interestingly, we see that $ugap$ has a significant positive correlation at lag-0; which is counterintuitive given the theoretical negative relation.
 
 \vspace{\baselineskip}
-Using $q=0$ introduces the problem of \textbf{data leakage}, as current quarter values of exogenous variables would not be available at the time of estimation.
-This results in a design choice of either using the closest available selection in time (i.e.\ lag-1) or in significance (selection of lag-45 or lag-47 for $CPI$).
-Since introducing 45 or 47 more coefficients per variable would essentially guarantee overfitting, the final decision was in favor of using $q=1$.\footnote{Further regularization techniques, or using sparse lagged estimators are indeed possible but are deemed outside the scope of this paper.}
 
-\subsubsection{ARX Equation}\label{subsubsec:arx_equation}
-With the order specification finalized, we were left with an $ARX(1,\ 1)$ model.
-The objective equation is as follows:
-\begin{equation}
-    \label{eq:arx}
-    y_{t} = \beta_0 + \beta_{1} y_{t-1} + \beta_{2} CPI_{t-1} + \beta_{3} u_{t-1} + \varepsilon_{t}
-\end{equation}
+Moreover, we see that almost all variables with significant lags have a sign changed significant correlation immediately after the initial lag that's significant.
+This might be an indicator of cyclical behavior, or \enquote{response functions} with overshooting.
 
-\noindent At this stage, all model variables were known, and rescaling was performed to standardize the data.
-With a concrete design matrix, a final check of VIF between the two exogenous variables was performed to confirm the model parameters did not yield multicollinear exogenous components.
-$VIF_{CPI, u}$ was found to be 1.023, indicating near-perfect orthogonality between exogenous regressors. 
-Moreover, after standardization, we computed $\operatorname{cond}(X) = 14.75$.
-The VIF and condition number both indicate a relatively well-conditioned design matrix.
+\subsection{Model Estimation}\label{subsec:model_estimation}
+
+Having confirmed the design matrix is sufficiently well-behaved, we proceed with the estimation of the initial model.
+The fit results in the coefficients:
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Variable} & \textbf{Coefficient} & \textbf{t-test $p$} \\
+        \midrule
+        $C$ & -0.0024 & 0.8356\\
+        $pce$ & -0.0733 & 0.4732 \\
+        $pdi$ & 0.0221 & 0.5193 \\
+        $govexp$ & 0.0903 & 0.5482 \\
+        $ugap$ & 0.0018 & 0.0044\\
+        $ogap$ & 0.0058 & 0.5307\\
+        $okun$ &  0.0011 & 0.1457\\
+        $phillips$ & -0.0139 & 0.1954\\
+        \bottomrule
+    \end{tabular}
+    \caption{Estimated Coefficients of the Initial Model.}
+    \label{tab:estimated_coefficients}
+\end{table}
+
+Table~\ref{tab:estimated_coefficients} clearly shows that the model is not well-specified. 
+With the only significant variable being $ugap$, we see that the model lacs predictive and explanatory power.
+The overall model fit statistics confirm this observation:
+\begin{table}
+    \centering
+    \begin{tabular}{cc}
+        \toprule
+        \textbf{Statistic} & \textbf{Value} \\
+        \midrule
+        $R^2$ & 0.0877 \\
+        Adjusted $R^2$ & 0.0315 \\
+        RMSE & 0.107 \\
+        F-statistic & 1.5612 \\
+        p-value ($F$) & $0.1426$ \\
+        $X^\top \hat{\varepsilon}$ & $-8.79 \times 10^{-14} \approxeq 0$ \\
+        \bottomrule
+    \end{tabular}
+    \caption{Overall model fit statistics.}
+    \label{tab:model_fit_statistics}
+\end{table}
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{fig/fit_v_obs}
+        \caption{Fitted vs. Observed Values}
+        \label{fig:fitted_vs_observed}
+\end{figure}
+
+\noindent With an $R^2$ of only 8.77\% and a failing $F$-test, we can conclude an adjustment of the model specification is necessary.
+For further confirmation, we ran a RESET test which resulted in a strong rejection with $p=3.8\times 10^{-14}$.
+However, another noticeable observation is the extreme outliers in Figure~\ref{fig:fitted_vs_observed}.
+As discussed in Section~\ref{subsec:data_prep_exam}, COVID-19 proves to be a strong hurdle for the model while the 2008 is also a visible outlier to a lesser extent.
+
+\vspace{\baselineskip}
+Through leverage and Cook's distance, we will confirm the influence of these outliers. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{fig/cooks_d.png}
+    \caption{Cook's Distance of Initial Model Residuals.}
+    \label{fig:cooks_distance}
+\end{figure}
+
+\noindent We immediately see that the COVID-19 shocks dominate the influence statistics.
+$D_{2020Q3} = 8.48$ and $D_{2020Q2} = 0.801$ are the only visible points due to the significant shift in scale.
 
 \subsubsection{Variable Distribution Equality}\label{subsubsec:var_analysis}
 The standardized design matrix was used to conduct KS tests to confirm the equality of distributions.

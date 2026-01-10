@@ -1,10 +1,11 @@
 \section{Methodology}\label{sec:methodology}
 
-The proposed methodology of this paper can be split into three main components:
+The proposed methodology of this paper can be split into four main components:
 \begin{itemize}
     \item Data Preparation and Examination
     \item Model Estimation 
     \item BLUE Evaluation
+    \item Post-Fit Validation
 \end{itemize}
 
 Each component is detailed in the following subsections.
@@ -97,3 +98,29 @@ Previous stages of the methodology involve checks for the pre-fit Gauss--Markov 
     Moreover, the \textbf{Harvey\rule[0.5ex]{0.5em}{0.7pt}Collier Test} will be used to further assess model specification. 
     Strong exogeneity will then be assumed, and therefore any finding of BLUE will be referred to as \enquote{approximate} under the modelling assumptions.
 \end{itemize}
+
+\subsection{Post-Fit Validation}\label{subsec:post_fit_val}
+After estimating the model and evaluating the Gauss--Markov conditions, regression coefficients and residuals will be evaluated.
+Alongside understanding variable significances and outliers, this setep will potentially highlight the sources of issues that may arise with the BLUE evaluation.
+
+\subsubsection{Coefficient Significance}\label{subsubsec:coef_signif}
+Coefficients will be tested for significance both individually and jointly.
+Individual significance will be tested with \textbf{$t$-tests}, while model-wise joint significance will be tested with an \textbf{$F$-test}.
+Additionally, the joint significance of coefficient subsets will be tested using \textbf{Wald Tests}.
+
+\subsubsection{Residual Analysis}\label{subsubsec:res_analysis}
+The residuals of a model are very important both in predictive terms, and as tools of analysing the model fit.
+Therefore, multiple aspects of the residuals will be examined before deeming the model valid/efficient.
+
+\vspace{\baselineskip}
+
+To begin with, the fitted values will be plotted against the observed target to display the directionality and scale of residuals in a visual manner.
+This will be complemented by a QQ plot and a \textbf{Shapiro\rule[0.5ex]{0.5em}{0.7pt}Wilk Test} to assess the normality of residuals.
+Normality is not a Gauss--Markov condition, but it is important for inference.
+
+\vspace{\baselineskip}
+
+Finally, potential outliers will be examined using \textbf{Leverage} and \textbf{Cook's Distance}.
+Given the nature of our target, we can immediately expect that the 2008 Financial Crisis and 2020 COVID-19 shocks will be visible in this portion of the analysis.
+If found to be detrimental to the model generalization, removal of outliers will be considered as required.
+

@@ -703,3 +703,64 @@ def T_TESTS(betas: NDArray, SE:NDArray, df: int, alpha: float=0.05) -> list[Stat
             )
         )
     return tests
+
+import numpy as np
+
+def COOKS_D(X, y, intercept=True, plot: bool = False):
+    """
+    Cook's distance for OLS using only X, y.
+
+    Parameters
+    ----------
+    X : (n, k) array
+    y : (n,) or (n, 1) array
+    add_intercept : bool
+        If True, prepends a column of ones to X.
+
+    Returns
+    -------
+    D : (n,) Cook's distances
+    h : (n,) leverage (hat matrix diagonal)
+    e : (n,) residuals
+    mse : float mean squared error (SSE/(n-p))
+    """
+    X = np.asarray(X, dtype=float)
+    y = np.asarray(y, dtype=float).reshape(-1)
+
+    if intercept:
+        X = np.column_stack([np.ones(len(y)), X])
+
+    n, p = X.shape
+    if n <= p:
+        raise ValueError(f"Need n > p for OLS diagnostics (got n={n}, p={p}).")
+
+    beta, residuals_sum, rank, s = np.linalg.lstsq(X, y, rcond=None)
+    yhat = X @ beta
+    e = y - yhat
+
+    sse = float(e @ e)
+    mse = sse / (n - p)
+
+ 
+    XtX_inv = np.linalg.inv(X.T @ X)
+    h = np.einsum("ij,jk,ik->i", X, XtX_inv, X)
+
+
+    denom = (1.0 - h)
+    denom = np.clip(denom, 1e-12, None)
+
+    D = (e**2 / (p * mse)) * (h / (denom**2))
+    
+    if plot:
+        import matplotlib.pyplot as plt
+
+        n = len(D)
+        plt.stem(np.arange(n), D, markerfmt=",")
+        plt.axhline(4/n, linestyle="--", label="4/n")
+        plt.title("Cook's Distance")
+        plt.xlabel("Observation")
+        plt.ylabel("Cook's D")
+        plt.legend()
+        plt.show()
+    
+    return D, h, e, mse
