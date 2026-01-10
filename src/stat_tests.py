@@ -605,7 +605,7 @@ def BG(eps: NDArray[float64], p: int = 1, alpha: float = 0.05) -> StatsTest:
 
     return StatsTest(
         reject=pval<alpha,
-        pval=float(pval),
+        pval=pval,
         test_stat=float(bg_stat),
         stat_name=f"BG({p}) Test (Chi^2 Statistic)"
     )

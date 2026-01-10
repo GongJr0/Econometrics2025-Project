@@ -1,0 +1,99 @@
+\section{Methodology}\label{sec:methodology}
+
+The proposed methodology of this paper can be split into three main components:
+\begin{itemize}
+    \item Data Preparation and Examination
+    \item Model Estimation 
+    \item BLUE Evaluation
+\end{itemize}
+
+Each component is detailed in the following subsections.
+
+\subsection{Data Preparation and Examination}\label{subsec:data_prep_exam}
+The preparation step consists of using the series defined in Table~\ref{tab:fred_series} to create regressors and target as listed.
+Vectorized transformations are applied to the raw data to create the necessary variables.
+The differencing process requires each observation to have a predecessor; therefore the first observation is lost in the transformation.
+This pushes our observation window from 1989Q4--2025Q1 to 1990Q1--2025Q1.
+
+\vspace{\baselineskip}
+
+After the variables are constructed, we shift all regressors by one period to produce the final dataset.
+This ensures that all regressors at time $t$ are known; making the model have predictive validity rather than being a purely explanatory specification. 
+Having shifted the regressors, we again lose the first observation in the dataset, pulling the final observation window to 1990Q2--2025Q1 with a total of 140 observations.
+
+\subsubsection{Design Matrix Formation}\label{subsubsec:inp_mat}
+$X$ is formed by converting the model equation specified in Equation~\ref{eq:model_eq} into matrix form.
+The inner product operation of OLS estimation can be written as a matrix multiplication of observations and coefficients:
+
+\begin{equation}
+    \label{eq:des_mat}
+    \underbrace{
+    \begin{bmatrix}
+        1 & X_{1,2} & \cdots &  X_{1,m+1} \\
+        \vdots  & \vdots & \ddots &  \vdots \\
+        1 & X_{n,2} & \cdots & X_{n,m+1}
+    \end{bmatrix}}_{\text{Design Matrix}}
+    \times
+    \begin{bmatrix}
+        C \\
+        \beta_1 \\
+        \vdots \\
+        \beta_{m+1}
+    \end{bmatrix}
+\end{equation}
+
+\noindent Where $n$ is the number of observations and $m$ is the number of features (including the intercept)
+Using our observation count $n=140$ and number of regressors $m=7$, the design matrix $X$ takes the dimensions of $140\times 8$.
+
+\subsubsection{Regressor Examination}\label{subsubsec:inp_order}
+While the model order will not be adjusted based on the results, the Cross Correlation Function (CCF) of each regressor with the target variable will be examined to confirm the appropriateness of the lag structure.
+The \textbf{Box\rule[0.5ex]{0.5em}{0.7pt}Jenkins Prewhitening} procedure will be applied to expose a clearer signal of the underlying cross-correlations.
+Box\rule[0.5ex]{0.5em}{0.7pt}Jenkins Prewhitening transforms the exogenous variables into residuals of their $AR$ representation, then uses the $\beta$ coefficient to re-scale the dependent variable. (\cite{hackhard_9_2025})
+Formally, the $AR(1)$ variant of the process can be shown as:
+
+\begin{equation}
+    \label{eq:whitening}
+    \begin{aligned}
+        \hat{X_i} &= (L^1X_i) \beta_i \\
+        \hat{y_i} &= y \beta_i \\
+        \rho_{y,i} &= \operatorname{corr}(\hat{y_i}, X_i - \hat{X_i})
+    \end{aligned}
+\end{equation}
+\vspace{\baselineskip}
+
+\noindent Where $L^1$ is the lag-1 operator.
+
+\vspace{\baselineskip}
+
+Additionally, the \textbf{Variance Inflation Factor} (VIF) of all regressors will be checked to ensure multicollinearity is not present.
+VIF is computed as:
+\begin{equation}
+    \label{eq:vif}
+    VIF_{X_i} = \frac{1}{1 - R^2_{X_i}}
+\end{equation}
+
+\noindent Where $R^2_{X_i}$ is the coefficient of determination of the regression of $X_i$ on all other columns of $X$.
+The common threshold for multicollinearity, $VIF > 10$, will be used.
+
+\subsection{BLUE Evaluation}\label{subsec:blue_evaluation}
+
+After estimating the model coefficients, we evaluate the Gauss--Markov conditions to confirm whether the resulting fit is BLUE.
+Previous stages of the methodology involve checks for the pre-fit Gauss--Markov conditions:
+\begin{itemize}
+    \item \textbf{Linearity of Parameters:} by definition the model employed is a linear combination of regressors and coefficients.
+    Therefore, this condition is satisfied at the stage of model selection.
+    \item \textbf{Full Rank:} $\operatorname{rank}(X)=k$ must hold for $X^\top X$ to be invertible. 
+    Therefore, this condition must hold for the model to be estimable via OLS.
+\end{itemize}
+
+\noindent The remaining Gauss--Markov conditions concern $\varepsilon$ and are verified post-estimation:
+
+\begin{itemize}
+    \item \textbf{Spherical Errors:} This condition holds if $\operatorname{Var}(\varepsilon) = \sigma^2 I_n$;
+    implies that the residuals are homoskedastic and uncorrelated. The two criteria can be tested separately using the \textbf{Breusch\rule[0.5ex]{0.5em}{0.7pt}Pagan Test} for homoskedasticity and the \textbf{Breusch\rule[0.5ex]{0.5em}{0.7pt}Godfrey Test} for autocorrelation.
+    \item \textbf{Strict Exogeneity:} In textbook terms strict exogeneity requires $\mathbb{E}[\varepsilon_i \ |\ X] = 0$.  However, this condition is not directly testable.
+    It's often assumed to hold given weak exogeneity holds, and the design matrix $X$ shows no direct signs of endogenous interactions. 
+    A \textbf{RESET Test} will be employed to check for model misspecification and omitted nonlinearities.
+    Moreover, the \textbf{Harvey\rule[0.5ex]{0.5em}{0.7pt}Collier Test} will be used to further assess model specification. 
+    Strong exogeneity will then be assumed, and therefore any finding of BLUE will be referred to as \enquote{approximate} under the modelling assumptions.
+\end{itemize}
