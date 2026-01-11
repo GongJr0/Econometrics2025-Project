@@ -1,7 +1,7 @@
 import numpy as np
 from numpy import float64
 from numpy.typing import NDArray
-from typing import Literal
+from typing import Literal, Sequence
 from .fit_data import StatsTest
 from .tau_coefs import mackinnon_p
 from .sw_coefs import swilk
@@ -852,11 +852,91 @@ def CHOW(
 
     df1 = k
     df2 = den_df
-
-    from scipy import stats
     
-    pval = float(stats.f.sf(F, df1, df2))
+    pval = 1 - F_CDF(F, df1, df2)
     reject = bool(pval < alpha)
 
     stat_name = f"Chow test (F-Statistic)"
+    return StatsTest(reject=reject, pval=pval, test_stat=F, stat_name=stat_name)
+
+def WALD(
+    X: NDArray[np.float64],
+    y: NDArray[np.float64],
+    joint_idx: list[int],
+    alpha: float = 0.05,
+    require_full_rank: bool = True,
+) -> StatsTest:
+    """
+    Joint (Wald / partial F) test for H0: beta[j] = 0 for all j in joint_idx
+    in the linear model y ~ X.
+
+    Parameters
+    ----------
+    X : (n,k) array
+        Design matrix. Include intercept yourself if desired.
+    y : (n,) array
+        Response.
+    joint_idx : sequence of int
+        Column indices in X to test jointly (0-based).
+    alpha : float
+        Reject threshold.
+    require_full_rank : bool
+        If True, raise ValueError if full X or restricted X is rank-deficient.
+
+    Returns
+    -------
+    StatsTest with F(q, n-k) statistic and p-value.
+    """
+    X = np.asarray(X, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64).reshape(-1)
+
+    if X.ndim != 2:
+        raise ValueError("X must be 2D (n,k).")
+    n, k = X.shape
+    if y.shape[0] != n:
+        raise ValueError(f"y length ({y.shape[0]}) must match X rows ({n}).")
+
+    idx = sorted(set(int(i) for i in joint_idx))
+    if len(idx) == 0:
+        raise ValueError("joint_idx must contain at least one column index.")
+    if idx[0] < 0 or idx[-1] >= k:
+        raise ValueError(f"joint_idx contains out-of-bounds index for X with k={k}: {idx}")
+
+    q = len(idx)  # number of restrictions
+
+    # Full model
+    sse_u, rank_u = _ols_sse(y, X)
+
+    # Restricted model: drop the tested columns (imposing beta_j = 0)
+    keep = [j for j in range(k) if j not in idx]
+    if len(keep) == 0:
+        raise ValueError("joint_idx removes all columns; restricted model would be empty.")
+
+    Xr = X[:, keep]
+    sse_r, rank_r = _ols_sse(y, Xr)
+
+    if require_full_rank and (rank_u < k or rank_r < Xr.shape[1]):
+        raise ValueError(
+            f"Rank deficiency detected (rank_unrestricted={rank_u} vs k={k}, "
+            f"rank_restricted={rank_r} vs k_restricted={Xr.shape[1]}). "
+            "Joint F-test is not valid under rank deficiency."
+        )
+
+    df2 = n - k  # unrestricted residual df
+    if df2 <= 0:
+        raise ValueError(f"Need n > k for F test. Got n={n}, k={k}.")
+
+    # Partial F statistic
+    num = (sse_r - sse_u) / q
+    den = sse_u / df2
+
+    if den <= 0:
+        stat_name = f"{test_name} (F({q},{df2}))"
+        return StatsTest(reject=False, pval=np.nan, test_stat=np.nan, stat_name=stat_name)
+
+    F = float(max(num / den, 0.0))  # clamp for numerical stability
+    pval = 1 - F_CDF(F, q, df2)
+    reject = bool(pval < alpha)
+
+    stat_name = f"Wald Test(F-Statistic)"
     return StatsTest(reject=reject, pval=pval, test_stat=F, stat_name=stat_name)

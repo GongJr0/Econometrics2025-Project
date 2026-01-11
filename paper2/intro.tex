@@ -19,14 +19,21 @@ This paper focuses on testing the predictive and explanatory power of two such i
 \end{itemize}
 
 \noindent Alongside other exogenous regressors, this paper hypothesizes that a model of the form:
-Moreover, the joint significance of these interactions are hypothesized to be statistically significant.
 
 \begin{equation}
     \label{eq:model_eq}
    \Delta \log(Y_t) = C + \sum_{i=1}^n \beta_i X_{[i, \, t-1]} + \varepsilon_t
 \end{equation}
 
-\noindent where $X_{[i, \, t-1]}$ includes the above defined interactions has a \textbf{BLUE} OLS estimator with nonzero interaction coefficients.
+\noindent where $X_{[i, \, t-1]}$ includes the above defined interactions has an OLS estimator no strong evidence against \textbf{BLUE}.
+
+\vspace{\baselineskip}
+By Okun's Law, we expect the unemployment gap to be modelled by the output gap and a negative coefficient.
+Therefore, the interaction $O_t$ should be a redundant variable in the presence of its components (main-effects).
+On the other hand, the $\Pi_t$ interaction is the only variable that brings an inflationary aspect into the model equation.
+Given the added information, we expect $\Pi_t$ to add explanatory power though inflation while being supported by the in-set main effect of the unemployment gap.
+With these theorized expectations, build upon the design hypothesis and further hypothesize that $O_t$ should have an insignificant, negative (if non-zero) coefficient while $\Pi_t$ should have a significant and negative coefficient.
+
 
 \subsection{Theoretical Background}\label{subsec:theory}
 We consider two equations to base our selection of interactions.
@@ -78,8 +85,11 @@ Okun's Law can be algebraically rearranged to express $Y_t$ in levels:
 
 \noindent The above transformation connects output to unemployment and establishes a negative relationship.
 A simple yet fundamental observation is that non-zero relationships of $P_t$, and $(u_t - u_t^*)$ are clearly defined in theory.
-Interactions defined with these variables are therefore potential candidates to explain the output growth.
-Therefore, an empirical relationship can be expected; and such relationship can be analyzed to determine the differences between theoretical and observed interactions.
+However, we also observe that given direct relationship between unemployment gap and output gap is linearly defined without the need of the specific interaction $O_t$.
+In terms of gap modelling, we could conclude that these observations makes $O_t$ directly redundant.
+Yet, in a growth rate context, we believe there's benefit in testing how the Okun based dynamics are mapped outside the gap framework.
+Interactions defined with these variables are therefore potential candidates to explain the output growth. (Although we expect one to be of no significance.)
+In any case, an empirical relationship can be analyzed to determine the differences between theoretical and observed interactions.
 
 \subsection{Literature Review}\label{subsec:litreview}
 The literature review in this paper is aimed to justify two main choices made for our methodology and selection of variables:
