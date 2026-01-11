@@ -80,7 +80,7 @@ class OLS:
         
         
         f_test = F_TEST(F, dfn, dfd, diagnosis_alpha)
-        hc = HC(y, X, diagnosis_alpha)
+        # hc = HC(y, X, diagnosis_alpha)
         heteroske = BP(X_raw, y, diagnosis_alpha)
         stationarity = ADF(resid, diagnosis_trend, diagnosis_alpha)
         autocorr = [BGN(i) for i in range(1, 9)]  # BG tests for lags 1 to 8 (2 years quarterly)
@@ -92,7 +92,7 @@ class OLS:
             XT_e=XT_e,
             F_test=f_test,
             T_tests=t_test,
-            HC_test=hc,
+            HC_test=None,
             beta=betas,
             coefs=betas[1:],
             intercept=betas[0],

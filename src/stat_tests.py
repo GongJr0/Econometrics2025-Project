@@ -8,7 +8,7 @@ from .sw_coefs import swilk
 from .error_functions import r2
 from .StandardScaler import StandardScaler
 from math import gamma, erf
-from mpmath import gammainc, betainc
+from mpmath import gammainc, betainc, mpc
 import warnings
 
 
@@ -602,6 +602,8 @@ def BG(eps: NDArray[float64], p: int = 1, alpha: float = 0.05) -> StatsTest:
     bg_stat = (T-p) * r2_val
 
     pval = gammainc(p/2, 0, bg_stat/2)/gamma(p/2)  # Chi^2(p) CDF
+    if isinstance(pval, mpc):
+        pval = pval.real
 
     return StatsTest(
         reject=pval<alpha,
@@ -656,7 +658,7 @@ def HC(y: NDArray[float64], X:NDArray[float64], alpha: float = 0.05) -> StatsTes
         y_t1 = y[:t]
 
         XtX = X_t1.T @ X_t1
-        beta_t1 = np.linalg.solve(XtX, X_t1.T @ y_t1)
+        beta_t1 = np.linalg.lstsq(XtX, X_t1.T @ y_t1, rcond=None)[0]
 
         x_t = X[t, :]
         y_hat_t = float(x_t @ beta_t1)
@@ -757,10 +759,104 @@ def COOKS_D(X, y, intercept=True, plot: bool = False):
         n = len(D)
         plt.stem(np.arange(n), D, markerfmt=",")
         plt.axhline(4/n, linestyle="--", label="4/n")
-        plt.title("Cook's Distance")
-        plt.xlabel("Observation")
-        plt.ylabel("Cook's D")
-        plt.legend()
+        plt.title("Cook's Distance", fontsize=18, weight='bold')
+        plt.xlabel("Observation", fontsize=14)
+        plt.ylabel("$D_i$", fontsize=14)
+        plt.legend(fontsize=12)
         plt.show()
     
     return D, h, e, mse
+
+
+def _ols_sse(y: NDArray[np.float64], X: NDArray[np.float64]) -> tuple[float, int]:
+    """
+    Returns (SSE, rank). Uses least-squares even if X is not full rank.
+    """
+    beta, residuals, rank, _ = np.linalg.lstsq(X, y, rcond=None)
+    if residuals.size > 0:
+        sse = float(residuals[0])
+    else:
+        # If residuals not returned (e.g., rank-deficient or exact fit), compute manually
+        e = y - X @ beta
+        sse = float(e.T @ e)
+    return sse, int(rank)
+
+def CHOW(
+    y: NDArray[np.float64],
+    X: NDArray[np.float64],
+    t_break: int,
+    alpha: float = 0.05,
+    require_full_rank: bool = True,
+) -> StatsTest:
+    """
+    Chow breakpoint test for parameter stability in a linear regression y ~ X.
+
+    Parameters
+    ----------
+    y : (n,) array
+    X : (n,k) array, include intercept column yourself if desired
+    t_break : int
+        Break row index. First subsample is [0:t_break), second is [t_break:n).
+    alpha : float
+        Reject threshold.
+    require_full_rank : bool
+        If True, raises ValueError when any of the three fits is rank-deficient.
+
+    Returns
+    -------
+    StatsTest with F-statistic and p-value under F(k, n1+n2-2k).
+    """
+    y = np.asarray(y, dtype=np.float64).reshape(-1)
+    X = np.asarray(X, dtype=np.float64)
+    if X.ndim != 2:
+        raise ValueError("X must be 2D (n,k).")
+    n, k = X.shape
+    if y.shape[0] != n:
+        raise ValueError(f"y length ({y.shape[0]}) must match X rows ({n}).")
+    if not (1 <= t_break <= n - 1):
+        raise ValueError(f"t_break must be in [1, n-1]. Got {t_break} with n={n}.")
+
+    # Split
+    y1, X1 = y[:t_break], X[:t_break, :]
+    y2, X2 = y[t_break:], X[t_break:, :]
+    n1, n2 = y1.size, y2.size
+
+    if n1 <= k or n2 <= k:
+        raise ValueError(
+            f"Each segment must have more observations than regressors. "
+            f"Got n1={n1}, n2={n2}, k={k}."
+        )
+
+    # SSEs
+    sse_pooled, rank_p = _ols_sse(y, X)
+    sse1, rank1 = _ols_sse(y1, X1)
+    sse2, rank2 = _ols_sse(y2, X2)
+
+    if require_full_rank and (rank_p < k or rank1 < k or rank2 < k):
+        raise ValueError(
+            f"Rank deficiency detected (rank pooled={rank_p}, rank1={rank1}, rank2={rank2}, k={k}). "
+            "Chow F-test is not valid under rank deficiency."
+        )
+
+    sse_split = sse1 + sse2
+    num = (sse_pooled - sse_split) / k
+    den_df = (n1 + n2 - 2 * k)
+    den = sse_split / den_df
+
+    if den <= 0:
+        stat_name = f"{test_name} (F({k},{den_df}))"
+        return StatsTest(reject=False, pval=np.nan, test_stat=np.nan, stat_name=stat_name)
+
+    F = num / den
+    F = float(max(F, 0.0))
+
+    df1 = k
+    df2 = den_df
+
+    from scipy import stats
+    
+    pval = float(stats.f.sf(F, df1, df2))
+    reject = bool(pval < alpha)
+
+    stat_name = f"Chow test (F-Statistic)"
+    return StatsTest(reject=reject, pval=pval, test_stat=F, stat_name=stat_name)
