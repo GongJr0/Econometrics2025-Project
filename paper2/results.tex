@@ -322,7 +322,8 @@ Our coefficients will follow one of 3 interpretations:
     \item $\mathbf{\Delta log - \Delta log}$: For regressors in log growth units, a percentage point (pp) increase in the regressor leads to an increase of $\beta_i$ pp in the target's growth rate.
     For example, if $\Delta \log(pce)$ increases from 0.02 to 0.03 (1 pp increase), then we expect to see a $1/100 \times \beta_{pce}$ pp increase in $\Delta \log(Y)$. (Our target is scaled by 100 to represent percentages, while the regressor is in fractional pp.)
     \item $\mathbf{\Delta log - \Delta gap}$: For regressors in gap difference units, +1 pp increase in the regressor leads to a $\beta_i \times 1/100$ pp increase in the target's growth rate.
-    \item $\mathbf{\Delta log - gap}$: For regressors in gap level units (including $\log(X_i) - \log(X^*_i)$), +1 pp increase in the regressor leads to a $+\beta_i$ pp increase if the gap is not in logs, or a $+\beta_i \times 1/100$ pp increase if the regressor is a log gap. 
+    \item $\mathbf{\Delta log - gap}$: For regressors in gap level units (including $\log(X_i) - \log(X^*_i)$), +1 unit increase in the regressor leads to a $+\beta_i$ pp increase in the target's growth rate. However, when log points are used, the standard \enquote{1\% increase} in gaps correspond to 0.01 unit increase.
+    Therefore, we will use the more realistic increment of +0.01 for unit increase interpretations of this kind.\footnote{Refer to Figure~\ref{fig:vars_hist} to inspect variable distributions and typical value ranges.}
 \end{itemize}
 
 Applying these interpretations to our variables, we have:
@@ -347,4 +348,17 @@ Applying these interpretations to our variables, we have:
         $I_{2008Q4}$ & Dummy & -1.7381 & $t=2008Q4 \,\to\, 100\Delta \log(Y) - 1.7381pp$ \\
         \bottomrule
     \end{tabular}
+    \caption{Interpretation of Shock Adjusted Model Coefficients.}
+    \label{tab:coef_interpretation}
 \end{table}
+
+Table~\ref{tab:coef_interpretation} summarizes the interpretations of all coefficients and displays 2 notable results.
+First, we observe that the $pce$ coefficient is the largest contributor to output growth within the regressors. (Excluding the dummy)
+This aligns with the expectations brought by the accounting identity of GDP.
+Moreover, we see that the derived interaction $philips$ has a strong negative contribution to output, being the second most influential regressor in terms of percent influence.
+
+\vspace{\baselineskip}
+Results of the interpretation align with the hypotheses outlined in Section~\ref{subsec:hypothesis}.
+Both the significance and sign direction of $philips$ and $okun$ are as expected.
+However, an unexpected result is the insignificance of $ugap$.
+Seeing the $ogap$ significance alongside $ugap$ results, we can pose a further hypothesis that the output gap is a more direct determinant of output growth that captures the same dynamics $ugap$ would.
