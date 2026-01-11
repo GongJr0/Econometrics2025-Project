@@ -25,7 +25,7 @@ This paper focuses on testing the predictive and explanatory power of two such i
    \Delta \log(Y_t) = C + \sum_{i=1}^n \beta_i X_{[i, \, t-1]} + \varepsilon_t
 \end{equation}
 
-\noindent where $X_{[i, \, t-1]}$ includes the above defined interactions has an OLS estimator no strong evidence against \textbf{BLUE}.
+\noindent where $X_{[i, \, t-1]}$ includes the above defined interactions has an OLS estimator with no strong evidence against \textbf{BLUE}.
 
 \vspace{\baselineskip}
 By Okun's Law, we expect the unemployment gap to be modelled by the output gap and a negative coefficient.
@@ -76,7 +76,7 @@ Okun's Law can be algebraically rearranged to express $Y_t$ in levels:
 \begin{equation}
     \begin{aligned}
         \frac{Y_t}{Y_t^*} - 1 &= -\gamma(u_t - u_t^*) \\
-        Y_t &= Y_t^*(1 - \gamma(u_t - u_t^*))
+        100\times Y_t &= Y_t^*(1 - \gamma(u_t - u_t^*))
     \end{aligned}
     \label{eq:okuns_levels}
 \end{equation}

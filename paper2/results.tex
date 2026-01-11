@@ -297,9 +297,7 @@ To test for stationarity, we apply the Augmented Dickey--Fuller (ADF) test on th
 The ADF test results in $ADF = -2.91$ and $p=0.0036$; rejecting the null hypothesis of a unit root and indicating stationarity of residuals.
 
 \subsection{Gauss\rule[0.5ex]{0.5em}{0.7pt}Markov Conditions}\label{subsubsec:gm_conditions}
-
-Although we present strong evidence towards all Gauss-Markov conditions being satisfied, we further confirm our findings using the tests outlined in Section~\ref{subsec:blue_evaluation}.
-
+Based on our results regarding the residual diagnostics and model specification tests, we can evaluate the approximate fulfillment of the GM conditions for the shock adjusted model:
 \begin{itemize}
     \item \textbf{Linearity:} The model is linear in parameters by design (Equation~\ref{eq:model_eq}).
     \item \textbf{Full Rank:} We computed a lack of perfect multicollinearity with $VIF(X_i) < 5 \,\, \forall X_i \in X$ and $\operatorname{cond}(X) = 75.64$.
@@ -312,3 +310,41 @@ Although we present strong evidence towards all Gauss-Markov conditions being sa
     Although further work would be necessary to confirm this, we will not deny the possibility of BLUE on the basis of this uncertainty.
     
 \end{itemize}
+
+\subsection{Coefficient Significance and Interpretation}\label{subsubsec:coef_sig_int}
+With no strong proof against the GM conditions' fulfillment, we deem the OLS estimator of the shock adjusted model to be sufficiently close to \textbf{BLUE}.
+Therefore, we can analyze the individual coefficients, their joint significance, and confirm our hypotheses alongside an interpretation of the results.
+
+\subsubsection{Interpretation of Coefficients}\label{subsubsec:coef_interpretation}
+Our model contains a mixed set of target-regressor interactions. With our target being in log growth space,
+Our coefficients will follow one of 3 interpretations: 
+\begin{itemize}
+    \item $\mathbf{\Delta log - \Delta log}$: For regressors in log growth units, a percentage point (pp) increase in the regressor leads to an increase of $\beta_i$ pp in the target's growth rate.
+    For example, if $\Delta \log(pce)$ increases from 0.02 to 0.03 (1 pp increase), then we expect to see a $1/100 \times \beta_{pce}$ pp increase in $\Delta \log(Y)$. (Our target is scaled by 100 to represent percentages, while the regressor is in fractional pp.)
+    \item $\mathbf{\Delta log - \Delta gap}$: For regressors in gap difference units, +1 pp increase in the regressor leads to a $\beta_i \times 1/100$ pp increase in the target's growth rate.
+    \item $\mathbf{\Delta log - gap}$: For regressors in gap level units (including $\log(X_i) - \log(X^*_i)$), +1 pp increase in the regressor leads to a $+\beta_i$ pp increase if the gap is not in logs, or a $+\beta_i \times 1/100$ pp increase if the regressor is a log gap. 
+\end{itemize}
+
+Applying these interpretations to our variables, we have:
+\begin{table}[H]
+    \centering    
+    \begin{tabular}{lccc}
+        \toprule
+        \multicolumn{4}{c}{\textbf{Variables}} \\
+        \textbf{Name} & \textbf{Type} & \textbf{Coefficient} & \textbf{Interpretation} \\
+        \midrule
+        $pce$ & $\Delta\log - \Delta\log$ & 54.3276 & $pce + 1pp \,\to\, 100\Delta \log(Y) + 0.5433pp$ \\
+        $pdi$ & $\Delta\log - \Delta\log$ & 4.8823 & $pdi + 1pp \,\to\, 100\Delta \log(Y) + 0.0488pp$ \\
+        $govexp$ & $\Delta\log - \Delta\log$ & -9.5442 & $govexp + 1pp \,\to\, 100\Delta \log(Y) - 0.0954pp$ \\
+        $ugap$ & $\Delta\log - \Delta gap$ & 0.0241 & $ugap + 1pp \,\to\, 100\Delta \log(Y) + 0.0241pp$ \\
+        $ogap$ & $\Delta\log - gap$ & -10.5652 & $ogap + 0.01 \,\to\, 100\Delta \log(Y) - 0.1057pp$ \\
+        \midrule
+        \multicolumn{4}{c}{\textbf{Interactions}} \\
+        \textbf{Name} & \textbf{Type}\tablefootnote{Depending on the structure of the interactions, determining the type of interpretation dynamics can be difficult. Both $okun$ and $philips$ are not necessarily of the type $\Delta\log - gap$, but are written as such because their interpretation aligns with the dynamics of a $\Delta\log - gap$ interaction.} & \textbf{Coefficient} & \textbf{Interpretation} \\
+        \midrule
+        $okun$ & $\Delta\log - gap$ & 0.2778 & $okun + 0.01 \,\to\, 100\Delta \log(Y) + 0.002778pp$ \\
+        $phillips$ & $\Delta\log - gap$ & -24.2331 & $phillips + 0.01 \,\to\, 100\Delta \log(Y) - 0.2423pp$ \\
+        $I_{2008Q4}$ & Dummy & -1.7381 & $t=2008Q4 \,\to\, 100\Delta \log(Y) - 1.7381pp$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
