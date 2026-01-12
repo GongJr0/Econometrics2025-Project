@@ -1,40 +1,16 @@
 \section{Remarks}\label{sec:remarks}
 
-\subsection{Remark 1: VIF Application on a Reduced Design Matrix}\label{subsec:remark_vif}
-Although VIF just a measure and has no constraints on its application, the conventional use is to check for multicollinearity among the complete $X$ matrix.
-In models with AR components, this application of VIF leads to two issues (assuming the dependent variable is actually autocorrelated):
-
-\begin{itemize}
-    \item The AR components inside $X$ will create processes equivalent to the an AR estimator of $y$. 
-    To demonstrate, let's assume a relationship $y_t \sim y_{t-1}$ exists in an $AR(2)$ model. 
-    As shifting the variable in time does not change the assumed relationship, we also have $y_{t-1} \sim y_{t-2}$.
-    As a consequence, the design matrix (which is composed of $y_{t-1}$ and $y_{t-2}$) will exactly replicate an $AR(1)$ estimator of $y$.
-    With lags selected to maximize $R^2_y$, we end up also maximizing the $R^2$ in the VIF calculation.
-
-    \item The point above extends to exogenous variables as well.
-    Again, assuming $y_t \sim x_{t-1}$ exists, we also have $y_{t-1} \sim x_{t-2}$.
-    Although $y_{t-1} \sim x_{t-2}$ never directly occurs, the design matrix in this case produces $y_{t-1} \sim x_{t-1}$.
-    This is not an exact replication of the designed relationship, but by autocorrelation of $y$, it is a very safe assumption that $y_{t-1} \sim x_{t-1}$ will produce an $R^2$ comparable to the original estimator.
-    As a result, we will again be maximizing the $R^2$ in the VIF calculation if we're constructing the model to explain the dependent variable as best as it can.
-
-\end{itemize}
-
-The points discussed show the well-known fact that VIF is not designed for these scenarios.
-Therefore, many studies, alongside this paper, elect to use VIF on a reduced $X$ matrix stripped of AR components. (\cite{niu_impact_2022} \& \cite{karlstrom_data-driven_2023})
-
-\subsection{Remark 2: Time-Series Application of KS Test}\label{subsec:remark_ks}
-
-The i.i.d.\@ assumption of the classic KS test was addressed by Præstgaard with a bootstrapping approach.
-Yet, the examples, lemmas, and theorems presented in the paper were derived from row-exchangeable samples.
+\subsection{On Variable Selection}\label{subsec:remark_var_selection}
+The design matrix intentionally omits two main effects that correspond to the interaction terms used in our hypotheses: the level unemployment gap ($u - u^*$) and inflation measured as ($\Delta\log(P^{GDP})$).
+We instead include $\Delta (u - u^*)$, incorporating $u - u^*$ and $\Delta\log(P^{GDP})$ only through interaction terms.
 
 \vspace{\baselineskip}
-
-With row-exchangeability, Præstgaard was able to apply standard bootstrap resampling while preserving the continuity of the empirical distribution.
-However, time-series data inherently requires the row-structure to be preserved; hence rendering the standard bootstrap inappropriate.
-To preserve the time-dependent dynamics, our methodology elected to use a \textbf{Block Bootstrap} approach. 
-This specific adaptation is not documented nor theoretically justified in Præstgaard's work; consequently, while we regard it as a reasonable and practically reliable extension for the purposes of this study, it remains an empirical choice that invites further theoretical investigation.
+As a robustness check, we estimated an alternative specification that includes the two main effects. (On top of the shock adjusted model)
+The main-effect coefficients were found to be insignificant, and both interaction terms lost their significance as well.
+The coefficients of interest only showed marginal changes while the $R^2$ had a small increase from 0.45 to 0.47.
+However, these additions introduced severe multicollinearity issues, with $cond(X) = 698.2$ and $max(VIF(X)) = 24.72$.
 
 \vspace{\baselineskip}
-
-A block bootstrap 1-sample KS test was derived in a recent preprint paper (\cite{chandy_nonparametric_2025}) and applications of bootstrap techniques in KS style tests were demonstrated in multiple studies. (\cite{psaradakis_bootstrap_2003} \& \cite{wylupek_nonparametric_2023})
-These works place bootstrap KS tests on a more solid theoretical footing, even though our specific use case is undocumented.
+Therefore, we elected to use the specification with $\Delta\log(P^{GDP})$ omitted as a main-effect, and $u - u^*$ differenced in level form.
+We confirmed that the models were qualitatively very similar, while the selected model had tangible benefits in terms of multicollinearity and the preservation of degrees of freedom.
+We acknowledge that excluding main effects makes interaction coefficients best viewed as reduced-form conditional relationships rather than clean structural cross-effects.

@@ -1,14 +1,23 @@
 \section{Conclusion}\label{sec:conclusion}
+Although our initial design matrix indicated misspecification issues, we were able to address these through shock adjustments and the identification of a structural break.
+Ultimately, our final model included every regressor in the initial specification while clearing the diagnostic tests.
+Therefore, we believe our current specification is sufficient to clear our first hypothesis. (existence of an efficient model including the two interactions)
 
-With the help of normalization of variables, we were able to construct a well-behaved $ARX(1, 1)$ model that, against expectations, showed no evidence against BLUE.
-Although the model showed signs of overfitting in-sample, the statistical tests and equality of variable distributions support the conclusion of an extremely interpretable estimator where coefficients may show connections to empirical elasticities of the used Keynesian regressors.
+\vspace{\baselineskip}
+
+Our hypothesis regarding the insignificance of $okun$ was confirmed. 
+Evident by the lack of significance in both $okun$ and $ugap$, we believe that with respect to output growth, the Okun-based influence is fully linear and captured by a single main effect ($ogap$).
+Further supporting this view is the sign, magnitude, and significance of the $ogap$ coefficient.
+Being the third most influential regression coefficient by percent influence, $ogap$ captures a decently-strong negative relationship, aligning with the underlying theory.
 
 \vspace{\baselineskip}
 
-An unexpected finding was made with the unemployment coefficient, but the model as a whole shows enough stability and in-sample goodness-of-fit to warrant further comparison of empirical coefficients to economic theory.
-Moreover, we were able to display the use new and developing statistical tests and adapt to the unique challenges brought by the time-series context.
+Our second hypothesis regarding the significance and sign of $philips$ was also confirmed.
+Again, $philips$ was one of the most influential regressors, being second only to $pce$.
+While the entirety of its influence cannot be attributed to the cross-effect alone\footnote{See Remark~\ref{subsec:remark_var_selection}}, it is clear that inflationary dynamics are important determinants of output growth.
 
 \vspace{\baselineskip}
-All in all, we believe that out model provides a decent starting point for further research and analysis.
-While the limited out-of-sample testing did not yield results that immediately display predictive instability, we strongly believe that as more data becomes available, the model will exhibit the well-known symptoms of overfitting.
-Therefore, we want to stress that the idea behind the creation of this model is to explore where theory and empirical evidence meet, and we encourage future researchers to build upon our findings.
+
+Overall, we believe that our model was able to explain a decent portion of U.S.\@ output growth dynamics for a prediction horizon of 1 quarter.
+Moreover, significant coefficients emerged both from the accounting identity (demand-side) and from the gaps.
+Although further robustness checks and extensions are necessary to solidify our claims, we believe that our findings provide useful insights into the lagged determinants of U.S.\@ output growth. 

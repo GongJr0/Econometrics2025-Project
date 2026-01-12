@@ -1,245 +1,419 @@
 \section{Results}\label{sec:results}
-\subsection{Design Matrix}\label{subsubsec:design_matrix}
-First step of the design matrix creation is the identification of optimal $\{p, \ q\}$ parameters for the model.
-
-\subsubsection{Autoregressive Order}\label{subsubsec:ar_order}
-Application of ACF yielded a very common pattern of monotonically decreasing correlations, not outlining any specific lag order as superior.
-Looking for more conclusive insights, PACF was applied.
-
-\begin{figure}[ht]
+\subsection{Data Examination}\label{subsubsec:design_matrix}
+With the design matrix constructed as per Section~\ref{subsubsec:inp_mat}, we can compute the inter-regressor interactions with VIF and the regressor-target relations with CCF.
+Our initial VIF computations are as follows:
+\begin{table}[H]
     \centering
-    \includegraphics[width=\textwidth]{fig/acf_pacf}
-    \caption{ACF and PACF plots of the dependent (target) variable.}
-    \label{fig:acf_pacf}
-\end{figure}
-
-Figure~\ref{fig:acf_pacf} clearly shows the aforementioned decay in ACF\@. 
-Conversely, PACF shows lag-1 is the only entry with actual partial contribution into the descriptive structure of $y$.\footnote{The first spike in both ACF and PACF refers to lag-0 (the variable itself) which is equal to 1 by definition.}
-Interestingly, the small spikes around lag-20 of the PACF plot (corresponding to 20 quarters or 5 years) indicate that the COVID-19 shock still has a minor effect on the 2025 Real GDP\@.
-
-\vspace{\baselineskip}
-
-In any case, the visualization of the autocorrelation structure presents strong evidence towards the $p=1$ selection, which is used for the model generation in this paper.
-
-\subsubsection{Exogenous Order}\label{subsubsec:exog_order}
-The exogenous order selection process started with the visualization of the simple correlation vector $y$ and the lags of exogenous variables.
-
-\begin{table}[ht]
-\label{tab:exog_corr}
-    \centering
-    \begin{tabular}{ccc}
+    \begin{tabular}{lc}
         \toprule
-        $\mathbf{i_{lag}}$ & $\mathbf{corr(y, \ CPI_{t-i})}$ & $\mathbf{corr(y, \ u_{t-i})}$ \\
+        \textbf{Regressor} & \textbf{VIF} \\
         \midrule
-        0 & 0.989 & -0.221 \\
-        1 & 0.988 & -0.255 \\
-        2 & 0.988 & -0.221 \\
-        3 & 0.988 & -0.190 \\
-        4 & 0.988 & -0.236 \\
-        5 & 0.988 & -0.205 \\
+        $pce$ & 4.79 \\
+        $pdi$ & 2.05 \\
+        $govexp$ & 1.53 \\
+        $ugap$ & 9.22 \\
+        $ogap$ & 3.94 \\
+        $okun$ & 4.62 \\
+        $phillips$ & 3.22 \\
         \bottomrule
     \end{tabular}
-    \caption{Pearson correlation coefficients between the dependent variable and lags of exogenous variables.}
+    \caption{Variance Inflation Factor (VIF) of all regressors.}
+    \label{tab:vif_results}
 \end{table}
 
-Inspecting the table of coefficients, we see that $CPI$ consistently stays at a coefficient of 0.988\@. This indicates that the autoregressive process of $CPI$ is likely very strong, and related to the autoregressive process explaining $y$.
-On the other hand, $u$ shows a more reasonable set of coefficients. Although coefficients of $u$ are also relatively stable, they reside in the reasonable range of $[-0.255, \ -0.190]$.
-However, a lack of decay or noticeable regime changes in the matrices leaves this simple test inconclusive.
-This inconclusiveness was expected, and the CCF plots of whitened variables were examined for clearer insights.
+All VIF values are below the threshold, and we can conclude that multicollinearity is not a concern in our design matrix.
 
-\begin{figure}[ht]
+
+\begin{figure}[H]
 \label{fig:ccf}
     \centering
-    \includegraphics[width=\textwidth]{fig/ccf}
+    \includegraphics[width=0.75\textwidth]{fig/ccf}
     \caption{CCF plots of the whitened exogenous variables and the dependent variable.}
 \end{figure}
 
-Although not as clear as the PACF results, Figure~\ref{fig:ccf} carries much stronger insights into the cross-correlation structure compared to raw correlation coefficients.
-$CPI$ shows several spikes above the significance bounds with notable lags being $\{0, 45, 47\}$.
-For $u$, we observe that lag-0 is the only significant entry.
-Based on the observations, lag-0 is the only selection that ensures significant lags of both exogenous variables are included.
-Therefore, the cross-correlation analysis yields $q=0$ to be the optimal selection.\footnote{In Equation~\ref{eq:model_eq}, $q=0$ would mean not including exogenous variables. But as a lag order selection, it should be interpreted as using the current observations as regressors.}
+The CCF results in Figure~\ref{fig:ccf} show all regressors have significant lag-1 correlations, supporting the validity of the matrix specification with $L^1$.
+As expected, $pce$ and $pdi$ show strong positive correlations while $ugap$ shows a negative correlation as theorized.
+Moreover, almost all variables with significant lags have a sign changed significant correlation immediately after the initial lag that's significant.
+This might be an indicator of cyclical behavior, or \enquote{response functions} with overshooting.
+$ogap$ and $okun$ show particularly similar magnitudes and sign patterns.
+With $ogap$ being a component of $okun$, we can hypothesize that $okun$'s correlation pattern is mostly inherited from $ogap$ rather than $ugap$. (at least in the first 2 lags)
 
-\vspace{\baselineskip}
-Using $q=0$ introduces the problem of \textbf{data leakage}, as current quarter values of exogenous variables would not be available at the time of estimation.
-This results in a design choice of either using the closest available selection in time (i.e.\ lag-1) or in significance (selection of lag-45 or lag-47 for $CPI$).
-Since introducing 45 or 47 more coefficients per variable would essentially guarantee overfitting, the final decision was in favor of using $q=1$.\footnote{Further regularization techniques, or using sparse lagged estimators are indeed possible but are deemed outside the scope of this paper.}
 
-\subsubsection{ARX Equation}\label{subsubsec:arx_equation}
-With the order specification finalized, we were left with an $ARX(1,\ 1)$ model.
-The objective equation is as follows:
-\begin{equation}
-    \label{eq:arx}
-    y_{t} = \beta_0 + \beta_{1} y_{t-1} + \beta_{2} CPI_{t-1} + \beta_{3} u_{t-1} + \varepsilon_{t}
-\end{equation}
 
-\noindent At this stage, all model variables were known, and rescaling was performed to standardize the data.
-With a concrete design matrix, a final check of VIF between the two exogenous variables was performed to confirm the model parameters did not yield multicollinear exogenous components.
-$VIF_{CPI, u}$ was found to be 1.023, indicating near-perfect orthogonality between exogenous regressors. 
-Moreover, after standardization, we computed $\operatorname{cond}(X) = 14.75$.
-The VIF and condition number both indicate a relatively well-conditioned design matrix.
+\subsection{Model Estimation}\label{subsec:model_estimation}
 
-\subsubsection{Variable Distribution Equality}\label{subsubsec:var_analysis}
-The standardized design matrix was used to conduct KS tests to confirm the equality of distributions.
-For demonstration purposes, both a simple KS test, and a bootstrapped test with 1,000 iterations were performed.
-
-\begin{figure}[H]
-    \begin{minipage}{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{fig/ks}
-        \caption{KS Test Matrix}
-        \label{fig:ks_matrix}
-    \end{minipage}\hfill
-    \begin{minipage}{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{fig/ks_boot}
-        \caption{Bootstrapped KS Test Matrix}
-        \label{fig:bootstrapped_ks_matrix}
-    \end{minipage}
-\end{figure}
-
-We observe that the only difference in results between the two tests is in the $\{y_{t-1}, \ u_{t-1}\}$ pair.
-Both tests use $H_0$: $F_x = F_y$ therefore failing to reject means there was not enough evidence to refute the equality of distributions.
-However, it is important to note that these tests are not proof of equality, but rather an indication that the distributions are similar enough to not be statistically different.
-In this paper, we proceed respect the results of the bootstrapped test (Figure~\ref{fig:bootstrapped_ks_matrix}) and assume approximate equality of distributions for all variable pairs.
-
-\vspace{\baselineskip}
-
-\noindent\textbf{NOTE: } The p-values annotated in the Standard KS matrix are approximations derived by a 101-term Taylor expansion. (Expansion is ill-defined at $D = 0$ for an even number of terms) The test results are evaluated by a comparison of statistics and are not supposed to yield concrete p-values.
-
-\subsection{Model Fit}\label{subsubsec:model_fit}
-The fit was performed using Ordinary Least Squares (OLS) on the matrix expansion of Equation~\ref{eq:arx}.
-The estimation yielded the following coefficients:
-\begin{table}[ht]
+Having confirmed the design matrix is sufficiently well-behaved, we proceed with the estimation of the initial model.
+The fit results in the coefficients:
+\begin{table}[H]
     \centering
-    \begin{tabular}{cc}
+    \begin{tabular}{lccc}
         \toprule
-        \textbf{Variable} & \textbf{Coefficient} \\
+        \textbf{Variable} & \textbf{Coefficient} & \textbf{t-test $p$} & \textbf{Significance} \\
         \midrule
-        $C$ ($\beta_0$) & 16,257.27 \\
-        $y_{t-1}$ ($\beta_1$) & 3,795.25 \\
-        $CPI_{t-1}$ ($\beta_2$) & 14.83 \\
-        $u_{t-1}$ ($\beta_3$) & 65.54 \\
+        $C$ & 0.0288 & 0.8309 & $\text{\sffamily{X}}$ \\ 
+        $pce$ & 76.8300 & $\approxeq 0$ & $\checkmark$ \\
+        $pdi$ & 9.7348 & 0.0229 & $\checkmark$ \\
+        $govexp$ & -22.6115 & 0.0730 & $\text{\sffamily{X}}$ \\
+        $ugap$ & 1.1538 & $\approxeq 0$ & $\checkmark$ \\
+        $ogap$ & -5.0182 & 0.5201 & $\text{\sffamily{X}}$ \\
+        $okun$ &  -3.4977 & 0.0670 & $\text{\sffamily{X}}$ \\
+        $phillips$ & -32.7522 & 0.0315 & $\checkmark$ \\
+        \midrule
+        & & & $\sum_\checkmark = 4$ \\
         \bottomrule
     \end{tabular}
-    \caption{Estimated coefficients of the ARX(1, 1) model.}
+    \caption{Estimated Coefficients of the Initial Model.}
     \label{tab:estimated_coefficients}
 \end{table}
 
-With a normalized design matrix, the intercept column expectedly has to take on the re-scaling of inputs.
-Also, the strong influence of $y_{t-1}$ is inline with the autocorrelation analysis in Section~\ref{subsubsec:ar_order}.
-The only notable observation is the positive coefficient of $u_{t-1}$, which both by theory and correlation analysis should have been a negative value.
-This anomaly is likely attributable to the normalization step introducing negative values into an otherwise positive-only variable.
-
-\vspace{\baselineskip}
-The overall model fit statistics are as follows:
-\begin{figure}[H]
+Table~\ref{tab:estimated_coefficients} shows a decent result with multiple coefficients being significant. 
+We see that one of our interaction terms, $phillips$, has an individually significant coefficient while $okun$ does not.
+The overall model fit statistics confirm this observation:
+\begin{table}[H]
     \centering
-    \begin{minipage}{0.4\textwidth}
+    \begin{tabular}{cc}
+        \toprule
+        \textbf{Statistic} & \textbf{Value} \\
+        \midrule
+        $R^2$ & 0.4071 \\
+        Adjusted $R^2$ & 0.3703 \\
+        RMSE & 0.864 \\
+        F-statistic & 36.8205 \\
+        p-value ($F$) & $\approxeq 0$ \\
+        $X^\top \hat{\varepsilon}$ & $-8.49 \times 10^{-14} \approxeq 0$ \\
+        \bottomrule
+    \end{tabular}
+    \caption{Overall model fit statistics.}
+    \label{tab:model_fit_statistics}
+\end{table}
+\begin{figure}[H]
         \centering
-        \begin{tabular}{cc}
-            \toprule
-            \textbf{Statistic} & \textbf{Value} \\
-            \midrule
-            $R^2$ & 0.9972 \\
-            Adjusted $R^2$ & 0.9971 \\
-            RMSE & 201.30 \\
-            MAPE & 0.62\% \\
-            F-statistic & 12,002.50 \\
-            p-value ($F$) & $\approxeq 0$ \\
-            $X^\top \hat{\varepsilon}$ & $-6.25 \times 10^{-9} \approxeq 0$ \\
-            \bottomrule
-        \end{tabular}
-        \caption{Overall model fit statistics.}
-        \label{tab:model_fit_statistics}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.55\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{fig/fit_v_obs}
+        \includegraphics[width=0.55\textwidth]{fig/fit_v_obs}
         \caption{Fitted vs. Observed Values}
         \label{fig:fitted_vs_observed}
-    \end{minipage}
 \end{figure}
 
-All metrics indicate a good fit to in-sample data.
-However, the extremely high $R^2$ and F-statistic are clear signs of overfitting.
-Overall, the fit behavior indicates a model where coefficients are interpretable, but predictions should be handled with care.
-Figure~\ref{fig:fitted_vs_observed}, displays 2 expected locations where residuals noticeably deviate from 0:
-\begin{itemize}
-    \item The 2008 Financial Crisis
-    \item The 2020 COVID-19 Shock
-\end{itemize}
-
-As expected from a generalized model, the shocks cause an increase in error.
-However, it's arguable that the model still responds to the shocks more than what would be expected from a well-generalized estimator.
-With the highly autocorrelated $y$ and the presence of $y_{t-1}$ in the design matrix, the unregularized $ARX$ model expectedly "follows" the shocks.
-In fact, despite the reasonable fit statistics, the use of \textbf{Ridge} or \textbf{Lasso} regularization would yield better generalization for the tradeoff of a slightly reduced $R^2$.
-
-\vspace{\baselineskip}
-
-To test the predictive performance of the model, a quick test with the only available out-of-sample data (Q2 2025) was conducted. A prediction of $\$23,632.14$ Bn was achieved against a true value of $\$23,770.98$ Bn.
-This results in a percentage error of $-0.58$\% which is within the expected range by MAPE.
-
-\subsection{Residual Analysis}\label{subsubsec:residual_analysis}
-Given the fit information above, we can safely expect well-behaved residuals. 
-However, a thorough analysis of residuals is of course necessary to confirm the validity of OLS assumptions. 
-Plotting residuals over time presents the opportunity to inspect the exact magnitudes of the errors in the shock periods discussed in Section~\ref{subsubsec:model_fit}.
+\noindent With an $R^2$ of 40.71\% and a passing $F$-test, the fit looks good at face value.
+However, the application of a RESET test tells a different story. 
+The current model produces a $p$-value of $2.34\times 10^{-14}$ which is a strong indicator of misspecification.
+In fact, Figure~\ref{fig:fitted_vs_observed} hints at a possible cause of this.
+With the 2008 Financial Crisis and 2020 COVID shocks in the data, we clearly see that the model goes out of its way to fit said points.
+This is especially visible in 2020Q3 where the model re-produces the extreme positive shock to output growth.
+This behavior is not expected from a generalized model and is potentially working against the model specification test.
+To confirm our suspicions of extreme outliers, we plot the Cook's Distance of all residuals:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.5\textwidth]{fig/resid}
-    \caption{Residuals over time.}
-    \label{fig:residuals_time}
+    \includegraphics[width=0.55\textwidth]{fig/cooks_d.png}
+    \caption{Cook's Distance of Initial Model Residuals.}
+    \label{fig:cooks_distance}
 \end{figure}
 
-Figure~\ref{fig:residuals_time} outlines two abnormalities in residuals using a 0.99 confidence interval to define outliers.
-Both extremes occur in the COVID-19 period, but looking at the 2008 period, we clearly see an overestimation of $y$.
-Inspecting the line of best fit shows us that the residuals are centered around 0, with a slope of 0.
-The residuals are heavily concentrated around 0, indicating a tighter empirical distribution compared to a Normal distribution.
-Fitting a Normal and t-student distribution to the residuals confirms this observation.
-\begin{figure}[H]
-    \begin{minipage}{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{fig/resid_dist}
-        \caption{Residual density with fitted distributions.}
-        \label{fig:residuals_distribution}
-    \end{minipage}\hfill
-    \begin{minipage}{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{fig/qq}
-        \caption{QQ Plot of Residuals vs. $N(0, 1)$ quantiles.}
-        \label{fig:qq_plot}
-    \end{minipage}
-\end{figure}
-
-The QQ plot of residuals against the Normal distribution (Figure~\ref{fig:qq_plot}) 
-shows that most observations lie on a line with a noticeably smaller slope than the 
-reference line $\bar y + S_y x_i$, indicating that the bulk of the residuals is less 
-dispersed than a Normal distribution with the same mean and standard deviation. 
-However, there are extreme points in both tails that lie well outside the 95\% 
-simulation envelope, reflecting occasional large shocks. 
-Together with the fitted Student-$t$ distribution with $\widehat{\mathrm{df}} \approx 2.36$, 
-this suggests a very concentrated core with heavier-than-Normal tails rather than 
-Gaussian residuals.
-As an added confirmation, the Shapiro--Wilk test rejects normality with $W=0.62$ and $p = 1.81 \times 10^{-17} \approxeq 0$.
+\noindent We immediately see that the COVID-19 shocks dominate the influence statistics.
+$D_{2020Q3} = 5.81$ is orders of magnitude above the $4/n \approxeq 0.03$ threshold.
+In total, 10 observations exceed the threshold. 
+3 of these are attributable to the Financial Crisis (between 2008Q4 and 2010Q1) while the remaining 7 are consecutive observations from near-COVID (2020Q2--2021Q4).
 
 \vspace{\baselineskip}
 
-As a final descriptor of residual behavior, we inspect the stationarity using the ADF test. 
-Knowing the residuals are zero-centered, we fit an ADF regression with no deterministic terms.
-With $ADF = -2.25$ we obtain a $p$-value of 0.02 and reject the null hypothesis of a unit root at the 5\% significance level.
-This confirms the stationarity of residuals and presents further evidence towards homoskedasticity.
+In light of these results, it is clear that COVID-19 brings about undesirable fit-time behavior into the model.
+Of course, these observations are not to be discarded lightly, especially given time-continuity is crucial for preserving the interpretability of lagged models.
+However, given 7 consecutive observations with extreme influence on the model, there's a possibility of structural breaks.
+Therefore, two Chow tests were conducted with the break points at 2020Q2 and 2020Q3.
+Both tests confirmed the presence of structural breaks with $p_{2020Q2} = 0.01$ and $P_{2020Q3}\approxeq 0$.
+Seeing the results, we elected to re-estimate the current model using pre-COVID data before running further tests.
+
+\subsection{Pre-COVID Re-Estimation}\label{subsec:pre_covid_reestimation}
+After confirming the VIF of the pre-COVID design matrix cleared the thresholds ($VIF(X_i) < 10 \, \forall X_i \in X$), the model was re-estimated and the following coefficients were obtained:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Variable} & \textbf{Coefficient} & \textbf{t-test $p$} & \textbf{Significance} \\
+        \midrule
+        $C$ & 0.1934 & 0.0528 & $\text{\sffamily{X}}$ \\ 
+        $pce$ & 63.5334 & $\approxeq 0$ & $\checkmark$ \\
+        $pdi$ & 4.5738 & 0.0190 & $\checkmark$ \\
+        $govexp$ & -10.7911 & 0.1622 & $\text{\sffamily{X}}$ \\
+        $ugap$ & -0.1312 & 0.5661 & $\text{\sffamily{X}}$ \\
+        $ogap$ & -13.8038 & 0.0043 & $\checkmark$ \\
+        $okun$ &  -0.1075 & 0.9322 & $\text{\sffamily{X}}$ \\
+        $phillips$ & -32.7953 & 0.0015 & $\checkmark$ \\
+        \midrule
+        & & & $\sum_\checkmark = 4$ \\
+        \bottomrule
+    \end{tabular}
+    \caption{Estimated Coefficients of the Pre-COVID Model.}
+    \label{tab:precovid_estimated_coefficients}
+\end{table}
+
+As in the previous estimation, Table~\ref{tab:precovid_estimated_coefficients} show four individually significant coefficients.
+Notably, $ogap$ becomes significant while $ugap$ loses its significance.
+The overall model fit statistics are as follows:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{cc}
+        \toprule
+        \textbf{Statistic} & \textbf{Value} \\
+        \midrule
+        $R^2$ & 0.3955 \\
+        Adjusted $R^2$ & 0.3507 \\
+        RMSE & 0.4525 \\
+        F-statistic & 8.83 \\
+        p-value ($F$) & $\approxeq 0$ \\
+        $X^\top \hat{\varepsilon}$ & $-5.30 \times 10^{-14} \approxeq 0$ \\
+        \bottomrule
+    \end{tabular}
+    \caption{Overall model fit statistics.}
+    \label{tab:precovid_model_fit_statistics}
+\end{table}
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=0.55\textwidth]{fig/precov_fit_v_obs.png}
+        \caption{Fitted vs. Observed Values (Pre-COVID Model)}
+        \label{fig:precovid_fitted_vs_observed}
+\end{figure}
+The fit statistics in Table~\ref{tab:precovid_model_fit_statistics} are comparable to the initial estimation, with a slight decrease in $R^2$.
+However, Figure~\ref{fig:precovid_fitted_vs_observed} again displays the regime-breaking 2008 shock. 
+Knowing the model specification issues of the previous fit, we confirm $D_{2008Q4}$ is well above the $4/n$ threshold before running the RESET test again.
+The test again results in a rejection with $p = 0.0167$.
+Although this is again a misspecification indicator, we observe that a sizable improvement in $p$-value has been achieved without explicitly adjusting any regressors.
+However, the strategy of pulling back the observations in this case would lead to a large loss of data.
+After evaluating the 2008Q4 point as a break point candidate in a Chow test, we found $p=0.1427$ and could not confirm a break.
+Therefore, we proceed with the pre-COVID model while introducing a signal dummy $I_{2008Q4} = \mathbbm{1}_{\lbrace t=2008Q4 \rbrace}$.
+By this approach, we're effectively treating 2008Q4 as a single-period shock.
+The dummy provides the model with a single coefficient to deal with the 2008 shock exactly while having no effect on other observations.
+On the other hand, this choice introduces a loss in degrees of freedom (DoF) by increasing the $X$ dimension.
+
+\subsection{Shock Adjusted Model Re-Estimation}\label{subsec:shock_adjusted_reestimation}
+For one more time, we confirm the VIF of all regressors (including the newly added dummy) are below threshold and re-estimate the model to see if the loss of DoF is justified.
+The estimation results in the coefficients:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Variable} & \textbf{Coefficient} & \textbf{t-test $p$} & \textbf{Significance} \\
+        \midrule
+        $C$ & 0.2714 & 0.0059 & $\checkmark$ \\ 
+        $pce$ & 54.3276 & $\approxeq 0$ & $\checkmark$ \\
+        $pdi$ & 4.8823 & 0.0088 & $\checkmark$ \\
+        $govexp$ & -9.5442 & 0.1942 & $\text{\sffamily{X}}$ \\
+        $ugap$ & 0.0241 & 0.9135 & $\text{\sffamily{X}}$ \\
+        $ogap$ & -10.5652 & 0.0234 & $\checkmark$ \\
+        $okun$ &  0.2778 & 0.8179 & $\text{\sffamily{X}}$ \\
+        $phillips$ & -24.2331 & 0.0157 & $\checkmark$ \\
+        $I_{2008Q4}$ & -1.7381 & 0.0006 & $\checkmark$ \\
+        \midrule
+        & & & $\sum_\checkmark = 6$ \\
+        \bottomrule
+    \end{tabular}
+    \caption{Estimated Coefficients of the Pre-COVID Model.}
+    \label{tab:shockadj_estimated_coefficients}
+\end{table}
+
+Table~\ref{tab:shockadj_estimated_coefficients} shows that the added dummy term is highly significant.
+Moreover, the addition has caused the intercept to become individually significant.
+The overall model fit statistics are as follows:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{cc}
+        \toprule
+        \textbf{Statistic} & \textbf{Value} \\
+        \midrule
+        $R^2$ & 0.4577 \\
+        Adjusted $R^2$ & 0.4121 \\
+        RMSE & 0.4286 \\
+        F-statistic & 10.0332 \\
+        p-value ($F$) & $\approxeq 0$ \\
+        $X^\top \hat{\varepsilon}$ & $2.00 \times 10^{-14} \approxeq 0$ \\
+        \bottomrule
+    \end{tabular}
+    \caption{Shock Adjusted model fit statistics.}
+    \label{tab:shockadj_model_fit_statistics}
+\end{table}
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=0.55\textwidth]{fig/shockadj_fit_v_obs.png}
+        \caption{Fitted vs. Observed Values (Shock Adjusted Model)}
+        \label{fig:shockadj_fitted_vs_observed}
+\end{figure}
+
+The fit statistics in Table~\ref{tab:shockadj_model_fit_statistics} show a sizable improvement in $R^2$ alongside an increase in the $F$-statistic.
+With the extravagant shock now accounted for, Figure~\ref{fig:shockadj_fitted_vs_observed} looks much better in terms of the presence of high-influence outliers.
+Plotting the Cook's Distance confirms this:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{fig/shockadj_cooks_d.png}
+    \caption{Cook's Distance of Shock Adjusted Model Residuals.}
+    \label{fig:shockadj_cooks_distance}
+\end{figure}
+\noindent Although there still are 8 points above threshold, the distribution of $D_i$ looks much more uniform and sensible.
+Running the RESET test one final time yields a $p$-value of $0.3837$; indicating no evidence against correct model specification.
+With this confirmation, we proceed our analysis with the shock adjusted model.
+
+\subsection{Residual Diagnostics}\label{subsubsec:residual_diagnostics}
+Although the Cook's Distance plot displayed a basic look at the residuals, further diagnostics and tests are necessary to reach an accurate evaluation of the fit.
+Normality, Homoskedasticity, Autocorrelation, and Stationarity of residuals will be examined in this section.
+
+\begin{figure}[H]
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/shockadj_resid_v_fitted.png}
+        \caption{Residuals over Time.}
+        \label{fig:shockadj_residuals}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/shockadj_resid_hist.png}
+        \caption{Histogram of Residuals.}
+        \label{fig:shockadj_residuals_hist}
+    \end{minipage}
+\end{figure}
+
+Inspecting Figure~\ref{fig:shockadj_residuals}, we see no extreme outliers except the 2008Q4. 
+Which, as displayed by the 0 residual, is perfectly accounted for by the dummy.
+No emergent patterns are visible, and the residuals appear to be randomly scattered around 0.
+
+\vspace{\baselineskip}
+
+Figure~\ref{fig:shockadj_residuals_hist} shows a roughly normal distribution of residuals centered around 0.
+The parameter estimations suggest that $N(0, \, 0.43^2)$ and $t(13.52)$ are the best fitting distributions in their respective families.
+
+\subsubsection{Normality}\label{subsubsec:residual_normality}
+Normality can both be tested for and examined visually.
+A QQ Plot alongside a Shapiro--Wilk test will be employed for this purpose.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{fig/shockadj_qq.png}
+    \caption{QQ Plot of Shock Adjusted Model Residuals.}
+    \label{fig:shockadj_qq}
+\end{figure}
+
+The QQ Plot against normal quantiles shows that all residuals are contained within the 95\% CI bands.
+This is a strong indicator of normality, which is further confirmed by the Shapiro--Wilk test results of $SW = 0.9825$ and $p=0.1321$ failing to reject the null hypothesis of normality.
+
+\subsubsection{Homoskedasticity}\label{subsubsec:residual_homoskedasticity}
+Homoskedasticity is an important indicator of spherical errors and can be tested using the Breusch--Pagan test.
+A BP application on the shock adjusted model residuals yields $BP = 7.21$ and $p=0.4853$; failing to reject the null hypothesis of homoskedasticity.
+
+\subsubsection{Autocorrelation}\label{subsubsec:residual_autocorrelation}
+Autocorrelation of residuals indicates slow-moving patterns in the errors, which is undesirable and often results in inefficient estimates.
+To test for autocorrelation, we apply the Breusch--Godfrey test for lags $[1,8]$ (2 years).
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lcccccccc}
+        \toprule
+        \textbf{Lag} & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \\
+        \midrule
+        \textbf{$BG$} & 5.00 & 5.57 & 6.93 & 8.57 & 8.67 & 9.84 & 10.19 & 10.77 \\
+        \textbf{$p$} & 0.975 & 0.938 & 0.926 & 0.927 & 0.877 & 0.868 & 0.822 & 0.785 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Breusch--Godfrey Test Results for Shock Adjusted Model Residuals.}
+    \label{tab:shockadj_bg_results}
+\end{table}
+\noindent All lags fail to reject the null hypothesis of no autocorrelation with strong $p$-values as seen in Table~\ref{tab:shockadj_bg_results}.
+
+\subsubsection{Stationarity}\label{subsubsec:residual_stationarity}
+Finally, stationarity of residuals is an important aspect to consider in time series models.
+Non-stationary residuals can indicate omitted trends or cycles in the model specification.
+To test for stationarity, we apply the Augmented Dickey--Fuller (ADF) test on the residuals.
+The ADF test results in $ADF = -2.91$ and $p=0.0036$; rejecting the null hypothesis of a unit root and indicating stationarity of residuals.
 
 \subsection{Gauss\rule[0.5ex]{0.5em}{0.7pt}Markov Conditions}\label{subsubsec:gm_conditions}
-
-Although we present strong evidence towards all Gauss-Markov conditions being satisfied, we further confirm our findings using the tests outlined in Section~\ref{subsec:blue_evaluation}.
-
+Based on our results regarding the residual diagnostics and model specification tests, we can evaluate the approximate fulfillment of the GM conditions for the shock adjusted model:
 \begin{itemize}
-    \item \textbf{Linearity:} The model is linear in parameters by design (Equation~\ref{eq:arx} \& Equation~\ref{eq:model_eq}).
-    \item \textbf{Full Rank:} We computed a lack of perfect multicollinearity with $VIF_{CPI, u} = 1.023 < 5$ and $\operatorname{cond}(X) = 14.75 < 30$
-    \item \textbf{Spherical Errors:} Results of the BP test yielded $BP=3.88$ and $p=0.73$ failing to reject the null hypothesis of homoskedasticity.
-    Additionally, BG tests for lags $[1, 8]$ (2 years) all failed to reject the null hypothesis of no autocorrelation with the most significant result being $BG(7)=6.14$ and $p=0.48$; while the least significant was $BG(3)=5.19$ and $p=0.61$.
-    \item \textbf{Strict Exogeneity:} While strict exogeneity is not testable, the BG test and correlation analysis of $X$ support the weak exogeneity assumption. 
-    Therefore, we elect to proceed with the assumption of exogeneity given the results of all prior diagnostics. The discussed final check of Harvey--Collier test results in $HC = 0.83$ and $p=0.41$ failing to reject the null hypothesis of $\mathbb{E}[w_i] = 0 \ \forall w$.
+    \item \textbf{Linearity:} The model is linear in parameters by design (Equation~\ref{eq:model_eq}).
+    \item \textbf{Full Rank:} We computed a lack of perfect multicollinearity with $VIF(X_i) < 5 \,\, \forall X_i \in X$ and $\operatorname{cond}(X) = 75.64$.
+    While a $cond(X) < 30$ is the commonly used diagnostic threshold, having multiple interactions in $X$ increases the expected condition number by design.
+    Given the low VIF values, we accept the fulfillment of the full rank condition.
+    \item \textbf{Spherical Errors:} We found no evidence against homoskedasticity, no autocorrelation up to lag 8, and stationarity of residuals.
+    Therefore, we accept the fulfillment of the spherical errors condition.
+    \item \textbf{Strict Exogeneity:} While strict exogeneity is not testable, the model specification tests and residual diagnostics were all in favor of correct model specification.
+    While said tests are definitively not sufficient for the strong claim of exogeneity, we believe that the evidence presented is supporting weak exogeneity.
+    Although further work would be necessary to confirm this, we will not deny the possibility of BLUE on the basis of this uncertainty.
     
 \end{itemize}
+
+\subsection{Coefficient Significance and Interpretation}\label{subsubsec:coef_sig_int}
+With no strong proof against the GM conditions' fulfillment, we deem the OLS estimator of the shock adjusted model to be sufficiently close to \textbf{BLUE}.
+Therefore, we can analyze the individual coefficients, their joint significance, and confirm our hypotheses alongside an interpretation of the results.
+
+\subsubsection{Interpretation of Coefficients}\label{subsubsec:coef_interpretation}
+Our model contains a mixed set of target-regressor interactions. With our target being in log growth space,
+Our coefficients will follow one of 3 interpretations: 
+\begin{itemize}
+    \item $\mathbf{\Delta log - \Delta log}$: For regressors in log growth units, a percentage point (pp) increase in the regressor leads to an increase of $\beta_i$ pp in the target's growth rate.
+    For example, if $\Delta \log(pce)$ increases from 0.02 to 0.03 (1 pp increase), then we expect to see a $1/100 \times \beta_{pce}$ pp increase in $\Delta \log(Y)$. (Our target is scaled by 100 to represent percentages, while the regressor is in fractional pp.)
+    \item $\mathbf{\Delta log - \Delta gap}$: For regressors in gap difference units, +1 pp increase in the regressor leads to a $\beta_i \times 1/100$ pp increase in the target's growth rate.
+    \item $\mathbf{\Delta log - gap}$: For regressors in gap level units (including $\log(X_i) - \log(X^*_i)$), +1 unit increase in the regressor leads to a $+\beta_i$ pp increase in the target's growth rate. However, when log points are used, the standard \enquote{1\% increase} in gaps correspond to 0.01 unit increase.
+    Therefore, we will use the more realistic increment of +0.01 for unit increase interpretations of this kind.\footnote{Refer to Figure~\ref{fig:vars_hist} to inspect variable distributions and typical value ranges.}
+\end{itemize}
+
+Applying these interpretations to our variables, we have:
+\begin{table}[H]
+    \centering    
+    \begin{tabular}{lccc}
+        \toprule
+        \multicolumn{4}{c}{\textbf{Variables}} \\
+        \textbf{Name} & \textbf{Type} & \textbf{Coefficient} & \textbf{Interpretation} \\
+        \midrule
+        $C$ & Intercept & 0.2714 & $+0.2714pp$ \\
+        $pce$ & $\Delta\log - \Delta\log$ & 54.3276 & $pce + 1pp \,\to\, 100\Delta \log(Y) + 0.5433pp$ \\
+        $pdi$ & $\Delta\log - \Delta\log$ & 4.8823 & $pdi + 1pp \,\to\, 100\Delta \log(Y) + 0.0488pp$ \\
+        $govexp$ & $\Delta\log - \Delta\log$ & -9.5442 & $govexp + 1pp \,\to\, 100\Delta \log(Y) - 0.0954pp$ \\
+        $ugap$ & $\Delta\log - \Delta gap$ & 0.0241 & $ugap + 1pp \,\to\, 100\Delta \log(Y) + 0.0241pp$ \\
+        $ogap$ & $\Delta\log - gap$ & -10.5652 & $ogap + 0.01 \,\to\, 100\Delta \log(Y) - 0.1057pp$ \\
+        \midrule
+        \multicolumn{4}{c}{\textbf{Interactions}} \\
+        \textbf{Name} & \textbf{Type}\tablefootnote{Depending on the structure of the interactions, determining the type of interpretation dynamics can be difficult. Both $okun$ and $philips$ are not necessarily of the type $\Delta\log - gap$, but are written as such because their interpretation aligns with the dynamics of a $\Delta\log - gap$ interaction.} & \textbf{Coefficient} & \textbf{Interpretation} \\
+        \midrule
+        $okun$ & $\Delta\log - gap$ & 0.2778 & $okun + 0.01 \,\to\, 100\Delta \log(Y) + 0.002778pp$ \\
+        $phillips$ & $\Delta\log - gap$ & -24.2331 & $phillips + 0.01 \,\to\, 100\Delta \log(Y) - 0.2423pp$ \\
+        $I_{2008Q4}$ & Dummy & -1.7381 & $t=2008Q4 \,\to\, 100\Delta \log(Y) - 1.7381pp$ \\
+        \bottomrule
+    \end{tabular}
+    \caption{Interpretation of Shock Adjusted Model Coefficients.}
+    \label{tab:coef_interpretation}
+\end{table}
+
+Table~\ref{tab:coef_interpretation} summarizes the interpretations of all coefficients and displays 2 notable results.
+First, we observe that the $pce$ coefficient is the largest contributor (excluding the dummy) to output growth within the regressors.
+This aligns with the expectations brought by the accounting identity of GDP.
+Moreover, we see that the derived interaction $philips$ has a strong negative contribution to output, being the second most influential regressor in terms of percent influence.
+
+\vspace{\baselineskip}
+Results of the interpretation align with the hypotheses outlined in Section~\ref{subsec:hypothesis}.
+Both the significance and sign direction of $philips$ and $okun$ are as expected.
+However, an unexpected result is the insignificance of $ugap$.
+Seeing the $ogap$ significance alongside $ugap$ results, we can pose a complementary hypothesis that the output gap is a more direct determinant of output growth that captures the same dynamics $ugap$ would.
+
+\subsubsection{Joint Significance of Coefficients}\label{subsubsec:joint_significance}
+Looking at the model-wide $F$-test results in Table~\ref{tab:shockadj_model_fit_statistics}, we see that the shock adjusted model is jointly significant with $p \approxeq 0$.
+To further analyze the joint significance of variables, a series of regressor sub-sets were elected on the basis of theoretical adjacency.
+\begin{itemize}
+    \item \textbf{Demand-Side Regressors:} $\lbrace pce,\, pdi,\, govexp \rbrace$
+    \item \textbf{Gap/Cyclical Regressors:} $\lbrace ugap,\, ogap\rbrace$
+    \item \textbf{Cross-Effect Regressors (Interactions):} $\lbrace okun,\, phillips \rbrace$
+\end{itemize}
+\noindent A Wald test was applied to each block to evaluate their joint significance in the model.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Regressor Block} & \textbf{Wald Statistic} & \textbf{$p$-value} \\
+        \midrule
+        Demand-Side Regressors & 66.01 & $\approxeq 0$ \\
+        Gap/Cyclical Regressors & 4.62 & 0.0119 \\
+        Cross-Effect Regressors & 2.27 & 0.1077 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Wald Test Results for Regressor Blocks.}
+    \label{tab:wald_test_results}
+\end{table}
+
+Table~\ref{tab:wald_test_results} shows that both the demand-side and gap/cyclical regressor blocks are jointly significant.
+However, the cross-effect regressor block fails to reach joint significance at the 5\% level.
+Given the individual significance of $philips$, we can hypothesize that $okun$ is weakening the significance of the block.
+While unexpected, this result is not a direct contradiction to our hypotheses and the model's validity.

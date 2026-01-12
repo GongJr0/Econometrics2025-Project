@@ -1,134 +1,50 @@
 \section{Data}\label{sec:data}
-The proposed ARX model relies on two exogenous variables alongside the autoregressive target.
-All three variables are sourced from the Federal Reserve Bank of St. Louis database “FRED”. 
-The implementation uses quarterly data from 1990Q1 to 2025Q1 and the following FRED series:
+The initial model specification includes a wide range of macroeconomic indicators alongside the interactions.
+Observations for all series span from 1989Q4 to 2025Q1 and the frequency is quarterly.
+All series are sourced from the St. Louis Federal Reserve Economic Data (FRED) database.
 
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{llr}
+        \toprule
+        Variable & Units & FRED ID \\
+        \midrule
+        Real GDP ($Y$) & Billions of Chained 2017 Dollars (Adjusted) & \href{https://fred.stlouisfed.org/series/GDPC1}{GDPC1} \\
+        Personal Consumption Expenditures ($pce$) & Billions of Chained 2017 Dollars (Adjusted) & \href{https://fred.stlouisfed.org/series/PCECC96}{PCECC96} \\
+        Private Domestic Investment ($pdi$) & Billions of Chained 2017 Dollars (Adjusted) & \href{https://fred.stlouisfed.org/series/GPDIC1}{GPDIC1} \\
+        Government Expenditures ($govexp$) & Billions of Chained 2017 Dollars (Adjusted) & \href{https://fred.stlouisfed.org/series/GCEC1}{GCEC1} \\
+        Output Deflator ($odef$) & Chained Index 2017=100 (Adjusted) & \href{https://fred.stlouisfed.org/series/GDPDEF}{GDPDEF} \\
+        Natural Unemployment Rate ($u^*$) & \% (Not Adjusted) & \href{https://fred.stlouisfed.org/series/NROU}{NROU} \\
+        Unemployment Rate ($u$) & \% (Adjusted) & \href{https://fred.stlouisfed.org/series/LRUN64TTUSQ156S}{LRUN64TTUSQ156S} \\
+        Potential Output ($Y^*$) & Billions of Chained 2017 Dollars (Adjusted) & \href{https://fred.stlouisfed.org/series/GDPPOT}{GDPPOT} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Macroeconomic series used in the model along with their FRED IDs.}
+    \label{tab:fred_series}
+\end{table}
+
+Using the series in Table~\ref{tab:fred_series}, we construct our target variable and regressors as follows:
 \begin{itemize}
-    \item Real GDP ($y$): \enquote{\href{https://fred.stlouisfed.org/series/GDPC1}{GDPC1}}
-    \item CPI ($CPI$): \enquote{\href{https://fred.stlouisfed.org/series/CPIAUCSL}{CPIAUCSL}}
-    \item Unemployment Rate ($u$): \enquote{\href{https://fred.stlouisfed.org/series/UNRATE}{UNRATE}}
+    \item Target Variable: $\Delta\log(Y_t) \times 100$
+    \item Regressors:
+    \begin{description}
+        \item [$X_{[t,\, 1]}$ ($pce$): ] $\Delta\log(pce_{t-1})$ 
+        \item [$X_{[t,\, 2]}$ ($pdi$): ] $\Delta\log(pdi_{t-1})$ 
+        \item [$X_{[t,\, 3]}$ ($govexp$): ] $\Delta\log(govexp_{t-1})$ 
+        \item [$X_{[t,\, 4]}$ ($ugap$): ] $\Delta (u_{t-1} - u^*_{t-1})$ 
+        \item [$X_{[t,\, 5]}$ ($ogap$): ] $\log(Y_{t-1}) - \log(Y^*_{t-1})$ 
+        \item [$X_{[t,\, 6]}$ ($okun$): ] $(u_{t-1} - u^*_{t-1}) \times ogap$ 
+        \item [$X_{[t,\, 7]}$ ($phillips$): ] $(u_{t-1} - u^*_{t-1}) \times \Delta\log(odef_{t-1})$ 
+    \end{description}
 \end{itemize}
 
-\noindent NOTE: All series are seasonally adjusted by FRED.
-
-\subsection{Series Characteristics}\label{subsec:series_characteristics}
-\subsubsection{Real GDP}\label{subsubsec: rgdp}
-FRED's Real GDP series is measured in chained 2017 dollars (Bn). 
-The series is updated quarterly, which matches the frequency of the model natively.
-
-\vspace{\baselineskip}
-\begin{figure}[ht]
-    \centering
-\begin{minipage}[t]{0.45\textwidth}
-    \flushright
-    \begin{tabular}{lc}
-        \toprule
-        Statistic & Value \\
-        \midrule
-        $\bar{X}$ & 16,213.22 \\
-        $S_X$ & 3,837.33 \\
-        $\operatorname{Skew}(X)$ & 0.063 \\
-        $\operatorname{Kurt}(X)$ & -0.945 \\
-        \bottomrule
-    \end{tabular}
-    \label{tab:rgdp_stats}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.45\textwidth}
-    \flushleft
-    \begin{tabular}{lc}
-        \toprule
-        Quantile & Value \\
-        \midrule
-        0.00 & 9,951.91 \\
-        0.25 & 13,191.67 \\
-        0.50 & 16,485.35 \\
-        0.75 & 19,062.71 \\
-        1.00 & 23,586.54 \\
-        \bottomrule
-    \end{tabular}
-    \label{tab:rgdp_quants}
-\end{minipage}
-\caption{Descriptive statistics and quantiles of Real GDP.}
-\end{figure}
-
-\subsubsection{CPI}\label{subsubsec: cpi}
-The CPI series of choice for the model records the US-wide city average CPI for all urban consumers. 
-The series is expressed as a chain index with base period 1982-1984=100. 
-Entries are recorded monthly, and quarter-end observations are used to align with the Real GDP series.
-
-\vspace{\baselineskip}
+All variables that are observed in levels are transformed into $\log$ differences while both the gap variables and interactions are not differenced. (except for $ugap$ due to multicollinearity concerns\footnote{See Remark~\ref{subsec:remark_var_selection} for the implications and reasoning.}.)
+In our specification, $\log$ differencing is used to clean the regressors of slow-moving trends and potential multicollinearity; which is mostly an artifact of data in pure levels.
+The gaps and interactions are already detrended to an extent by their construction.
 \begin{figure}[H]
     \centering
-\begin{minipage}[t]{0.45\textwidth}
-    \flushright
-    \begin{tabular}{lc}
-        \toprule
-        Statistic & Value \\
-        \midrule
-        $\bar{X}$ & 207.32 \\
-        $S_X$ & 49.10 \\
-        $\operatorname{Skew}(X)$ & 0.343 \\
-        $\operatorname{Kurt}(X)$ & -0.708 \\
-        \bottomrule
-    \end{tabular}
-    \label{tab:cpi_stats}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.45\textwidth}
-    \flushleft
-    \begin{tabular}{lc}
-        \toprule
-        Quantile & Value \\
-        \midrule
-        0.00 & 127.50 \\
-        0.25 & 163.90 \\
-        0.50 & 207.60 \\
-        0.75 & 238.99 \\
-        1.00 & 319.09 \\
-        \bottomrule
-    \end{tabular}
-    \label{tab:cpi_quants}
-\end{minipage}
-\caption{Descriptive statistics and quantiles of CPI.}
-\end{figure}
-
-\subsubsection{Unemployment Rate}\label{subsubsec: unemp}
-Unemployment rate in FRED is recorded as percentages with a monthly frequency. 
-Similar to CPI, quarter-end observations are used to match the frequencies among the series.
-
-\vspace{\baselineskip}
-\begin{figure}[ht]
-    \centering
-\begin{minipage}[t]{0.45\textwidth}
-    \flushright
-    \begin{tabular}{lc}
-        \toprule
-        Statistic & Value \\
-        \midrule
-        $\bar{X}$ & 5.71 \\
-        $S_X$ & 1.75 \\
-        $\operatorname{Skew}(X)$ & 1.249 \\
-        $\operatorname{Kurt}(X)$ & 2.068 \\
-        \bottomrule
-    \end{tabular}
-    \label{tab:u_stats}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.45\textwidth}
-    \flushleft
-    \begin{tabular}{lc}
-        \toprule
-        Quantile & Value \\
-        \midrule
-        0.00 & 3.40 \\
-        0.25 & 4.40 \\
-        0.50 & 5.40 \\
-        0.75 & 6.60 \\
-        1.00 & 14.80 \\
-        \bottomrule
-    \end{tabular}
-    \label{tab:u_quants}
-\end{minipage}
-\caption{Descriptive statistics and quantiles of Unemployment Rate.}
+    \includegraphics[width=0.90\textwidth]{fig/vars_hist.png}
+    \caption{Density histograms of regressors.}
+    \label{fig:vars_hist}
 \end{figure}

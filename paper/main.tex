@@ -13,6 +13,8 @@
 \usepackage{csquotes}
 \usepackage{indentfirst}
 \usepackage{float}
+\usepackage{bbm}
+\usepackage{tablefootnote}
 
 \usepackage[style=apa,backend=biber]{biblatex}
 \addbibresource{ref.bib}
@@ -24,7 +26,7 @@
     urlcolor=blue, % choose color for \url (default)
 }
 
-\title{\includegraphics[width=\textwidth]{fig/logo}\\[2cm]\textbf{ARX Model of U.S.\@ Real GDP with Keynesian Exogenous Regressors}}
+\title{\includegraphics[width=\textwidth]{fig/logo}\\[2cm]\textbf{Lagged Determinants of U.S.\@ Output Growth}}
 \author{
     Ege Güney Kıymaç \\ Index No. 447987 \\ \href{mailto:e.kiymac@student.uw.edu.pl}{e.kiymac@student.uw.edu.pl} 
     \and 
@@ -45,22 +47,19 @@
 \tableofcontents
 
 \newpage
-\include{intro}
-\newpage
-\include{data}
-\newpage
-\include{methodology}
-\newpage
-\include{results}
-\newpage
-\include{conclusion}
-\newpage
-\include{remarks}
-\newpage
+\input{intro}
+\input{data}
+\input{methodology}
+\input{results}
+\input{conclusion}
 
 \section{Bibliography}\label{sec:bibliography}
 \nocite{*}
 \printbibliography[heading=subbibliography, title={References in the Paper}, keyword=paper]
 \printbibliography[heading=subbibliography, title={References in the Source Code}, keyword=src]
+
+\input{remarks}
+
 \end{document}
+
 

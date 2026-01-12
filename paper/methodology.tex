@@ -1,78 +1,55 @@
 \section{Methodology}\label{sec:methodology}
 
-The proposed methodology of this paper can be split into three main components:
+The proposed methodology of this paper can be split into four main components:
 \begin{itemize}
     \item Data Preparation and Examination
     \item Model Estimation 
     \item BLUE Evaluation
+    \item Post-Fit Validation
 \end{itemize}
 
 Each component is detailed in the following subsections.
 
 \subsection{Data Preparation and Examination}\label{subsec:data_prep_exam}
-Data preparation does not involve any steps that are specific to a given column of the dataset. Therefore, $X_{i,j}$ notation will be used to denote any given column/observation and $\beta_i$ will be used to denote any given coefficient.
-In addition to formatting the $X$ matrix to match the model structure, the preparation steps emphasize transforming the raw data for interpretability while preserving its underlying distributions.
-
-\subsubsection{Dataset Structure Validation}\label{subsubsec:inp_val}
-More often than not, the performance of a non-robust, linear estimator is governed by the quality of the input variables.
-Ideally, we look for a dataset that's \textbf{free of multicollinearity, extreme outliers, and missing values} while being \textbf{correlated to the target}.
-This general construction achieves a model where all variables have uniquely identifiable contributions to the output, often leading to lower variances and better predictive power.
+The preparation step consists of using the series defined in Table~\ref{tab:fred_series} to create regressors and target as listed.
+Vectorized transformations are applied to the raw data to create the necessary variables.
+The differencing process requires each observation to have a predecessor; therefore the first observation is lost in the transformation.
+This pushes our observation window from 1989Q4--2025Q1 to 1990Q1--2025Q1.
 
 \vspace{\baselineskip}
 
-Autoregressive models present a challenge in this regard since variables selected to be correlated to the target ($y$) are also correlated to the lagged representation of it within $X$.
-Acknowledging this issue, the endogenous portion of the model will only be checked to ensure there are no singularities by perfect correlation inside $X$. 
-The presence/absence of multicollinearity will be displayed through a correlation heatmap.
-
-\vspace{\baselineskip}
-
-Furthermore, data continuity will be prioritized over outlier removal since the model itself is time-dependent.
-Outliers, if any, will be addressed if they are found to be damaging to the model's performance after the initial estimation.
-
-\vspace{\baselineskip}
-
-Finally, any missing values will be handled through linear interpolation of the observations prior and after the occurrence.
-
+After the variables are constructed, we shift all regressors by one period to produce the final dataset.
+This ensures that all regressors at time $t$ are known; making the model have predictive validity rather than being a purely explanatory specification. 
+Having shifted the regressors, we again lose the first observation in the dataset, pulling the final observation window to 1990Q2--2025Q1 with a total of 140 observations.
 
 \subsubsection{Design Matrix Formation}\label{subsubsec:inp_mat}
 $X$ is formed by converting the model equation specified in Equation~\ref{eq:model_eq} into matrix form.
-The inner product operation specified as $ARX(p, \ q)$ can be written as a matrix multiplication of observations and coefficients:
+The inner product operation of OLS estimation can be written as a matrix multiplication of observations and coefficients:
 
 \begin{equation}
     \label{eq:des_mat}
+    \underbrace{
     \begin{bmatrix}
-        1 & X_{1,1} & \cdots &  X_{1,m} \\
+        1 & X_{1,2} & \cdots &  X_{1,m+1} \\
         \vdots  & \vdots & \ddots &  \vdots \\
-        1 & X_{n,1} & \cdots & X_{n,m}
-    \end{bmatrix}
+        1 & X_{n,2} & \cdots & X_{n,m+1}
+    \end{bmatrix}}_{\text{Design Matrix}}
     \times
     \begin{bmatrix}
         C \\
         \beta_1 \\
         \vdots \\
-        \beta_{m}
+        \beta_{m+1}
     \end{bmatrix}
 \end{equation}
 
-Where $n$ is the number of observations and $m$ is the number of features (including the intercept) dictated by the $\{p, \ q\}$ orders of the model.
+\noindent Where $n$ is the number of observations and $m$ is the number of features (including the intercept)
+Using our observation count $n=140$ and number of regressors $m=7$, the design matrix $X$ takes the dimensions of $140\times 8$.
 
-\vspace{\baselineskip}
-As shown in the above equation, a closed form matrix representation of the model requires $p$ and $q$ to be determined.
-In this paper, the selection of these hyperparameters will follow the simple and idealistic approach of selecting the lowest possible orders that lead to an efficient estimator.
-
-\subsubsection{Model Order Selection}\label{subsubsec:inp_order}
-First step of the design matrix creation is the identification of optimal $\{p, \ q\}$ parameters for the model.
-There are two distinct methods to select the autoregressive and exogenous lag order of the model:
-
-\begin{itemize}
-    \item \textbf{Autoregressive Order} \textemdash~\enquote{Autocorrelation Function} (ACF) and \enquote{Partial Autocorrelation Function} (PACF) plots of the dependent variable are examined to identify significant lags. The ACF plot helps to identify the overall correlation structure, while the PACF plot isolates the direct effect of each lag.
-    \item \textbf{Exogenous Order} \textemdash~ Lagged correlation matrices and \enquote{Cross-Correlation Function} (CCF) plots between the dependent variable and each exogenous variable are analyzed to determine significant lags. The CCF plot reveals the correlation between the dependent variable and lagged values of the exogenous variables.
-\end{itemize}
-
-While ACF and PACF can directly be applied to the dependent variable, CCF results can be heavily distorted by nonstationary and the presence of AR structures in the variables being compared.
-Therefore, the \textbf{Box\rule[0.5ex]{0.5em}{0.7pt}Jenkins Prewhitening} procedure will be applied to expose a clearer signal of the underlying cross-correlations.
-The procedure transforms the exogenous variables into residuals of their $AR$ representation, then uses the $\beta$ coefficient to re-scale the dependent variable. (\cite{hackhard_9_2025})
-For our purposes, the process will be applied to normalized data, making the inclusion of an intercept redundant.
+\subsubsection{Regressor Examination}\label{subsubsec:inp_order}
+While the model order will not be adjusted based on the results, the Cross Correlation Function (CCF) of each regressor with the target variable will be examined to confirm the appropriateness of the lag structure.
+The \textbf{Box\rule[0.5ex]{0.5em}{0.7pt}Jenkins Prewhitening} procedure will be applied to expose a clearer signal of the underlying cross-correlations.
+Box\rule[0.5ex]{0.5em}{0.7pt}Jenkins Prewhitening transforms the exogenous variables into residuals of their $AR$ representation, then uses the $\beta$ coefficient to re-scale the dependent variable. (\cite{hackhard_9_2025})
 Formally, the $AR(1)$ variant of the process can be shown as:
 
 \begin{equation}
@@ -89,7 +66,7 @@ Formally, the $AR(1)$ variant of the process can be shown as:
 
 \vspace{\baselineskip}
 
-Following this selection procedure, the candidate $\{p, \ q\}$ are used to form a design matrix for the final confirmation of the \textbf{Variance Inflation Factor} (VIF) between exogenous variables.
+Additionally, the \textbf{Variance Inflation Factor} (VIF) of all regressors will be checked to ensure multicollinearity is not present.
 VIF is computed as:
 \begin{equation}
     \label{eq:vif}
@@ -97,85 +74,10 @@ VIF is computed as:
 \end{equation}
 
 \noindent Where $R^2_{X_i}$ is the coefficient of determination of the regression of $X_i$ on all other columns of $X$.
-In our case, a lag of the target variable is known to be present in $X$.
-As exogenous variables are selected to explain the variance in $y$, it is expected that they will attain a high $R^2$ as regressors of $y_{t-i}$.
-Referring back to Equation~\ref{eq:vif}, we observe that this phenomenon will introduce artificially inflated VIF calculations as $R^2$ acts as a deflator of the denominator.
-Therefore, VIF calculations will only be used to calculate the inflation factor between exogenous variable (via a reduced design matrix $X^{(exog)}$), confirming the two variables are not explaining the same portion of variance in $y$.\footnote{See Section~\ref{subsec:remark_vif} for further discussion on the VIF application in this context.}
-
-\subsubsection{Rescaling}\label{subsubsec:inp_rescale}
-Rescaling the input matrix ($X$) allows better comparison of coefficients and ensures that $\sum X^\top\varepsilon = 0$ must hold within very tight tolerances\footnote{Differences in magnitude between $X$ columns can lead to numerical ambiguity in orthogonality checks. It is generally preferable to eliminate any differences in the order of magnitudes in $X$.}.
-A common approach to achieve this stability is standardization, which transforms each feature to have a mean of 0 and a standard deviation of 1.
-Standardization is performed column-wise on the input using the formula:
-\begin{equation}
-    \label{eq:z_formula}
-    Z = \frac{X_{i, j} - \bar{X_i}}{S_i}    
-\end{equation}
-
-
-
-\noindent Where $\bar{X_i}$ is the mean of the $i$-th column, and $S_i$ is the [unbiased] standard deviation of the $i$-th column.
-
-\vspace{\baselineskip}
-This transformation has no effect on the error profile of the fitted model as the distribution shapes and inter-variable interactions are perfectly preserved.\footnote{The statement holds for any non-penalized estimator of the form $\hat\beta = \arg\min_\beta L(y, X\beta)$, since rescaling $X$ can be absorbed into $\beta$.}
-However, the transformation brings all variables to the same scale and units.
-As a result, the \textbf{Kolmogorov\textbf{\rule[0.5ex]{0.5em}{0.7pt}}Smirnov (KS) test} which is sensitive to such differences now becomes available.
-
-\subsubsection{Analysis of Normalized Input Distributions}\label{subsubsec:inp_distr}
-With each regressor standardized to zero mean and unit variance, a one unit change corresponds to a $1\sigma$ shift in the original scales.
-However, this unit equality does not make the "likelihood" (or "extremeness") of different variables comparable.
-The "Z-scores" are comparable in likelihood only if the variables subject to comparison are identically distributed.
-This part of the methodology works towards identifying such equalities in $X$.
-
-\vspace{\baselineskip}
-
-Concretely, the aforementioned KS test can be used to check for equality of distributions.
-However, the KS' assumption of \textbf{i.i.d.\@ samples} is virtually impossible to satisfy in time-series data.
-To address this, a modification of the \textbf{Bootstrap KS Test} (\cite{praestgaard_permutation_1995}) can be applied.
-
-\vspace{\baselineskip}
-
-The specific test statistic is computed by calculating
- 
-\[D_{i,j} = \sup_x |F_{X_i}(x) - F_{X_j}(x)|\] 
-
-\noindent Where $F_{X_i}$ and $F_{X_j}$ are the Empirical CDFs of the respective regressors. 
-Afterward, a comparison of the bootstrapped distribution of $D_{i,j}^*$ to the observed $D_{i,j}$ is performed.
-
-\vspace{\baselineskip}
-
-The empirical p-value is estimated as the proportion defined by:
-
-\begin{equation}
-    \label{eq:ks_pval}
-    p_{i,j} = \frac{1}{B+1} \bigg(\sum_{b=1}^{B} (\mathbbm{1}_{\{D_{i,j}^{*(b)} \geq D_{i,j}\}}) + 1\bigg)
-\end{equation}
-
-\noindent Where $B$ is the number of bootstrap samples. 
-To preserve the in-block serial dependence of observations, we employ a \textbf{Block Bootstrap} approach instead of the standard bootstrap resampling.\footnote{See Section~\ref{subsec:remark_ks} for further discussion on the time-series application of the KS test.}
-\subsection{Model Estimation}\label{subsec:model_estimation}
-The model estimation is conducted using the standard \textbf{Ordinary Least Squares} (OLS) approach.
-Using the derived design matrix $X$ we minimize:
-\begin{equation}
-    \label{eq:ols_obj}
-    \begin{aligned}
-        J(\beta) & = ||y - X\beta||^2_2 \\
-        & = (y - X\beta)^T(y - X\beta)
-    \end{aligned}
-\end{equation}
-
-\noindent Which transforms into the first-order condition:
-\begin{equation}
-    \label{eq:ols_foc}
-    \begin{aligned}
-        X^\top\hat{\beta} & = X^\top y \\
-        \hat{\beta} & = (X^\top X)^{-1} X^\top y
-    \end{aligned}
-\end{equation}
-
-\noindent Where $\hat{\beta}$ is the vector of estimated coefficients.
-This gives us a closed-form, single-step solution to the estimation problem.
+The common threshold for multicollinearity, $VIF > 10$, will be used.
 
 \subsection{BLUE Evaluation}\label{subsec:blue_evaluation}
+
 After estimating the model coefficients, we evaluate the Gauss--Markov conditions to confirm whether the resulting fit is BLUE.
 Previous stages of the methodology involve checks for the pre-fit Gauss--Markov conditions:
 \begin{itemize}
@@ -191,57 +93,33 @@ Previous stages of the methodology involve checks for the pre-fit Gauss--Markov 
     \item \textbf{Spherical Errors:} This condition holds if $\operatorname{Var}(\varepsilon) = \sigma^2 I_n$;
     implies that the residuals are homoskedastic and uncorrelated. The two criteria can be tested separately using the \textbf{Breusch\rule[0.5ex]{0.5em}{0.7pt}Pagan Test} for homoskedasticity and the \textbf{Breusch\rule[0.5ex]{0.5em}{0.7pt}Godfrey Test} for autocorrelation.
     \item \textbf{Strict Exogeneity:} In textbook terms strict exogeneity requires $\mathbb{E}[\varepsilon_i \ |\ X] = 0$.  However, this condition is not directly testable.
-    It's often assumed to hold given weak exogeneity holds, and the design matrix $X$ shows no direct signs of endogenous interactions.
-    In our paper, we will rely on the Breusch--Godfrey test, VIF, and ACF/PACF analysis to check for evidence against weak exogeneity.
-    Given the application of RESET is inappropriate for level based time-series data, as a final check, we will apply the \textbf{Harvey\rule[0.5ex]{0.5em}{0.7pt}Collier Test} for to assess model specification.
+    It's often assumed to hold given weak exogeneity holds, and the design matrix $X$ shows no direct signs of endogenous interactions. 
+    A \textbf{RESET Test} will be employed to check for model misspecification and omitted nonlinearities.
+    Moreover, the \textbf{Harvey\rule[0.5ex]{0.5em}{0.7pt}Collier Test} will be used to further assess model specification. 
     Strong exogeneity will then be assumed, and therefore any finding of BLUE will be referred to as \enquote{approximate} under the modelling assumptions.
 \end{itemize}
 
-Noticeably, all conditions except spherical errors can be verified through deterministic calculations using the information attained at-or-before estimation.
-Fittingly, the tests involved in verifying spherical errors are relatively simple and lead to intuitive test statistics.
+\subsection{Post-Fit Validation}\label{subsec:post_fit_val}
+After estimating the model and evaluating the Gauss--Markov conditions, regression coefficients and residuals will be evaluated.
+Alongside understanding variable significances and outliers, this step will potentially highlight the sources of issues that may arise with the BLUE evaluation.
+
+\subsubsection{Coefficient Significance}\label{subsubsec:coef_signif}
+Coefficients will be tested for significance both individually and jointly.
+Individual significance will be tested with \textbf{$t$-tests}, while model-wise joint significance will be tested with an \textbf{$F$-test}.
+Additionally, the joint significance of coefficient subsets will be tested using \textbf{Wald Tests}.
+
+\subsubsection{Residual Analysis}\label{subsubsec:res_analysis}
+The residuals of a model are very important both in predictive terms, and as tools of analyzing the model fit.
+Therefore, multiple aspects of the residuals will be examined before deeming the model valid/efficient.
 
 \vspace{\baselineskip}
 
-The Breusch--Pagan test checks for heteroskedasticity by first deriving the residual based dependent variable $g$:
-
-\begin{equation}
-    \label{eq:bp_aux}
-    \begin{aligned}
-        \varepsilon^2 &= (y-X\hat{\beta})^2 \\
-        \hat{\sigma}^2 &= \frac{\sum_{i=1}^n \varepsilon_i^2}{n} \\
-        g &= \frac{\varepsilon^2}{\hat{\sigma}^2}
-    \end{aligned}
-\end{equation}
-
-\noindent Where $\hat{\sigma}^2$ is the mean of squared residuals. Therefore, $g$ is a mean-scaled vector of squared errors.
-Afterward, an auxiliary regression of $g$ on $X$ is performed to attain the $R^2$ of the fit. The test statistic is then computed:
-\begin{equation}
-    \label{eq:bp_stat}
-    nR^2(g, \ \hat{g}) \sim \chi^2_{k-1}
-\end{equation}
-\noindent Where $k$ is the number of regressors (including the intercept).
+To begin with, the fitted values will be plotted against the observed target to display the directionality and scale of residuals in a visual manner.
+This will be complemented by a QQ plot and a \textbf{Shapiro\rule[0.5ex]{0.5em}{0.7pt}Wilk Test} to assess the normality of residuals.
+Normality is not a Gauss--Markov condition, but it is important for inference.
 
 \vspace{\baselineskip}
-The Breusch--Godfrey test creates a very similar statistic, again derived from a regression of residuals.
-The test is performed by estimating an $AR(p)$ model of the residuals. The statistic is again derived from $R^2$ with only a slight modification:
-\begin{equation}
-    \label{eq:bg_stat}
-    (n-p)R^2(\varepsilon, \ \hat{\varepsilon}) \sim \chi^2_{p}
-\end{equation}
 
-\noindent Where $p$ ($=k-1$ from the BP test) is the number of lags used in the auxiliary regression.
-
-\vspace{\baselineskip}
-Finally, the Harvey--Collier test is applied to check for model specification. The test is performed by fitting $n-k$ simple regressions of $y$ using the design matrix $X$.
-Each fitted model is used to calculate a one-step ahead prediction error, giving us a vector of errors $w$.
-The test confirms $H_0: \mathbb{E}[w_i] = 0 \ \forall w$. This is achieved by computing:
-
-\begin{equation}
-    \centering
-    \begin{aligned}
-        \bar{w} & = \frac{1}{n-k} \sum_{i=1}^{n-k} w_i \\
-        s_w^2 & = \frac{1}{n-k-1} \sum_{i=1}^{n-k} (w_i - \bar{w})^2 \\
-        t_{HC} & = \bigg\lvert \frac{\bar{w}}{s_w / \sqrt{n-k}} \bigg\rvert \sim t_{n-k-1}
-    \end{aligned}
-    \label{eq:hc_stat}
-\end{equation}
+Finally, potential outliers will be examined using \textbf{Leverage} and \textbf{Cook's Distance}.
+Given the nature of our target, we can immediately expect that the 2008 Financial Crisis and 2020 COVID-19 shocks will be visible in this portion of the analysis.
+If found to be detrimental to the model generalization, removal of outliers will be considered as required.
